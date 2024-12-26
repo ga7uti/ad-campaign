@@ -1,133 +1,108 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
+import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
+import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
+import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { Budget } from '@/components/dashboard/overview/budget';
-import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
-import { LatestProducts } from '@/components/dashboard/overview/latest-products';
-import { Sales } from '@/components/dashboard/overview/sales';
-import { TasksProgress } from '@/components/dashboard/overview/tasks-progress';
-import { TotalCustomers } from '@/components/dashboard/overview/total-customers';
-import { TotalProfit } from '@/components/dashboard/overview/total-profit';
-import { Traffic } from '@/components/dashboard/overview/traffic';
+import { IntegrationCard } from '@/components/dashboard/integrations/integrations-card';
+import type { Integration } from '@/components/dashboard/integrations/integrations-card';
+import { CompaniesFilters } from '@/components/dashboard/integrations/integrations-filters';
+
+
 
 export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
+const integrations = [
+  {
+    id: 'INTEG-006',
+    title: 'Dropbox',
+    description: 'Dropbox is a file hosting service that offers cloud storage, file synchronization, a personal cloud.',
+    logo: '/assets/logo-dropbox.png',
+    installs: 594,
+    updatedAt: dayjs().subtract(12, 'minute').toDate(),
+  },
+  {
+    id: 'INTEG-005',
+    title: 'Medium Corporation',
+    description: 'Medium is an online publishing platform developed by Evan Williams, and launched in August 2012.',
+    logo: '/assets/logo-medium.png',
+    installs: 625,
+    updatedAt: dayjs().subtract(43, 'minute').subtract(1, 'hour').toDate(),
+  },
+  {
+    id: 'INTEG-004',
+    title: 'Slack',
+    description: 'Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield.',
+    logo: '/assets/logo-slack.png',
+    installs: 857,
+    updatedAt: dayjs().subtract(50, 'minute').subtract(3, 'hour').toDate(),
+  },
+  {
+    id: 'INTEG-003',
+    title: 'Lyft',
+    description: 'Lyft is an on-demand transportation company based in San Francisco, California.',
+    logo: '/assets/logo-lyft.png',
+    installs: 406,
+    updatedAt: dayjs().subtract(7, 'minute').subtract(4, 'hour').subtract(1, 'day').toDate(),
+  },
+  {
+    id: 'INTEG-002',
+    title: 'GitHub',
+    description: 'GitHub is a web-based hosting service for version control of code using Git.',
+    logo: '/assets/logo-github.png',
+    installs: 835,
+    updatedAt: dayjs().subtract(31, 'minute').subtract(4, 'hour').subtract(5, 'day').toDate(),
+  },
+  {
+    id: 'INTEG-001',
+    title: 'Squarespace',
+    description: 'Squarespace provides software as a service for website building and hosting. Headquartered in NYC.',
+    logo: '/assets/logo-squarespace.png',
+    installs: 435,
+    updatedAt: dayjs().subtract(25, 'minute').subtract(6, 'hour').subtract(6, 'day').toDate(),
+  },
+] satisfies Integration[];
+
 export default function Page(): React.JSX.Element {
   return (
-    <Grid container spacing={3}>
-      <Grid lg={3} sm={6} xs={12}>
-        <Budget diff={12} trend="up" sx={{ height: '100%' }} value="$24k" />
+    <Stack spacing={3}>
+      <Stack direction="row" spacing={3}>
+        <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
+          <Typography variant="h4">Integrations</Typography>
+          <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
+            <Button color="inherit" startIcon={<UploadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Import
+            </Button>
+            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+              Export
+            </Button>
+          </Stack>
+        </Stack>
+        <div>
+          <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
+            Add
+          </Button>
+        </div>
+      </Stack>
+      <CompaniesFilters />
+      <Grid container spacing={3}>
+        {integrations.map((integration) => (
+          <Grid key={integration.id} lg={4} md={6} xs={12}>
+            <IntegrationCard integration={integration} />
+          </Grid>
+        ))}
       </Grid>
-      <Grid lg={3} sm={6} xs={12}>
-        <TotalCustomers diff={16} trend="down" sx={{ height: '100%' }} value="1.6k" />
-      </Grid>
-      <Grid lg={3} sm={6} xs={12}>
-        <TasksProgress sx={{ height: '100%' }} value={75.5} />
-      </Grid>
-      <Grid lg={3} sm={6} xs={12}>
-        <TotalProfit sx={{ height: '100%' }} value="$15k" />
-      </Grid>
-      <Grid lg={8} xs={12}>
-        <Sales
-          chartSeries={[
-            { name: 'This year', data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20] },
-            { name: 'Last year', data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13] },
-          ]}
-          sx={{ height: '100%' }}
-        />
-      </Grid>
-      <Grid lg={4} md={6} xs={12}>
-        <Traffic chartSeries={[63, 15, 22]} labels={['Desktop', 'Tablet', 'Phone']} sx={{ height: '100%' }} />
-      </Grid>
-      <Grid lg={4} md={6} xs={12}>
-        <LatestProducts
-          products={[
-            {
-              id: 'PRD-005',
-              name: 'Soja & Co. Eucalyptus',
-              image: '/assets/product-5.png',
-              updatedAt: dayjs().subtract(18, 'minutes').subtract(5, 'hour').toDate(),
-            },
-            {
-              id: 'PRD-004',
-              name: 'Necessaire Body Lotion',
-              image: '/assets/product-4.png',
-              updatedAt: dayjs().subtract(41, 'minutes').subtract(3, 'hour').toDate(),
-            },
-            {
-              id: 'PRD-003',
-              name: 'Ritual of Sakura',
-              image: '/assets/product-3.png',
-              updatedAt: dayjs().subtract(5, 'minutes').subtract(3, 'hour').toDate(),
-            },
-            {
-              id: 'PRD-002',
-              name: 'Lancome Rouge',
-              image: '/assets/product-2.png',
-              updatedAt: dayjs().subtract(23, 'minutes').subtract(2, 'hour').toDate(),
-            },
-            {
-              id: 'PRD-001',
-              name: 'Erbology Aloe Vera',
-              image: '/assets/product-1.png',
-              updatedAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-          ]}
-          sx={{ height: '100%' }}
-        />
-      </Grid>
-      <Grid lg={8} md={12} xs={12}>
-        <LatestOrders
-          orders={[
-            {
-              id: 'ORD-007',
-              customer: { name: 'Ekaterina Tankova' },
-              amount: 30.5,
-              status: 'pending',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-006',
-              customer: { name: 'Cao Yu' },
-              amount: 25.1,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-004',
-              customer: { name: 'Alexa Richardson' },
-              amount: 10.99,
-              status: 'refunded',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-003',
-              customer: { name: 'Anje Keizer' },
-              amount: 96.43,
-              status: 'pending',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-002',
-              customer: { name: 'Clarke Gillebert' },
-              amount: 32.54,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-            {
-              id: 'ORD-001',
-              customer: { name: 'Adam Denisov' },
-              amount: 16.76,
-              status: 'delivered',
-              createdAt: dayjs().subtract(10, 'minutes').toDate(),
-            },
-          ]}
-          sx={{ height: '100%' }}
-        />
-      </Grid>
-    </Grid>
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Pagination count={3} size="small" />
+      </Box>
+    </Stack>
   );
 }
