@@ -19,11 +19,11 @@ export interface Integration {
   updatedAt: Date;
 }
 
-export interface IntegrationCardProps {
+export interface CampaignCardProps {
   integration: Integration;
 }
 
-export function IntegrationCard({ integration }: IntegrationCardProps): React.JSX.Element {
+export function CampaignCard({ integration }: CampaignCardProps): React.JSX.Element {
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <CardContent sx={{ flex: '1 1 auto' }}>

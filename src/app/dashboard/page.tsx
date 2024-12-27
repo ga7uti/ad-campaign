@@ -9,18 +9,14 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
-import type { Metadata } from 'next';
 import * as React from 'react';
 
-import type { Integration } from '@/components/dashboard/overview/campaign-card';
-import { IntegrationCard } from '@/components/dashboard/overview/campaign-card';
-import { CompaniesFilters } from '@/components/dashboard/overview/integrations-filters';
-import { config } from '@/config';
-import RouterLink from 'next/link';
-import { useRouter } from 'next/navigation';
-import { paths } from '@/paths';
 import { ExportFormPopover } from '@/components/dashboard/layout/export-form';
+import type { Integration } from '@/components/dashboard/overview/campaign-card';
+import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { usePopover } from '@/hooks/use-popover';
+import { paths } from '@/paths';
+import RouterLink from 'next/link';
 
 
 
@@ -115,7 +111,7 @@ export default function Page(): React.JSX.Element {
       <Grid container spacing={3}>
         {integrations.map((integration) => (
           <Grid key={integration.id} lg={4} md={6} xs={12}>
-            <IntegrationCard integration={integration} />
+            <CampaignCard integration={integration} />
           </Grid>
         ))}
       </Grid>
