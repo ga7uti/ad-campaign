@@ -12,8 +12,8 @@ import dayjs from 'dayjs';
 import type { Metadata } from 'next';
 import * as React from 'react';
 
-import type { Integration } from '@/components/dashboard/overview/integrations-card';
-import { IntegrationCard } from '@/components/dashboard/overview/integrations-card';
+import type { Integration } from '@/components/dashboard/overview/campaign-card';
+import { IntegrationCard } from '@/components/dashboard/overview/campaign-card';
 import { CompaniesFilters } from '@/components/dashboard/overview/integrations-filters';
 import { config } from '@/config';
 import RouterLink from 'next/link';
@@ -112,7 +112,6 @@ export default function Page(): React.JSX.Element {
           </Button>
         </div>
       </Stack>
-      <CompaniesFilters />
       <Grid container spacing={3}>
         {integrations.map((integration) => (
           <Grid key={integration.id} lg={4} md={6} xs={12}>

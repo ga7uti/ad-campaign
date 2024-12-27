@@ -23,6 +23,7 @@ export default function Page(): React.JSX.Element {
         </Grid>
         <Grid lg={8} md={6} xs={12}>
           <AccountDetailsForm />
+          <div style={{ marginBottom: '1rem' }} />
           <UpdatePasswordForm />
         </Grid>
       </Grid>
