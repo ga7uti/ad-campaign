@@ -1,19 +1,33 @@
 "use client";
 
-import { Box, Divider } from '@mui/material';
 import React from 'react';
 
 import BudgerBidding from '@/components/dashboard/create-campaign/BudgetBidding';
 import CampaignSetting from '@/components/dashboard/create-campaign/CampaignSetting';
-import { Container } from '@mui/system';
+import { IconButton, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import { ArrowBendDownLeft } from '@phosphor-icons/react/dist/ssr';
+
 
 const drawerWidth = 240;
 
 export default function CreateCampaignPage(): React.JSX.Element {
+  function handleBack(): void {
+    window.history.back();
+  }
+
   return (
-    <Container>
+    <Box>
+      <Box mb={2}>
+        <IconButton onClick={handleBack}>
+          <ArrowBendDownLeft/>
+        </IconButton>
+      </Box>
+      <Box mb={2}>
+        <Typography mb={2} variant="h4">Create Campaign</Typography>
         <CampaignSetting/>
-        <BudgerBidding/>
-    </Container>
+      </Box>
+      <BudgerBidding/>
+    </Box>
   );
 }
