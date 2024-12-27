@@ -19,6 +19,8 @@ import { config } from '@/config';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { paths } from '@/paths';
+import { ExportFormPopover } from '@/components/dashboard/layout/export-form';
+import { usePopover } from '@/hooks/use-popover';
 
 
 
@@ -76,7 +78,7 @@ const integrations = [
 ] satisfies Integration[];
 
 export default function Page(): React.JSX.Element {
-  const router = useRouter()
+  const exportPopOver = usePopover<HTMLDivElement>();
 
   return (
     <Stack spacing={3}>
@@ -84,9 +86,10 @@ export default function Page(): React.JSX.Element {
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Integrations</Typography>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
-            <Button color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
+            <Button  onClick={exportPopOver.handleOpen} color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
               Export
             </Button>
+            <ExportFormPopover anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open} />
           </Stack>
         </Stack>
         <div>
