@@ -12,9 +12,9 @@ import dayjs from 'dayjs';
 import type { Metadata } from 'next';
 import * as React from 'react';
 
-import type { Integration } from '@/components/dashboard/integrations/integrations-card';
-import { IntegrationCard } from '@/components/dashboard/integrations/integrations-card';
-import { CompaniesFilters } from '@/components/dashboard/integrations/integrations-filters';
+import type { Integration } from '@/components/dashboard/overview/integrations-card';
+import { IntegrationCard } from '@/components/dashboard/overview/integrations-card';
+import { CompaniesFilters } from '@/components/dashboard/overview/integrations-filters';
 import { config } from '@/config';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
