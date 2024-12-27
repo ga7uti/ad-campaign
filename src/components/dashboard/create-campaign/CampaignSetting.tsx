@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Checkbox, FormControl, Grid } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
@@ -45,12 +45,7 @@ export default function CampaignSetting(): React.JSX.Element {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
-  const handleAgeChange = (event: SelectChangeEvent<string>) => {
-    const {
-      target: { value },
-    } = event;
-    setAge(event.target.value as string);
-  };
+
   return (
     <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Grid container spacing={2}>
@@ -66,7 +61,6 @@ export default function CampaignSetting(): React.JSX.Element {
                   id="demo-simple-select"
                   value={age}
                   label="Age"
-                  onChange={handleAgeChange}
                 >
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>

@@ -9,8 +9,6 @@ import { Box } from '@mui/system';
 import { ArrowBendDownLeft } from '@phosphor-icons/react/dist/ssr';
 
 
-const drawerWidth = 240;
-
 export default function CreateCampaignPage(): React.JSX.Element {
   function handleBack(): void {
     window.history.back();

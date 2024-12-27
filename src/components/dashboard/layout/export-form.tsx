@@ -1,16 +1,11 @@
 import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { useUser } from '@/hooks/use-user';
-import { authClient } from '@/lib/auth/client';
-import { logger } from '@/lib/default-logger';
-import { Button, Card, CardContent, CardHeader, FormControl, InputLabel, Select, TextField } from '@mui/material';
-import { ArrowFatUp } from '@phosphor-icons/react/dist/ssr/ArrowFatUp';
+import { Button, Card, CardContent, CardHeader, FormControl, TextField } from '@mui/material';
 import { X } from '@phosphor-icons/react/dist/ssr';
+import { ArrowFatUp } from '@phosphor-icons/react/dist/ssr/ArrowFatUp';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;
@@ -20,29 +15,7 @@ export interface UserPopoverProps {
 
   
   export function ExportFormPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
-    const { checkSession } = useUser();
   
-    const router = useRouter();
-  
-    const handleSignOut = React.useCallback(async (): Promise<void> => {
-      try {
-        const { error } = await authClient.signOut();
-  
-        if (error) {
-          logger.error('Sign out error', error);
-          return;
-        }
-  
-        // Refresh the auth state
-        await checkSession?.();
-  
-        // UserProvider, for this case, will not refresh the router and we need to do it manually
-        router.refresh();
-        // After refresh, AuthGuard will handle the redirect
-      } catch (err) {
-        logger.error('Sign out error', err);
-      }
-    }, [checkSession, router]);
   
     return (
       <Popover
