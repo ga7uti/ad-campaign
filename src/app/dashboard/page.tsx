@@ -89,6 +89,20 @@ export default function Page(): React.JSX.Element {
             <Button  onClick={exportPopOver.handleOpen} color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
               Export
             </Button>
+            <Box
+              sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                backdropFilter: 'blur(5px)',
+                zIndex: exportPopOver.open ? 1 : -1,
+                opacity: exportPopOver.open ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+              }}
+            />
             <ExportFormPopover anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open} />
           </Stack>
         </Stack>

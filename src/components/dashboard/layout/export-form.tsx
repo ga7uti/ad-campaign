@@ -50,7 +50,7 @@ export interface UserPopoverProps {
         anchorOrigin={{ horizontal: 'center', vertical: 'center' }}
         onClose={onClose}
         open={open}
-        slotProps={{ paper: { sx: { width: '540px' } } }}
+        slotProps={{ paper: { sx: { width: '512px' } } }}
       >
         <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Card>
