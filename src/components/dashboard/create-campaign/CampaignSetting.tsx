@@ -1,3 +1,4 @@
+"use client";
 import { Box, Card, CardContent, CardHeader, Checkbox, FormControl, Grid } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';

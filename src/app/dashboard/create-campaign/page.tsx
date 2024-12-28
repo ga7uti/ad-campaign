@@ -1,8 +1,6 @@
-
-
 import React from 'react';
 
-import BudgerBidding from '@/components/dashboard/create-campaign/BudgetBidding';
+import BudgetBidding from '@/components/dashboard/create-campaign/BudgetBidding';
 import CampaignSetting from '@/components/dashboard/create-campaign/CampaignSetting';
 import BackBtn from '@/components/dashboard/layout/back-btn';
 import { Typography } from '@mui/material';
@@ -18,7 +16,7 @@ export default function CreateCampaignPage(): React.JSX.Element {
         <Typography mb={2} variant="h4">Create Campaign</Typography>
         <CampaignSetting/>
       </Box>
-      <BudgerBidding/>
+      <BudgetBidding/>
     </Box>
   );
 }

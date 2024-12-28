@@ -1,23 +1,21 @@
 import { paths } from '@/paths';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import dayjs from 'dayjs';
 import * as React from 'react';
 
-import { ExportFormPopover } from '@/components/dashboard/layout/export-form';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import type { Integration } from '@/components/dashboard/overview/campaign-card';
 import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
-import { usePopover } from '@/hooks/use-popover';
+import ExportForm from '@/components/dashboard/create-campaign/ExportForm';
+import { config } from '@/config';
 
 
 
-// export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
+export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 const integrations = [
   {
@@ -71,36 +69,16 @@ const integrations = [
 ] satisfies Integration[];
 
 export default function Page(): React.JSX.Element {
-  const exportPopOver = usePopover<HTMLDivElement>();
 
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Integrations</Typography>
-          <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
-            <Button  onClick={exportPopOver.handleOpen} color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
-              Export
-            </Button>
-            <Box
-              sx={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                backdropFilter: 'blur(5px)',
-                zIndex: exportPopOver.open ? 1 : -1,
-                opacity: exportPopOver.open ? 1 : 0,
-                transition: 'opacity 0.3s ease',
-              }}
-            />
-            <ExportFormPopover anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open} />
-          </Stack>
+          <ExportForm/>
         </Stack>
         <div>
-          <RedirectBtn url={paths.dashboard.createCampaign}/>
+          <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
       <Grid container spacing={3}>

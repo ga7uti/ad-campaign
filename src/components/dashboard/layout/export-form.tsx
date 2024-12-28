@@ -7,15 +7,14 @@ import { Button, Card, CardContent, CardHeader, FormControl, TextField } from '@
 import { X } from '@phosphor-icons/react/dist/ssr';
 import { ArrowFatUp } from '@phosphor-icons/react/dist/ssr/ArrowFatUp';
 
-export interface UserPopoverProps {
-  anchorEl: Element | null;
-  onClose: () => void;
-  open: boolean;
-}
+  export interface UserPopoverProps {
+    anchorEl: Element | null;
+    onClose: () => void;
+    open: boolean;
+  }
 
   
   export function ExportFormPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
-  
   
     return (
       <Popover

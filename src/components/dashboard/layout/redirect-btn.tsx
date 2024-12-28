@@ -1,16 +1,27 @@
+"use client"
 import { Button } from '@mui/material';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import RouterLink from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+
 
 interface AddCampaignProps {
     url: string;  
+    redirect: boolean;
 }
 
-const RedirectBtn: React.FC<AddCampaignProps> = ({ url }) => {    
+const RedirectBtn: React.FC<AddCampaignProps> = ({ url,redirect }) => {    
 
+    const router = useRouter();
+    
+    const handleClickOrRedirect = () => {
+        if (redirect) {
+            router.push(url);
+            console.log('redirecting to', url);
+        }
+    };
     return (
-        <Button component={RouterLink} href={url} startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">Add</Button>
+        <Button onClick={handleClickOrRedirect} startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">Add</Button>
     );
 };
 

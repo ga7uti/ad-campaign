@@ -1,3 +1,4 @@
+"use client"
 import { Box, Card, CardContent, CardHeader, FormControl, TextField } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -5,7 +6,7 @@ import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
-export default function BudgerBidding(): React.JSX.Element {
+export default function BudgetBidding(): React.JSX.Element {
 
   const [age] = React.useState('');
 
