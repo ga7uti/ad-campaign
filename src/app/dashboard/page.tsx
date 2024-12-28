@@ -1,5 +1,4 @@
-'use client';
-
+import { paths } from '@/paths';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
@@ -7,16 +6,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
-import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
 import * as React from 'react';
 
 import { ExportFormPopover } from '@/components/dashboard/layout/export-form';
+import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import type { Integration } from '@/components/dashboard/overview/campaign-card';
 import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { usePopover } from '@/hooks/use-popover';
-import { paths } from '@/paths';
-import RouterLink from 'next/link';
 
 
 
@@ -103,9 +100,7 @@ export default function Page(): React.JSX.Element {
           </Stack>
         </Stack>
         <div>
-          <Button component={RouterLink} href={paths.dashboard.createCampaign} startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
-            Add
-          </Button>
+          <RedirectBtn url={paths.dashboard.createCampaign}/>
         </div>
       </Stack>
       <Grid container spacing={3}>
