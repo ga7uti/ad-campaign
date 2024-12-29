@@ -10,9 +10,8 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { useUser } from '@/hooks/use-user';
-// import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
-import axios from 'axios';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;
@@ -26,20 +25,16 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
-      // Make API call to the logout endpoint
-      const response = await axios.post('https://abhiaryz.pythonanywhere.com/api/logout/', {}, {
-        withCredentials: true, // Important if you are using cookies to store session
-      });
+      const result = await authClient.signOut();
 
-      // Handle the response from the API
-      if (response.status === 200) {
+      if (result.success) {
         // Refresh the session state
         await checkSession?.();
 
-        // After logout, manually refresh the router (e.g., redirect to login page)
+        // Redirect to the login page
         router.push('/login'); // Replace with your actual login route
       } else {
-        logger.error('Error logging out', response.data);
+        logger.error('Error logging out', result.error);
       }
     } catch (err) {
       logger.error('Sign out error', err);
