@@ -10,8 +10,9 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { useUser } from '@/hooks/use-user';
-import { authClient } from '@/lib/auth/client';
+// import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
+import axios from 'axios';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;
@@ -21,24 +22,25 @@ export interface UserPopoverProps {
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
   const { checkSession } = useUser();
-
   const router = useRouter();
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
-      const { error } = await authClient.signOut();
+      // Make API call to the logout endpoint
+      const response = await axios.post('https://abhiaryz.pythonanywhere.com/api/logout/', {}, {
+        withCredentials: true, // Important if you are using cookies to store session
+      });
 
-      if (error) {
-        logger.error('Sign out error', error);
-        return;
+      // Handle the response from the API
+      if (response.status === 200) {
+        // Refresh the session state
+        await checkSession?.();
+
+        // After logout, manually refresh the router (e.g., redirect to login page)
+        router.push('/login'); // Replace with your actual login route
+      } else {
+        logger.error('Error logging out', response.data);
       }
-
-      // Refresh the auth state
-      await checkSession?.();
-
-      // UserProvider, for this case, will not refresh the router and we need to do it manually
-      router.refresh();
-      // After refresh, AuthGuard will handle the redirect
     } catch (err) {
       logger.error('Sign out error', err);
     }

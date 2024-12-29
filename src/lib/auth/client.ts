@@ -1,5 +1,7 @@
 'use client';
 
+import axios from 'axios';
+
 import type { User } from '@/types/user';
 
 function generateToken(): string {
@@ -37,14 +39,30 @@ export interface ResetPasswordParams {
 }
 
 class AuthClient {
-  async signUp(_: SignUpParams): Promise<{ error?: string }> {
-    // Make API request
+  async signUp(params: SignUpParams): Promise<{ error?: string }> {
+    const { firstName, lastName, email, password } = params;
 
-    // We do not handle the API, so we'll just generate a token and store it in localStorage.
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
+    try {
+      // API call to register the user
+      const response = await axios.post('https://abhiaryz.pythonanywhere.com/api/register/', {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+      });
 
-    return {};
+      // If the response is successful, generate a token and store it
+      if (response.status === 201 || response.status === 200) {
+        const token = generateToken();
+        localStorage.setItem('custom-auth-token', token);
+        return {};
+      } else {
+        return { error: response.data.message || 'Registration failed' };
+      }
+    } catch (error: any) {
+      // Handle error responses
+      return { error: error.response?.data?.message || 'An unexpected error occurred' };
+    }
   }
 
   async signInWithOAuth(_: SignInWithOAuthParams): Promise<{ error?: string }> {
