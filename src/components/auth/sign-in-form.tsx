@@ -19,6 +19,7 @@ import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlas
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import { authClient } from '@/lib/auth/client';
+import { paths } from '@/paths';
 
 const schema = zod.object({
   username: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -48,7 +49,7 @@ export function SignInForm(): React.JSX.Element {
       try {
         const result = await authClient.signIn(values);
         if (result.success) {
-          router.push('/dashboard');
+          router.push(paths.dashboard.overview);
         } else {
           setErrorMessage(result.error || 'Invalid credentials');
         }
@@ -67,7 +68,7 @@ export function SignInForm(): React.JSX.Element {
         <Typography variant="h4">Sign in</Typography>
         <Typography color="text.secondary" variant="body2">
           Don&apos;t have an account?{' '}
-          <Link component={RouterLink} href="/auth/sign-up" underline="hover" variant="subtitle2">
+          <Link component={RouterLink} href={paths.auth.signUp} underline="hover" variant="subtitle2">
             Sign up
           </Link>
         </Typography>
@@ -120,7 +121,7 @@ export function SignInForm(): React.JSX.Element {
             )}
           />
           <div>
-            <Link component={RouterLink} href="/auth/reset-password" variant="subtitle2">
+            <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2">
               Forgot password?
             </Link>
           </div>
