@@ -15,7 +15,7 @@ export interface SignUpParams {
 }
 
 export interface SignInParams {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -26,7 +26,7 @@ export interface ResetPasswordParams {
 // Error Handling Utility
 const handleApiError = (error: any): { success: boolean; error: string } => {
   if (error.response) {
-    return { success: false, error: error.response.data.detail || 'Something went wrong.' };
+    return { success: false, error: error.response.data.error.message || 'Something went wrong.' };
   }
   if (error.request) {
     return { success: false, error: 'Network error. Please check your connection.' };
@@ -58,10 +58,11 @@ class AuthClient {
       const response = await axios.post(`${API_BASE_URL}/api/token/`, params, {
         headers: { 'Content-Type': 'application/json' },
       });
-      const { access, refresh, isAdmin } = response.data;
+      console.log(response.data);
+      const { access, refresh, user_type } = response.data;
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
-      localStorage.setItem('usertype', isAdmin ? 'admin' : 'user');
+      localStorage.setItem('usertype', user_type ? 'admin' : 'user');
       return { success: true, data: response.data };
     } catch (error: any) {
       return handleApiError(error);

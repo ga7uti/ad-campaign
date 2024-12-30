@@ -27,6 +27,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       return;
     }
 
+    console.log('token', token);
     if (!token) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
