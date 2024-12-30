@@ -2,12 +2,11 @@
 
 import * as React from 'react';
 
-import type { User } from '@/types/user';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 
 export interface UserContextValue {
-  user: User | null;
+  token: string | null;
   error: string | null;
   isLoading: boolean;
   checkSession?: () => Promise<void>;
@@ -20,15 +19,15 @@ export interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps): React.JSX.Element {
-  const [state, setState] = React.useState<{ user: User | null; error: string | null; isLoading: boolean }>({
-    user: null,
+  const [state, setState] = React.useState<{ token: string | null; error: string | null; isLoading: boolean }>({
+    token: null,
     error: null,
     isLoading: true,
   });
 
   const checkSession = React.useCallback(async (): Promise<void> => {
     try {
-      const { data, error } = await authClient.getUser();
+      const { data, error } = await authClient.getToken();
 
       if (error) {
         logger.error(error);
