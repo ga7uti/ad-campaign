@@ -17,7 +17,7 @@ import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-import axios from 'axios';
+import { authClient } from '@/lib/auth/client';
 
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -46,25 +46,14 @@ export function SignInForm(): React.JSX.Element {
       setErrorMessage(null);
 
       try {
-        const { data } = await axios.post('https://abhiaryz.pythonanywhere.com/api/token/', values, {
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        // Save token to localStorage or cookies
-        localStorage.setItem('accessToken', data.access);
-        localStorage.setItem('refreshToken', data.refresh);
-
-        // Redirect user after successful login
-        router.push('/dashboard'); // Replace with your dashboard route
-      } catch (error: any) {
-        console.error(error);
-
-        if (error.response && error.response.data) {
-          // Show error message from API
-          setErrorMessage(error.response.data.detail || 'Invalid credentials');
+        const result = await authClient.signIn(values);
+        if (result.success) {
+          router.push('/dashboard');
         } else {
-          setErrorMessage('Something went wrong. Please try again.');
+          setErrorMessage(result.error || 'Invalid credentials');
         }
+      } catch (error) {
+        setErrorMessage('Failed with error: ' + error);
       } finally {
         setIsPending(false);
       }

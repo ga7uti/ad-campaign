@@ -6,25 +6,6 @@ import type { User } from '@/types/user';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// Utility function for generating tokens (browser environment only)
-function generateToken(): string {
-  if (typeof window !== 'undefined' && window.crypto) {
-    const arr = new Uint8Array(12);
-    window.crypto.getRandomValues(arr);
-    return Array.from(arr, (v) => v.toString(16).padStart(2, '0')).join('');
-  }
-  return '';
-}
-
-// Mock user object
-const user: User = {
-  id: 'USR-000',
-  avatar: '/assets/avatar.png',
-  firstName: 'Sofia',
-  lastName: 'Rivers',
-  email: 'sofia@devias.io',
-};
-
 // Interface Definitions
 export interface SignUpParams {
   firstName: string;
@@ -64,8 +45,6 @@ class AuthClient {
       });
 
       if (response.status === 201 || response.status === 200) {
-        const token = generateToken();
-        localStorage.setItem('accessToken', token);
         return { success: true };
       }
       return { success: false, error: response.data.message || 'Registration failed' };
@@ -79,10 +58,10 @@ class AuthClient {
       const response = await axios.post(`${API_BASE_URL}/api/token/`, params, {
         headers: { 'Content-Type': 'application/json' },
       });
-
-      const { access, refresh } = response.data;
+      const { access, refresh, isAdmin } = response.data;
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
+      localStorage.setItem('usertype', isAdmin ? 'admin' : 'user');
       return { success: true, data: response.data };
     } catch (error: any) {
       return handleApiError(error);
@@ -113,12 +92,12 @@ class AuthClient {
     }
   }
 
-  async getUser(): Promise<{ success: boolean; data?: User | null; error?: string }> {
+  async getToken(): Promise<{ success: boolean; data?: string | null; error?: string }> {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       return { success: true, data: null };
     }
-    return { success: true, data: user };
+    return { success: true, data: token };
   }
 }
 
