@@ -1,6 +1,4 @@
-import { paths } from '@/paths';
 import axios from 'axios';
-import path from 'path';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -15,11 +13,11 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-        const authEndpoints = [paths.auth.signIn, paths.auth.signUp,paths.auth.resetPassword];
-        if (token && !authEndpoints.some(endpoint => config.url?.includes(endpoint))) {
+      const authEndpoints = ['/token','/reset-password','/register'];
+      console.log(config.url);
+      if (token && !authEndpoints.some(endpoint => config.url?.includes(endpoint))) {
         config.headers.Authorization = `Bearer ${token}`;
-        }
-      config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
