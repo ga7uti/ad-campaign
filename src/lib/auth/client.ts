@@ -1,6 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
+import { User } from '@/types/user';
 import axiosInstance from '../axiosInstance';
 
 // Interface Definitions
@@ -19,6 +20,14 @@ export interface SignInParams {
 export interface ResetPasswordParams {
   email: string;
 }
+
+const user = {
+  id: 'USR-000',
+  avatar: '/assets/avatar.png',
+  firstName: 'Sofia',
+  lastName: 'Rivers',
+  email: 'sofia@devias.io',
+} satisfies User;
 
 // Error Handling Utility
 const handleApiError = (error: any): { success: boolean; error: string } => {
@@ -92,6 +101,19 @@ class AuthClient {
       return { success: true, data: null };
     }
     return { success: true, data: token };
+  }
+
+  async getUser(): Promise<{ data?: User | null; error?: string }> {
+    // Make API request
+   
+    // We do not handle the API, so just check if we have a token in localStorage.
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      return { data: null };
+    }
+
+    return { data: user };
   }
 }
 

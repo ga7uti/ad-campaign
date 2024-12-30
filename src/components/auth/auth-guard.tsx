@@ -14,7 +14,7 @@ export interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | null {
   const router = useRouter();
-  const { token, error, isLoading } = useUser();
+  const { user, error, isLoading } = useUser();
   const [isChecking, setIsChecking] = React.useState<boolean>(true);
 
   const checkPermissions = async (): Promise<void> => {
@@ -27,8 +27,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       return;
     }
 
-    console.log('token', token);
-    if (!token) {
+    if (!user) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
       return;
@@ -42,7 +41,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       // noop
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
-  }, [token, error, isLoading]);
+  }, [user, error, isLoading]);
 
   if (isChecking) {
     return null;
