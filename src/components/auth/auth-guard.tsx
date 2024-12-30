@@ -1,9 +1,7 @@
 'use client';
-
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import Alert from '@mui/material/Alert';
-
 import { paths } from '@/paths';
 import { logger } from '@/lib/default-logger';
 import { useUser } from '@/hooks/use-user';
@@ -27,8 +25,10 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       return;
     }
 
-    console.log('token', token);
-    if (!token) {
+    // Check both hook token and localStorage
+    console.log("code is here")
+    const localToken = localStorage.getItem('accessToken');
+    if (!token && !localToken) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
       return;
@@ -38,10 +38,14 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
   };
 
   React.useEffect(() => {
-    checkPermissions().catch(() => {
-      // noop
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
+    // Add small delay to allow localStorage updates to complete
+    const timeoutId = setTimeout(() => {
+      checkPermissions().catch(() => {
+        // noop
+      });
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [token, error, isLoading]);
 
   if (isChecking) {

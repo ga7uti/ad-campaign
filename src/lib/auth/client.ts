@@ -51,18 +51,41 @@ class AuthClient {
   }
 
   async signIn(params: SignInParams): Promise<{ success: boolean; data?: any; error?: string }> {
+    console.log('1. Starting sign in');
     try {
-      const response = await axiosInstance.post(`/api/token/`, params, {
+      console.log('2. About to make API call');
+      const response = await axiosInstance.post('/api/token/', params, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log(response.data);
-      const { access, refresh, user_type } = response.data;
+      console.log('3. Got API response:', response.data);
+
+      // Access the nested data object
+      const responseData = response.data.data;
+      const { access, refresh, user_type } = responseData;
+
+      console.log('4. Destructured data:', { access: !!access, refresh: !!refresh, user_type });
+
+      if (!access || !refresh) {
+        console.error('5a. Missing tokens:', { access, refresh });
+        throw new Error('Invalid tokens');
+      }
+
+      console.log('5b. Tokens are valid');
       localStorage.setItem('accessToken', access);
+      console.log('6. Saved access token');
       localStorage.setItem('refreshToken', refresh);
+      console.log('7. Saved refresh token');
       localStorage.setItem('usertype', user_type ? 'admin' : 'user');
-      return { success: true, data: response.data };
+      console.log('8. Saved user type');
+
+      return { success: true, data: responseData };
     } catch (error: any) {
-      return handleApiError(error);
+      console.error('ERROR:', {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data,
+      });
+      return { success: false, error: error.message };
     }
   }
 
@@ -77,10 +100,14 @@ class AuthClient {
 
   async signOut(): Promise<{ success: boolean; error?: string }> {
     try {
-        await axiosInstance.post(`/api/logout/`, {refresh:localStorage.getItem('refreshToken')}, { withCredentials: true });
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        return { success: true };
+      await axiosInstance.post(
+        `/api/logout/`,
+        { refresh: localStorage.getItem('refreshToken') },
+        { withCredentials: true }
+      );
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      return { success: true };
     } catch (error: any) {
       return handleApiError(error);
     }

@@ -13,9 +13,9 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-      const authEndpoints = ['/token','/reset-password','/register'];
+      const authEndpoints = ['/token', '/reset-password', '/register'];
       console.log(config.url);
-      if (token && !authEndpoints.some(endpoint => config.url?.includes(endpoint))) {
+      if (token && !authEndpoints.some((endpoint) => config.url?.includes(endpoint))) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
