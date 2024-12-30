@@ -73,7 +73,7 @@ export function SignUpForm(): React.JSX.Element {
           await checkSession?.();
           router.push('/dashboard'); // Redirect to dashboard or any other page
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle error cases
         setError('root', {
           type: 'server',
