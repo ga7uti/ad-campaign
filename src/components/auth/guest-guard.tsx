@@ -14,7 +14,7 @@ export interface GuestGuardProps {
 
 export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | null {
   const router = useRouter();
-  const { token, error, isLoading } = useAuth();
+  const { auth, error, isLoading } = useAuth();
   const [isChecking, setIsChecking] = React.useState<boolean>(true);
 
   const checkPermissions = async (): Promise<void> => {
@@ -27,7 +27,7 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
       return;
     }
 
-    if (token) {
+    if (auth) {
       logger.debug('[GuestGuard]: User is logged in, redirecting to dashboard');
       router.replace(paths.dashboard.overview);
       return;
@@ -41,7 +41,7 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
       // noop
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
-  }, [token, error, isLoading]);
+  }, [auth, error, isLoading]);
 
   if (isChecking) {
     return null;

@@ -4,9 +4,10 @@ import * as React from 'react';
 
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
+import { Auth } from '@/types/auth';
 
 export interface AuthContextValue {
-  token: string | null;
+  auth: Auth | null;
   error: string | null;
   isLoading: boolean;
   checkSession?: () => Promise<void>;
@@ -19,23 +20,23 @@ export interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps): React.JSX.Element {
-  const [state, setState] = React.useState<{ token: string | null; error: string | null; isLoading: boolean }>({
-    token: null,
+  const [state, setState] = React.useState<{ auth: Auth | null; error: string | null; isLoading: boolean }>({
+    auth: null,
     error: null,
     isLoading: true,
   });
 
   const checkSession = React.useCallback(async (): Promise<void> => {
     try {
-      const { data, error } = await authClient.getToken();
+      const { data, error } = await authClient.getAuth();
 
       if (error) {
         logger.error(error);
-        setState((prev) => ({ ...prev, token: null, error: 'Something went wrong', isLoading: false }));
+        setState((prev) => ({ ...prev, auth: null, error: 'Something went wrong', isLoading: false }));
         return;
       }
 
-      setState((prev) => ({ ...prev, token: data ?? null, error: null, isLoading: false }));
+      setState((prev) => ({ ...prev, auth: data ?? null, error: null, isLoading: false }));
     } catch (err) {
       logger.error(err);
       setState((prev) => ({ ...prev, token: null, error: 'Something went wrong', isLoading: false }));

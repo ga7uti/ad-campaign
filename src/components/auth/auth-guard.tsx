@@ -12,7 +12,7 @@ export interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | null {
   const router = useRouter();
-  const { token, error, isLoading } = useAuth();
+  const { auth, error, isLoading } = useAuth();
   const [isChecking, setIsChecking] = React.useState<boolean>(true);
 
   const checkPermissions = async (): Promise<void> => {
@@ -26,7 +26,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
     }
 
     // Check both hook token and localStorage
-    if (!token) {
+    if (!auth) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
       return;
@@ -44,7 +44,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
     }, 100);
 
     return () => {clearTimeout(timeoutId)};
-  }, [token, error, isLoading]);
+  }, [auth, error, isLoading]);
 
   if (isChecking) {
     return null;

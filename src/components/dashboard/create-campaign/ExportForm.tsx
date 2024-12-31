@@ -5,10 +5,12 @@ import React from 'react';
 import { ExportFormPopover } from '../layout/export-form';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import { usePopover } from '@/hooks/use-popover';
+import { useAuth } from '@/hooks/use-auth';
 
 const ExportForm: React.FC = () => {
-    const exportPopOver = usePopover<HTMLDivElement>();
-   if(localStorage.getItem('usertype')==='admin'){;
+  const exportPopOver = usePopover<HTMLDivElement>();
+  const {auth} = useAuth();
+   if(auth?.usertype==='admin'){;
     return (
         <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
             <Button  onClick={exportPopOver.handleOpen} color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>

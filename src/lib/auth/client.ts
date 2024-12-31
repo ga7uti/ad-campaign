@@ -1,6 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
+import { Auth } from '@/types/auth';
 import axiosInstance from '../axios-instance';
 
 // Interface Definitions
@@ -82,12 +83,13 @@ class AuthClient {
     return { success: true };
   }
 
-  async getToken(): Promise<{ success: boolean; data?: string | null; error?: string }> {
+  async getAuth(): Promise<{ success: boolean; data?: Auth | null; error?: string }> {
     const token = localStorage.getItem('accessToken');
-    if (!token) {
+    const usertype = localStorage.getItem('usertype');
+    if (!token || !usertype) {
       return { success: true, data: null };
     }
-    return { success: true, data: token };
+    return { success: true, data: { token:token, usertype:usertype } };
   }
 }
 

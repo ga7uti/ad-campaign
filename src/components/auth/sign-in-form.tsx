@@ -52,7 +52,7 @@ export function SignInForm(): React.JSX.Element {
         setIsPending(false);
         return;
       }
-
+      
       // Refresh the auth state
       await checkSession?.();
 
