@@ -19,6 +19,7 @@ import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import { authClient } from '../../lib/auth/client';
+import { paths } from '@/paths';
 
 const schema = zod.object({
   firstName: zod.string().min(5, { message: 'First name must be at least 5 characters long' }),
@@ -71,7 +72,7 @@ export function SignUpForm(): React.JSX.Element {
           setError('root', { type: 'server', message: 'Registration successful!' });
           // Refresh the auth state and redirect if needed
           await checkSession?.();
-          router.push('/dashboard'); // Redirect to dashboard or any other page
+          router.push(paths.auth.signIn); // Redirect to dashboard or any other page
         }
       } catch (error: unknown) {
         // Handle error cases

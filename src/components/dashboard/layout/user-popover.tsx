@@ -26,14 +26,9 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
-      const result = await authClient.signOut();
-
-      if (result.success) {
-        await checkSession?.();
-        router.push(paths.auth.signIn); // Replace with your actual login route
-      } else {
-        logger.error('Error logging out', result.error);
-      }
+      await authClient.signOut();
+      await checkSession?.();
+      router.push(paths.auth.signIn); // Replace with your actual login route
     } catch (err) {
       logger.error('Sign out error', err);
     }
