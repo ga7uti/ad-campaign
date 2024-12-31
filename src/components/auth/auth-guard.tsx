@@ -26,9 +26,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
     }
 
     // Check both hook token and localStorage
-    console.log("code is here")
-    const localToken = localStorage.getItem('accessToken');
-    if (!token && !localToken) {
+    if (!token) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
       return;

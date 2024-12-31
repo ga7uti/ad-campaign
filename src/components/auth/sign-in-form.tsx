@@ -20,6 +20,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import { authClient } from '@/lib/auth/client';
 import { paths } from '@/paths';
+import { useUser } from '@/hooks/use-user';
 
 const schema = zod.object({
   username: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -30,36 +31,36 @@ type Values = zod.infer<typeof schema>;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
-
+  const { checkSession } = useUser();
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-      setErrorMessage(null);
+      const { error } = await authClient.signIn(values);
 
-      try {
-        const result = await authClient.signIn(values);
-        if (result.success) {
-          router.push(paths.dashboard.overview);
-        } else {
-          setErrorMessage(result.error || 'Invalid credentials');
-        }
-      } catch (error) {
-        setErrorMessage('Failed with error: ' + error);
-      } finally {
+      if (error) {
+        setError('root', { type: 'server', message: error });
         setIsPending(false);
+        return;
       }
+
+      // Refresh the auth state
+      await checkSession?.();
+
+      // UserProvider, for this case, will not refresh the router
+      // After refresh, GuestGuard will handle the redirect
+      router.refresh();
     },
-    [router]
+    [checkSession, router, setError]
   );
 
   return (
@@ -125,7 +126,7 @@ export function SignInForm(): React.JSX.Element {
               Forgot password?
             </Link>
           </div>
-          {errorMessage ? <Alert color="error">{errorMessage}</Alert> : null}
+          {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
           <Button disabled={isPending} type="submit" variant="contained">
             {isPending ? 'Signing in...' : 'Sign in'}
           </Button>

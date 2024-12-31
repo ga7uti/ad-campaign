@@ -51,33 +51,22 @@ class AuthClient {
   }
 
   async signIn(params: SignInParams): Promise<{ success: boolean; data?: any; error?: string }> {
-    console.log('1. Starting sign in');
+
     try {
-      console.log('2. About to make API call');
+
       const response = await axiosInstance.post('/api/token/', params, {
         headers: { 'Content-Type': 'application/json' },
       });
-      console.log('3. Got API response:', response.data);
-
       // Access the nested data object
       const responseData = response.data.data;
       const { access, refresh, user_type } = responseData;
-
-      console.log('4. Destructured data:', { access: !!access, refresh: !!refresh, user_type });
-
       if (!access || !refresh) {
         console.error('5a. Missing tokens:', { access, refresh });
         throw new Error('Invalid tokens');
       }
-
-      console.log('5b. Tokens are valid');
       localStorage.setItem('accessToken', access);
-      console.log('6. Saved access token');
       localStorage.setItem('refreshToken', refresh);
-      console.log('7. Saved refresh token');
       localStorage.setItem('usertype', user_type ? 'admin' : 'user');
-      console.log('8. Saved user type');
-
       return { success: true, data: responseData };
     } catch (error: any) {
       console.error('ERROR:', {
