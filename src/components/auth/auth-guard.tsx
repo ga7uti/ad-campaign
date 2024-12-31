@@ -43,7 +43,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       });
     }, 100);
 
-    return () => clearTimeout(timeoutId);
+    return () => {clearTimeout(timeoutId)};
   }, [token, error, isLoading]);
 
   if (isChecking) {

@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import axiosInstance from '../axiosInstance';
+import axiosInstance from '../axios-instance';
 
 // Interface Definitions
 export interface SignUpParams {
