@@ -1,7 +1,5 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 import axios from 'axios';
-import { paths } from '@/paths'; // Adjust the import path as necessary
-import { useRouter } from 'next/router';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -36,8 +34,6 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('userType');
-      const router = useRouter();
-      router.replace(paths.auth.signIn);
     }
     return Promise.reject(error);
   }
