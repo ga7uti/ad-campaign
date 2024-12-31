@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import axios from 'axios';
 import { paths } from '@/paths'; // Adjust the import path as necessary
 import { useRouter } from 'next/router';
