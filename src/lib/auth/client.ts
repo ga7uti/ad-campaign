@@ -20,17 +20,6 @@ export interface ResetPasswordParams {
   email: string;
 }
 
-// Error Handling Utility
-const handleApiError = (error: any): { success: boolean; error: string } => {
-  if (error.response) {
-    return { success: false, error: error.response.data.error.message || 'Something went wrong.' };
-  }
-  if (error.request) {
-    return { success: false, error: 'Network error. Please check your connection.' };
-  }
-  return { success: false, error: 'An unexpected error occurred.' };
-};
-
 class AuthClient {
   async signUp(params: SignUpParams): Promise<{ success: boolean; error?: string }> {
     try {
@@ -46,7 +35,7 @@ class AuthClient {
       }
       return { success: false, error: response.data.message || 'Registration failed' };
     } catch (error: any) {
-      return handleApiError(error);
+      return { success: false, error: error.response.data.error };
     }
   }
 
@@ -69,21 +58,15 @@ class AuthClient {
       localStorage.setItem('usertype', user_type ? 'admin' : 'user');
       return { success: true, data: responseData };
     } catch (error: any) {
-      console.error('ERROR:', {
-        message: error.message,
-        stack: error.stack,
-        response: error.response?.data,
-      });
-      return { success: false, error: error.message };
+      return { success: false, error: error.response.data.error.message };
     }
   }
 
-  async resetPassword(params: ResetPasswordParams): Promise<{ success: boolean; error?: string }> {
+  async resetPassword(params: ResetPasswordParams): Promise<void> {
     try {
       await axiosInstance.post(`/api/reset-password/`, params);
-      return { success: true };
     } catch (error: any) {
-      return handleApiError(error);
+      console.error('Error:', error);
     }
   }
 
