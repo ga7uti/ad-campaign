@@ -1,10 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import axios from 'axios';
-
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import axiosInstance from '../axios-instance';
 
 // Interface Definitions
 export interface SignUpParams {
@@ -15,7 +12,7 @@ export interface SignUpParams {
 }
 
 export interface SignInParams {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -23,21 +20,10 @@ export interface ResetPasswordParams {
   email: string;
 }
 
-// Error Handling Utility
-const handleApiError = (error: any): { success: boolean; error: string } => {
-  if (error.response) {
-    return { success: false, error: error.response.data.detail || 'Something went wrong.' };
-  }
-  if (error.request) {
-    return { success: false, error: 'Network error. Please check your connection.' };
-  }
-  return { success: false, error: 'An unexpected error occurred.' };
-};
-
 class AuthClient {
   async signUp(params: SignUpParams): Promise<{ success: boolean; error?: string }> {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/register/`, {
+      const response = await axiosInstance.post(`/api/register/`, {
         first_name: params.firstName,
         last_name: params.lastName,
         email: params.email,
@@ -49,47 +35,51 @@ class AuthClient {
       }
       return { success: false, error: response.data.message || 'Registration failed' };
     } catch (error: any) {
-      return handleApiError(error);
+      return { success: false, error: error.response.data.error };
     }
   }
 
   async signIn(params: SignInParams): Promise<{ success: boolean; data?: any; error?: string }> {
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/token/`, params, {
+
+      const response = await axiosInstance.post('/api/token/', params, {
         headers: { 'Content-Type': 'application/json' },
       });
-      const { access, refresh, isAdmin } = response.data;
+      // Access the nested data object
+      const responseData = response.data.data;
+      const { access, refresh, user_type } = responseData;
+      if (!access || !refresh) {
+        console.error('5a. Missing tokens:', { access, refresh });
+        throw new Error('Invalid tokens');
+      }
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
-      localStorage.setItem('usertype', isAdmin ? 'admin' : 'user');
-      return { success: true, data: response.data };
+      localStorage.setItem('usertype', user_type ? 'admin' : 'user');
+      return { success: true, data: responseData };
     } catch (error: any) {
-      return handleApiError(error);
+      return { success: false, error: error.response.data.error.message };
     }
   }
 
-  async resetPassword(params: ResetPasswordParams): Promise<{ success: boolean; error?: string }> {
+  async resetPassword(params: ResetPasswordParams): Promise<void> {
     try {
-      await axios.post(`${API_BASE_URL}/api/reset-password/`, params);
-      return { success: true };
+      await axiosInstance.post(`/api/reset-password/`, params);
     } catch (error: any) {
-      return handleApiError(error);
+      console.error('Error:', error);
     }
   }
 
   async signOut(): Promise<{ success: boolean; error?: string }> {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/logout/`, {}, { withCredentials: true });
-
-      if (response.status === 200) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        return { success: true };
-      }
-      return { success: false, error: response.data.message || 'Logout failed' };
+      await axiosInstance.post(`/api/logout/`,{ refresh: localStorage.getItem('refreshToken') },{ withCredentials: true });
     } catch (error: any) {
-      return handleApiError(error);
+      console.error('Error:', error);
     }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userType');
+    return { success: true };
   }
 
   async getToken(): Promise<{ success: boolean; data?: string | null; error?: string }> {

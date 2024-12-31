@@ -9,9 +9,10 @@ import { SignOut as SignOutIcon } from '@phosphor-icons/react/dist/ssr/SignOut';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
-import { useUser } from '@/hooks/use-user';
+import { useAuth } from '@/hooks/use-auth';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
+import { paths } from '@/paths';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;
@@ -20,22 +21,14 @@ export interface UserPopoverProps {
 }
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
-  const { checkSession } = useUser();
+  const { checkSession } = useAuth();
   const router = useRouter();
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
-      const result = await authClient.signOut();
-
-      if (result.success) {
-        // Refresh the session state
-        await checkSession?.();
-
-        // Redirect to the login page
-        router.push('/login'); // Replace with your actual login route
-      } else {
-        logger.error('Error logging out', result.error);
-      }
+      await authClient.signOut();
+      await checkSession?.();
+      router.push(paths.auth.signIn); // Replace with your actual login route
     } catch (err) {
       logger.error('Sign out error', err);
     }

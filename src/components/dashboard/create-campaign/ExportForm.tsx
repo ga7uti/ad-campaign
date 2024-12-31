@@ -8,7 +8,7 @@ import { usePopover } from '@/hooks/use-popover';
 
 const ExportForm: React.FC = () => {
     const exportPopOver = usePopover<HTMLDivElement>();
-
+   if(localStorage.getItem('usertype')==='admin'){;
     return (
         <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
             <Button  onClick={exportPopOver.handleOpen} color="inherit" startIcon={<DownloadIcon fontSize="var(--icon-fontSize-md)" />}>
@@ -31,6 +31,9 @@ const ExportForm: React.FC = () => {
             <ExportFormPopover anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open} />
           </Stack>
     );
+  }else{
+    return null;
+  } 
 };
 
 export default ExportForm;

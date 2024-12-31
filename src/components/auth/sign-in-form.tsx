@@ -1,9 +1,9 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import * as React from 'react';
-import RouterLink from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { authClient } from '@/lib/auth/client';
+import { paths } from '@/paths';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -16,12 +16,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import RouterLink from 'next/link';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-import { authClient } from '@/lib/auth/client';
 
 const schema = zod.object({
-  email: zod.string().min(1, { message: 'Email is required' }).email(),
+  username: zod.string().min(1, { message: 'Email is required' }).email(),
   password: zod.string().min(1, { message: 'Password is required' }),
 });
 
@@ -29,36 +31,36 @@ type Values = zod.infer<typeof schema>;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
-
+  const { checkSession } = useAuth();
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-      setErrorMessage(null);
+      const { error } = await authClient.signIn(values);
 
-      try {
-        const result = await authClient.signIn(values);
-        if (result.success) {
-          router.push('/dashboard');
-        } else {
-          setErrorMessage(result.error || 'Invalid credentials');
-        }
-      } catch (error) {
-        setErrorMessage('Failed with error: ' + error);
-      } finally {
+      if (error) {
+        setError('root', { type: 'server', message: error });
         setIsPending(false);
+        return;
       }
+
+      // Refresh the auth state
+      await checkSession?.();
+
+      // UserProvider, for this case, will not refresh the router
+      // After refresh, GuestGuard will handle the redirect
+      router.refresh();
     },
-    [router]
+    [checkSession, router, setError]
   );
 
   return (
@@ -67,7 +69,7 @@ export function SignInForm(): React.JSX.Element {
         <Typography variant="h4">Sign in</Typography>
         <Typography color="text.secondary" variant="body2">
           Don&apos;t have an account?{' '}
-          <Link component={RouterLink} href="/auth/sign-up" underline="hover" variant="subtitle2">
+          <Link component={RouterLink} href={paths.auth.signUp} underline="hover" variant="subtitle2">
             Sign up
           </Link>
         </Typography>
@@ -76,12 +78,12 @@ export function SignInForm(): React.JSX.Element {
         <Stack spacing={2}>
           <Controller
             control={control}
-            name="email"
+            name="username"
             render={({ field }) => (
-              <FormControl error={Boolean(errors.email)}>
+              <FormControl error={Boolean(errors.username)}>
                 <InputLabel>Email address</InputLabel>
                 <OutlinedInput {...field} label="Email address" type="email" />
-                {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
+                {errors.username ? <FormHelperText>{errors.username.message}</FormHelperText> : null}
               </FormControl>
             )}
           />
@@ -120,11 +122,11 @@ export function SignInForm(): React.JSX.Element {
             )}
           />
           <div>
-            <Link component={RouterLink} href="/auth/reset-password" variant="subtitle2">
+            <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2">
               Forgot password?
             </Link>
           </div>
-          {errorMessage ? <Alert color="error">{errorMessage}</Alert> : null}
+          {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
           <Button disabled={isPending} type="submit" variant="contained">
             {isPending ? 'Signing in...' : 'Sign in'}
           </Button>
