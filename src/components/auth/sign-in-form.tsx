@@ -1,9 +1,9 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import * as React from 'react';
-import RouterLink from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { authClient } from '@/lib/auth/client';
+import { paths } from '@/paths';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -16,11 +16,11 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import RouterLink from 'next/link';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-import { authClient } from '@/lib/auth/client';
-import { paths } from '@/paths';
-import { useUser } from '@/hooks/use-user';
 
 const schema = zod.object({
   username: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -31,7 +31,7 @@ type Values = zod.infer<typeof schema>;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
-  const { checkSession } = useUser();
+  const { checkSession } = useAuth();
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 

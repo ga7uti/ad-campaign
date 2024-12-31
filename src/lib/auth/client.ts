@@ -89,17 +89,14 @@ class AuthClient {
 
   async signOut(): Promise<{ success: boolean; error?: string }> {
     try {
-      await axiosInstance.post(
-        `/api/logout/`,
-        { refresh: localStorage.getItem('refreshToken') },
-        { withCredentials: true }
-      );
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      return { success: true };
+      await axiosInstance.post(`/api/logout/`,{ refresh: localStorage.getItem('refreshToken') },{ withCredentials: true });
     } catch (error: any) {
-      return handleApiError(error);
+      console.error('Error:', error);
     }
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userType');
+    return { success: true };
   }
 
   async getToken(): Promise<{ success: boolean; data?: string | null; error?: string }> {

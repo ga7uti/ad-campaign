@@ -5,14 +5,14 @@ import * as React from 'react';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 
-export interface UserContextValue {
+export interface AuthContextValue {
   token: string | null;
   error: string | null;
   isLoading: boolean;
   checkSession?: () => Promise<void>;
 }
 
-export const UserContext = React.createContext<UserContextValue | undefined>(undefined);
+export const AuthContext = React.createContext<AuthContextValue | undefined>(undefined);
 
 export interface UserProviderProps {
   children: React.ReactNode;
@@ -50,7 +50,7 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
   }, []);
 
-  return <UserContext.Provider value={{ ...state, checkSession }}>{children}</UserContext.Provider>;
+  return <AuthContext.Provider value={{ ...state, checkSession }}>{children}</AuthContext.Provider>;
 }
 
-export const UserConsumer = UserContext.Consumer;
+export const UserConsumer = AuthContext.Consumer;

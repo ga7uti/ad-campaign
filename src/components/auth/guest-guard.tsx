@@ -1,12 +1,12 @@
 'use client';
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import Alert from '@mui/material/Alert';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
-import { paths } from '@/paths';
+import { useAuth } from '@/hooks/use-auth';
 import { logger } from '@/lib/default-logger';
-import { useUser } from '@/hooks/use-user';
+import { paths } from '@/paths';
 
 export interface GuestGuardProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export interface GuestGuardProps {
 
 export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | null {
   const router = useRouter();
-  const { token, error, isLoading } = useUser();
+  const { token, error, isLoading } = useAuth();
   const [isChecking, setIsChecking] = React.useState<boolean>(true);
 
   const checkPermissions = async (): Promise<void> => {
