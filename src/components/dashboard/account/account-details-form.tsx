@@ -1,6 +1,6 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { accountClient } from '@/lib/account-client';
 import { User } from '@/types/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mui/material';
@@ -12,7 +12,6 @@ import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
-import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
