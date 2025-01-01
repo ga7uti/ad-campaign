@@ -34,19 +34,18 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const newAccessToken = await authClient.refreshToken();
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        localStorage.setItem('accessToken', newAccessToken);
+        if(!originalRequest.url?.includes('/token/refresh/')){
+          const newAccessToken = await authClient.refreshToken();
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          localStorage.setItem('accessToken', newAccessToken);
+        }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userType');
+        authClient.clearLocalStorage()
         return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);
   }
 );
-
 export default axiosInstance;
