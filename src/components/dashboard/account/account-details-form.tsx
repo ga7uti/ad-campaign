@@ -1,6 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
+import { accountClient } from '@/lib/account-client';
 import { User } from '@/types/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mui/material';
@@ -22,7 +23,8 @@ import { z as zod } from 'zod';
 const schema = zod.object({
   first_name: zod.string().min(5, { message: 'First name must be at least 5 characters long' }),
   last_name: zod.string().min(5, { message: 'Last name must be at least 5 characters long' }),
-  phone_no: zod.string().regex(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' })
+  phone_no: zod.string().regex(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' }),
+  email: zod.string().email({ message: 'Email is required' })
 });
 
 type Values = zod.infer<typeof schema>;
@@ -42,19 +44,14 @@ export function AccountDetailsForm(): React.JSX.Element {
   async function fetchUser() {
     try {
       // const response = await accountClient.getUser();
-      setUser({
-        first_name: 'Sofia',
-        last_name: 'Rivers',
-        email: 'Rivers@gmail.com',
+      const user ={
+        first_name: 'Anshul',
+        last_name: 'Kumar',
+        email: 'anshul@gmail.com',
         phone_no: '1234567890',
-      });
-      reset({
-        first_name: 'Sofia',
-        last_name: 'Rivers',
-        phone_no: '1234567890',
-      }); // Re-initialize the form with the fetched user data
-
-      // console.log('User:', response);
+      }
+      setUser(user);
+      reset(user);  
     } catch (error) {
       console.error('Failed to fetch user:', error);
     }
@@ -63,9 +60,16 @@ export function AccountDetailsForm(): React.JSX.Element {
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-      console.log('Values:', values);
+      try {
+        const updatedUser = await accountClient.updateUser(values);
+        setUser(updatedUser);
+        setIsPending(false);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError('root', { type: 'manual', message: error.message });
+        }
+      }
       setIsPending(false);
-
     },
     [setError]
   );
@@ -107,9 +111,16 @@ export function AccountDetailsForm(): React.JSX.Element {
                 />
             </Grid>
             <Grid md={6} xs={12}>
-              <FormControl >
-                <OutlinedInput disabled defaultValue={user?.email}  type="email" />
-              </FormControl>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <FormControl error={Boolean(errors.email)}>
+                    <OutlinedInput disabled {...field} defaultValue={user?.email} type="email" />
+                    {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
+                  </FormControl>
+                )}
+              />
             </Grid>
             <Grid md={6} xs={12}>
               <Controller
