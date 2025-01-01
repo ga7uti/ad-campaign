@@ -42,6 +42,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         authClient.clearLocalStorage()
+        window.location.reload();
         return Promise.reject(refreshError);
       }
     }
