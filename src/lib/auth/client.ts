@@ -83,6 +83,14 @@ class AuthClient {
     return { success: true };
   }
 
+  async refreshToken(): Promise<string> {
+    const token = localStorage.getItem('refreshToken');
+    if (token) {
+      return (await axiosInstance.post('/api/token/refresh/', { refresh: token })).data.access;
+    }
+    throw new Error('Failed to refresh token');
+  }
+
   async getAuth(): Promise<{ success: boolean; data?: Auth | null; error?: string }> {
     const token = localStorage.getItem('accessToken');
     const usertype = localStorage.getItem('usertype');
