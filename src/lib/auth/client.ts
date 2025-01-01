@@ -77,9 +77,7 @@ class AuthClient {
     } catch (error: any) {
       console.error('Error:', error);
     }
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userType');
+    this.clearLocalStorage()
     return { success: true };
   }
 
@@ -99,6 +97,12 @@ class AuthClient {
     }
     return { success: true, data: { token:token, usertype:usertype } };
   }
+
+  clearLocalStorage = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userType');
+  };
 }
 
 export const authClient = new AuthClient();
