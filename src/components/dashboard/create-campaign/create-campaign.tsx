@@ -32,7 +32,7 @@ const names = [
   'Kelly Snyder',
 ];
 
-export default function CampaignSetting(): React.JSX.Element {
+export default function CreateCampaign(): React.JSX.Element {
 
   const [personName, setPersonName] = React.useState<string[]>([]);
   const [age, setAge] = React.useState('');
