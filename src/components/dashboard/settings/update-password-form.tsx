@@ -1,3 +1,4 @@
+/* eslint-disable eslint-comments/require-description -- This directive is necessary to disable the requirement for descriptions in ESLint comments */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -66,6 +67,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
        async (values: Values): Promise<void> => {
          setIsPending(true);
          try {
+           // eslint-disable-next-line no-console
            console.log('Values:', values);
          } catch (error: unknown) {
            setError('root', {

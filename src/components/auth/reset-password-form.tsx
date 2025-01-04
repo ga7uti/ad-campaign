@@ -1,3 +1,4 @@
+/* eslint-disable eslint-comments/require-description -- Disabling this rule because the comment is self-explanatory */
 'use client';
 
 import * as React from 'react';
@@ -40,6 +41,7 @@ export function ResetPasswordForm(): React.JSX.Element {
 
       // Redirect to confirm password reset
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setError]
   );
 

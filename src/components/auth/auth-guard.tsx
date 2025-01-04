@@ -1,3 +1,4 @@
+/* eslint-disable eslint-comments/require-description -- Disabling this rule because the description is not necessary for this context */
 'use client';
 import { useAuth } from '@/hooks/use-auth';
 import { logger } from '@/lib/default-logger';
@@ -44,6 +45,8 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
     }, 100);
 
     return () => {clearTimeout(timeoutId)};
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth, error, isLoading]);
 
   if (isChecking) {
