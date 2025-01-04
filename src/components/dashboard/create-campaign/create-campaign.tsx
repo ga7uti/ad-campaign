@@ -1,7 +1,6 @@
 "use client";
 import { Box, Button, Card, CardContent, FormControl, Grid, TextField, Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import * as React from 'react';
-// import { FormFields } from '@/types/formFields'; 
 
 export default function CreateCampaign(): React.JSX.Element {
   const [formValues, setFormValues] = React.useState({
@@ -70,8 +69,8 @@ export default function CreateCampaign(): React.JSX.Element {
                       label={field.replace(/_/g, " ").toUpperCase()}
                       placeholder="Enter this field details"
                       variant="outlined"
-                      value={formValues[field]}
-                      onChange={handleChange(field)}
+                      value={formValues[field as keyof typeof formValues]}
+                      onChange={handleChange(field as keyof typeof formValues)} 
                       type="text"
                     />
                   </FormControl>
