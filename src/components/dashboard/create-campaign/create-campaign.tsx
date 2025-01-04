@@ -48,11 +48,17 @@ export default function CreateCampaign(): React.JSX.Element {
   //   return new Promise((resolve) => setTimeout(() => resolve(Math.floor(Math.random() * 1000)), 1000));
   // };
 
-  const handleSubmit = () => {
-    console.log("Form Values:", formValues);
-    // console.log("Images:", images);
-    // console.log("Logos:", logos);
+  const handleSubmit = (): { formValues: typeof formValues; images?: number[]; logos?: number[] } => {
+    return {
+      formValues,
+      // images,
+      // logos,
+    };
   };
+  
+  // Call the function and log the result
+  // const result = handleSubmit();
+  // console.log("Result from handleSubmit:", result);
 
   return (
     <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
