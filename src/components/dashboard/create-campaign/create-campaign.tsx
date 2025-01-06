@@ -1,4 +1,5 @@
 "use client";
+import { campaignClient } from '@/lib/campaign-client';
 import { Box, Button, Card, CardContent, FormControl, Grid, TextField, Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Upload } from '@phosphor-icons/react';
@@ -32,9 +33,14 @@ export default function CreateCampaign(): React.JSX.Element {
     target_optimize: false,
   });
 
-  // const [images, setImages] = React.useState<number[]>([]);
-  // const [logos, setLogos] = React.useState<number[]>([]);
-
+  const [images, setImages] = React.useState<number[]>([]);
+  const [logos, setLogos] = React.useState<number[]>([]);
+  const [isPending, setIsPending] = React.useState<boolean>(false);
+  const [isImageClicked, setImageClicked] = React.useState<boolean>(false);
+  const [isLogoClicked, setLogoClicked] = React.useState<boolean>(false);
+  const [isLogoUploadSuccess, setLogoUpload] = React.useState<boolean>(false);
+  const [isImageUploadSuccess, setImageUpload] = React.useState<boolean>(false);
+  
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
@@ -44,35 +50,24 @@ export default function CreateCampaign(): React.JSX.Element {
     });
   };
 
-  // const handleFileChange = async (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  //   setField: React.Dispatch<React.SetStateAction<number[]>>
-  // ) => {
-  //   const files = event.target.files;
-  //   if (files) {
-  //     const ids = await Promise.all(
-  //       Array.from(files).map((file) => mockApiCall(file))
-  //     );
-  //     setField((prev) => [...prev, ...ids]);
-  //     console.log("Uploaded File IDs:", ids);
-  //   }
-  // };
-
-  // const mockApiCall = async (file: File): Promise<number> => {
-  //   return new Promise((resolve) => setTimeout(() => resolve(Math.floor(Math.random() * 1000)), 1000));
-  // };
-
-  const handleSubmit = (): { formValues: typeof formValues; images?: number[]; logos?: number[] } => {
-    return {
-      formValues,
-      // images,
-      // logos,
-    };
+  const handleSubmit = () => {
+    console.log(formValues,images,logos)
   };
   
-  // Call the function and log the result
-  // const result = handleSubmit();
-  // console.log("Result from handleSubmit:", result);
+  const uploadFile = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setField: React.Dispatch<React.SetStateAction<number[]>>,
+    fileType:string
+  ) => {
+    setIsPending(true);
+    const files = event.target.files;
+    if (files) {
+      const ids = await campaignClient.uploadLogo(files,fileType)
+      setField((prev) => [...prev, ...[ids]]);
+    }
+    setIsPending(false);
+    fileType == "image"?setImageClicked(false):setLogoClicked(false);
+  };
 
   return (
     <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -124,25 +119,7 @@ export default function CreateCampaign(): React.JSX.Element {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<Upload />}
-              >
-                Upload Logo
-                <VisuallyHiddenInput
-                  type="file"
-                // onClick={() => handleFileChange(e, setLogos)}
-                multiple
-                />
-              </Button>
-            </Box>
-              
-          </Grid> 
-          <Grid item xs={12} md={6}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <Grid>
                 <Button
                   component="label"
                   role={undefined}
@@ -150,13 +127,49 @@ export default function CreateCampaign(): React.JSX.Element {
                   tabIndex={-1}
                   startIcon={<Upload />}
                 >
-                  Upload Image
-                  <VisuallyHiddenInput
+                    {isPending && isLogoClicked? 'Uploading...' : 'Upload Logo'}
+                    <VisuallyHiddenInput
                     type="file"
-                  // onClick={() => handleFileChange(e, setLogos)}
+                    onChange={(e) => uploadFile(e,setLogos,'logo')}
+                    onClick={()=> setLogoClicked(true)}
                   multiple
                   />
                 </Button>
+                {isLogoUploadSuccess && (
+                  <Typography variant="body2" color="green" mt={2}>
+                    Logo uploaded successfully!
+                  </Typography>
+                )}
+                {/* {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}   */}
+              </Grid>
+            </Box>
+              
+          </Grid> 
+          <Grid item xs={12} md={6}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <Grid>
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<Upload />}
+                  >
+                    {isPending && isImageClicked ? 'Uploading...' : 'Upload Image'}
+                    <VisuallyHiddenInput
+                      type="file"
+                      onChange={(e) => uploadFile(e, setImages,'image')}
+                      onClick={()=> setImageClicked(true)}
+                    multiple
+                    />
+                  </Button>
+                  {isImageUploadSuccess && (
+                    <Typography variant="body2" color="green" mt={2}>
+                      Logo uploaded successfully!
+                    </Typography>
+                  )}
+                  {/* {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}   */}
+                </Grid>
               </Box>
           </Grid>
         </Grid>
