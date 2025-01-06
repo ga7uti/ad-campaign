@@ -1,6 +1,20 @@
 "use client";
 import { Box, Button, Card, CardContent, FormControl, Grid, TextField, Radio, RadioGroup, FormControlLabel, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Upload } from '@phosphor-icons/react';
 import * as React from 'react';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function CreateCampaign(): React.JSX.Element {
   const [formValues, setFormValues] = React.useState({
@@ -107,37 +121,46 @@ export default function CreateCampaign(): React.JSX.Element {
 
       {/* File Upload image and logo */}
       <Box>
-        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-          File Upload Section
-        </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h6">Upload Images</Typography>
-            <input
-              type="file"
-              multiple
-              // onChange={(e) => handleFileChange(e, setImages)}
-              style={{ marginTop: "8px" }}
-            />
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              {/* Uploaded Image IDs: {images.join(", ")} */}
-            </Typography>
-          </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<Upload />}
+              >
+                Upload files
+                <VisuallyHiddenInput
+                  type="file"
+                // onClick={() => handleFileChange(e, setLogos)}
+                multiple
+                />
+              </Button>
+            </Box>
+              
+          </Grid> 
           <Grid item xs={12} md={6}>
-            <Typography variant="h6">Upload Logos</Typography>
-            <input
-              type="file"
-              multiple
-              // onChange={(e) => handleFileChange(e, setLogos)}
-              style={{ marginTop: "8px" }}
-            />
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              {/* Uploaded Logo IDs: {logos.join(", ")} */}
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<Upload />}
+                >
+                  Upload files
+                  <VisuallyHiddenInput
+                    type="file"
+                  // onClick={() => handleFileChange(e, setLogos)}
+                  multiple
+                  />
+                </Button>
+              </Box>
           </Grid>
         </Grid>
       </Box>
-
       <Box sx={{ textAlign: "center", mt: 3 }}>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           Create Campaign
