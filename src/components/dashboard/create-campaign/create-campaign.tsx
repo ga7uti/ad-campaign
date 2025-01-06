@@ -131,7 +131,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 tabIndex={-1}
                 startIcon={<Upload />}
               >
-                Upload files
+                Upload Logo
                 <VisuallyHiddenInput
                   type="file"
                 // onClick={() => handleFileChange(e, setLogos)}
@@ -150,7 +150,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   tabIndex={-1}
                   startIcon={<Upload />}
                 >
-                  Upload files
+                  Upload Image
                   <VisuallyHiddenInput
                     type="file"
                   // onClick={() => handleFileChange(e, setLogos)}
