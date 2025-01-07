@@ -1,6 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client";
 import { campaignClient } from '@/lib/campaign-client';
+import { Location } from '@/types/location';
 import { Box, Button, Card, CardContent, FormControl, Grid, TextField, Radio, RadioGroup, FormControlLabel, Typography, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { CaretUp, Upload } from '@phosphor-icons/react';
@@ -21,18 +22,12 @@ const VisuallyHiddenInput = styled('input')({
 
 export default function CreateCampaign(): React.JSX.Element {
   const [formValues, setFormValues] = React.useState({
-    final_url: "",
-    business_name: "",
-    campaign_type: "",
-    text: "",
-    geo_location: "",
-    budget: "",
-    language: "",
-    bidding: "",
-    bidding_focus: "",
-    target_people: "",
-    target_content: "",
-    target_optimize: false,
+    age: "",
+    device: "",
+    environment:"",
+    startTime:"",
+    endTime:"",
+    location:""
   });
 
   const [images, setImages] = React.useState<number[]>([]);
@@ -45,13 +40,11 @@ export default function CreateCampaign(): React.JSX.Element {
   const [isLogoClicked, setLogoClicked] = React.useState<boolean>(false);
   const [isLogoUploadSuccess, setLogoUpload] = React.useState<boolean>(false);
   const [isImageUploadSuccess, setImageUpload] = React.useState<boolean>(false);
-  
+  const [location,setLocation]=React.useState<Location[]>([])
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
-      [field]: field === "target_optimize" 
-        ? event.target.value === "true" 
-        : event.target.value,
+      [field]:event.target.value
     });
   };
 
@@ -74,50 +67,21 @@ export default function CreateCampaign(): React.JSX.Element {
     fileType == "image"?setImageClicked(false):setLogoClicked(false);
   };
 
+  const fetchLocations = async () => {
+    try {
+      const locations = await campaignClient.getLocations();
+      setLocation(locations)
+    } catch (error) {
+      console.error("Failed to fetch locations", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchLocations();
+  }, []);
+
   return (
     <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {/* Main Form Fields
-      <Grid container spacing={2}>
-        {Object.keys(formValues).map((field) =>
-          field !== "target_optimize" ? (
-            <Grid item xs={12} md={6} key={field}>
-              <Card>
-                <CardContent>
-                  <FormControl fullWidth>
-                    <TextField
-                      id={`input-${field}`}
-                      label={field.replace(/_/g, " ").toUpperCase()}
-                      placeholder="Enter this field details"
-                      variant="outlined"
-                      value={formValues[field as keyof typeof formValues]}
-                      onChange={handleChange(field as keyof typeof formValues)} 
-                      type="text"
-                    />
-                  </FormControl>
-                </CardContent>
-              </Card>
-            </Grid>
-          ) : (
-            <Grid item xs={12} md={6} key={field}>
-              <Card>
-                <CardContent>
-                  <FormControl component="fieldset">
-                    <Typography>{field.replace(/_/g, " ").toUpperCase()}</Typography>
-                    <RadioGroup
-                      row
-                      value={formValues[field].toString()}
-                      onChange={handleChange(field)}
-                    >
-                      <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </CardContent>
-              </Card>
-            </Grid>
-          )
-        )}
-      </Grid> */}
 
       {/* Targeting Type Card */}
       <Card>
@@ -135,50 +99,89 @@ export default function CreateCampaign(): React.JSX.Element {
                 <Grid container spacing={2} mt={2}>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      id="input-age"
-                      placeholder="Enter age range"
+                      select
+                      SelectProps={{ native: true }}
                       variant="outlined"
                       fullWidth
+                      value={formValues.age}
+                      onChange={handleChange("age")}
+                    >
+                      <option value="">Select Age Range</option>
+                      <option value="25">25</option>
+                      <option value="26-35">26-35</option>
+                      <option value="36-45">36-45</option>
+                      <option value="46-55">46-55</option>
+                      <option value="56-65">56-65</option>
+                      <option value="65+">65+</option>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      select
+                      SelectProps={{ native: true }}
+                      variant="outlined"
+                      fullWidth
+                      value={formValues.device}
+                      onChange={handleChange("device")}
+                    >
+                      <option value="">Select Device</option>
+                      <option value="Desktop">Desktop</option>
+                      <option value="Mobile">Mobile</option>
+                      <option value="Tablet">Tablet</option>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      select
+                      SelectProps={{ native: true }}
+                      variant="outlined"
+                      fullWidth
+                      value={formValues.environment}
+                      onChange={handleChange("environment")}
+                    >
+                      <option value="">Select Environment</option>
+                      <option value="App">App</option>
+                      <option value="Web">Web</option>
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      select
+                      SelectProps={{ native: true }}
+                      variant="outlined"
+                      fullWidth
+                      value={formValues.location}
+                      onChange={handleChange("location")}
+                    >
+                      <option value="">Select Location</option>
+                      {location.map((loc) => (
+                        <option key={loc.id} value={loc.id}>
+                          {loc.city}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      label="Start Time"
+                      type="time"
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ step: 300 }} // 5 min
+                      fullWidth
+                      value={formValues.startTime}
+                      onChange={handleChange("startTime")}
                     />
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <TextField
-                      id="input-location"
-                      select
-                      SelectProps={{ native: true }}
-                      variant="outlined"
-                      fullWidth
-                    >
-                      <option value="">Select Location</option>
-                      <option value="location1">Location 1</option>
-                      <option value="location2">Location 2</option>
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      id="input-device"
-                      select
-                      SelectProps={{ native: true }}
-                      variant="outlined"
-                      fullWidth
-                    >
-                      <option value="">Select Device</option>
-                      <option value="device1">Device 1</option>
-                      <option value="device2">Device 2</option>
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      id="input-environment"
-                      select
-                      SelectProps={{ native: true }}
-                      variant="outlined"
-                      fullWidth
-                    >
-                      <option value="">Select Environment</option>
-                      <option value="environment1">Environment 1</option>
-                      <option value="environment2">Environment 2</option>
-                    </TextField>
+                        label="End Time"
+                        type="time"
+                        InputLabelProps={{ shrink: true }}
+                        inputProps={{ step: 300 }} // 5 min
+                        fullWidth
+                        value={formValues.endTime}
+                        onChange={handleChange("endTime")}
+                      />
                   </Grid>
                 </Grid>
               )}
