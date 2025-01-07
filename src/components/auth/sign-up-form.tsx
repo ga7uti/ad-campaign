@@ -44,14 +44,14 @@ export function SignUpForm(): React.JSX.Element {
 
   const { checkSession } = useAuth();
 
-  const [isPending, setIsPending] = React.useState<boolean>(false);
+    const [isPending, setIsPending] = React.useState<boolean>(false);
 
-  const {
-    control,
-    handleSubmit,
-    setError,
-    formState: { errors },
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+    const {
+      control,
+      handleSubmit,
+      setError,
+      formState: { errors },
+    } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
@@ -148,17 +148,17 @@ export function SignUpForm(): React.JSX.Element {
             control={control}
             name="terms"
             render={({ field }) => (
-              <div>
-                <FormControlLabel
-                  control={<Checkbox {...field} />}
-                  label={
-                    <React.Fragment>
-                      I have read the <Link>terms and conditions</Link>
-                    </React.Fragment>
-                  }
-                />
-                {errors.terms ? <FormHelperText error>{errors.terms.message}</FormHelperText> : null}
-              </div>
+                <div>
+                  <FormControlLabel
+                    control={<Checkbox {...field} />}
+                    label={
+                      <React.Fragment>
+                        I have read the <Link>terms and conditions</Link>
+                      </React.Fragment>
+                    }
+                  />
+                  {errors.terms ? <FormHelperText error>{errors.terms.message}</FormHelperText> : null}
+                </div>
             )}
           />
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}

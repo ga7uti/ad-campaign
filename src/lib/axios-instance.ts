@@ -1,5 +1,6 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 import axios from 'axios';
+import { authClient } from './auth/client';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -28,15 +29,24 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Token is expired or invalid, log out the user
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userType');
+  async(error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        if(!originalRequest.url?.includes('/token/refresh/')){
+          const newAccessToken = await authClient.refreshToken();
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          localStorage.setItem('accessToken', newAccessToken);
+        }
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        authClient.clearLocalStorage()
+        window.location.reload();
+        return Promise.reject(refreshError);
+      }
     }
     return Promise.reject(error);
   }
 );
-
 export default axiosInstance;

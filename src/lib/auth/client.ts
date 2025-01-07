@@ -77,10 +77,16 @@ class AuthClient {
     } catch (error: any) {
       console.error('Error:', error);
     }
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userType');
+    this.clearLocalStorage()
     return { success: true };
+  }
+
+  async refreshToken(): Promise<string> {
+    const token = localStorage.getItem('refreshToken');
+    if (token) {
+      return (await axiosInstance.post('/api/token/refresh/', { refresh: token })).data.access;
+    }
+    throw new Error('Failed to refresh token');
   }
 
   async getAuth(): Promise<{ success: boolean; data?: Auth | null; error?: string }> {
@@ -91,6 +97,12 @@ class AuthClient {
     }
     return { success: true, data: { token:token, usertype:usertype } };
   }
+
+  clearLocalStorage = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userType');
+  };
 }
 
 export const authClient = new AuthClient();
