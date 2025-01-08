@@ -223,6 +223,15 @@ class CampaignClient {
       ]
       
     }
+
+    getTargetPopulation(selectedLocations:number[],locations:Location[]):number{
+      let targetLocation = 0;
+      selectedLocations.forEach(selectedLocation =>{
+        const location = locations.filter(val=> val.id === selectedLocation);
+        targetLocation = targetLocation+location[0].population;
+      })
+      return targetLocation;
+    }
 }
 
 export const campaignClient = new CampaignClient();

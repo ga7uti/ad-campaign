@@ -56,13 +56,14 @@ export default function CreateCampaign(): React.JSX.Element {
   const [isLogoClicked, setLogoClicked] = React.useState<boolean>(false);
   const [isLogoUploadSuccess, setLogoUpload] = React.useState<boolean>(false);
   const [isImageUploadSuccess, setImageUpload] = React.useState<boolean>(false);
+  const [isLocationSelected, setIsLocationSelected] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(false);
-  const [location,setLocation]=React.useState<Location[]>([])
+  const [locations,setLocation]=React.useState<Location[]>([])
   const [partners,setPartners]=React.useState<Partners[]>([])
   const [ages,setAge]=React.useState<Age[]>([])
   const [interests,setInterest]=React.useState<string[]>([])
   const [selectedInterests,setSelectedInterest]=React.useState<Interest[]>([])
-  
+  const [targetPopluation, setTargetPopulation]=React.useState<number>(0)
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -85,9 +86,6 @@ export default function CreateCampaign(): React.JSX.Element {
       ...formValues,
       [field]:event.target.value
     });
-    if(field === "interest"){
-      setSelectedInterest(campaignClient.getSelectedInterest(formValues.interest))
-    }
   };
 
   const handleSubmit = () => {
@@ -140,12 +138,25 @@ export default function CreateCampaign(): React.JSX.Element {
     const interest = campaignClient.getDistinctInterest();
     setInterest(interest);
   }
+
+  const fetchTargetPopulation = ()=>{
+    const targetPop = campaignClient.getTargetPopulation(formValues.location,locations);
+    if(targetPop!=0){
+      setIsLocationSelected(true);
+      setTargetPopulation(targetPop);
+    }else{
+      setIsLocationSelected(false);
+    }
+  }
+  
   React.useEffect(() => {
     fetchLocations();
     fetchPartners();
     fetchAges();
     fetchDistinctInterest();
-  }, []);
+    setSelectedInterest(campaignClient.getSelectedInterest(formValues.interest))
+    fetchTargetPopulation()
+  }, [formValues.location,formValues.interest]);
 
   return (
     <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -186,7 +197,6 @@ export default function CreateCampaign(): React.JSX.Element {
                       <Select
                         fullWidth
                         value={formValues.age}
-                        label="Age"
                         onChange={onSelectedChange("age")}
                         multiple
                         MenuProps={MenuProps}
@@ -206,7 +216,6 @@ export default function CreateCampaign(): React.JSX.Element {
                         <Select
                           fullWidth
                           value={formValues.device}
-                          label="Age"
                           onChange={onSelectedChange("device")}
                           multiple
                           MenuProps={MenuProps}
@@ -226,7 +235,6 @@ export default function CreateCampaign(): React.JSX.Element {
                         <Select
                           fullWidth
                           value={formValues.environment}
-                          label="Age"
                           onChange={onSelectedChange("environment")}
                           multiple
                           MenuProps={MenuProps}
@@ -282,17 +290,17 @@ export default function CreateCampaign(): React.JSX.Element {
                         <Select
                           fullWidth
                           value={formValues.location}
-                          label="Age"
                           onChange={onSelectedChange("location")}
                           multiple
                           MenuProps={MenuProps}
                           >
-                          {location.map((loc) => (
-                            <MenuItem value={loc.id}>{loc.city}</MenuItem>
+                          {locations.map((location) => (
+                            <MenuItem value={location.id}>{location.city}</MenuItem>
                           ))}
                         </Select>
                       </FormControl>
                     </Box>
+                    {isLocationSelected? <Typography>Audience Cover: {targetPopluation}</Typography>:null}
                   </Grid>
                 </Grid>
               )}
