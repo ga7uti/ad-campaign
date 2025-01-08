@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client";
 import { campaignClient } from '@/lib/campaign-client';
-import { Age, Location, Partners } from '@/types/campaign';
+import { Age, Interest, Location, Partners } from '@/types/campaign';
 import { Box, Button, Card, CardContent, FormControl, Grid, TextField, Radio, RadioGroup, FormControlLabel, Typography, Divider, InputLabel, Select, MenuItem, SelectChangeEvent, DialogActions, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { CaretUp, Upload } from '@phosphor-icons/react';
@@ -40,15 +40,18 @@ export default function CreateCampaign(): React.JSX.Element {
     startTime:"",
     endTime:"",
     location:[],
-    partner:[]
+    partner:[],
+    interest:[],
+    selectedInterest:[]
   });
 
   const [images, setImages] = React.useState<number[]>([]);
   const [logos, setLogos] = React.useState<number[]>([]);
   const [isPending, setIsPending] = React.useState<boolean>(false);
   const [showTargetingType, setShowTargetingType] = React.useState<boolean>(true);
-  const [showUploadSection, setShowUploadSection] = React.useState<boolean>(false);
-  const [showLocationDeviceSection, setShowLocationDeviceSection] = React.useState<boolean>(false);
+  const [showUploadSection, setShowUploadSection] = React.useState<boolean>(true);
+  const [showExhangeSection, setShowExhangeSection] = React.useState<boolean>(true);
+  const [showAudienceSection, setShowAudienceSection] = React.useState<boolean>(true);
   const [isImageClicked, setImageClicked] = React.useState<boolean>(false);
   const [isLogoClicked, setLogoClicked] = React.useState<boolean>(false);
   const [isLogoUploadSuccess, setLogoUpload] = React.useState<boolean>(false);
@@ -57,6 +60,8 @@ export default function CreateCampaign(): React.JSX.Element {
   const [location,setLocation]=React.useState<Location[]>([])
   const [partners,setPartners]=React.useState<Partners[]>([])
   const [ages,setAge]=React.useState<Age[]>([])
+  const [interests,setInterest]=React.useState<string[]>([])
+  const [selectedInterests,setSelectedInterest]=React.useState<Interest[]>([])
   
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,6 +85,9 @@ export default function CreateCampaign(): React.JSX.Element {
       ...formValues,
       [field]:event.target.value
     });
+    if(field === "interest"){
+      setSelectedInterest(campaignClient.getSelectedInterest(formValues.interest))
+    }
   };
 
   const handleSubmit = () => {
@@ -128,10 +136,15 @@ export default function CreateCampaign(): React.JSX.Element {
     }
   };
 
+  const fetchDistinctInterest = ()=>{
+    const interest = campaignClient.getDistinctInterest();
+    setInterest(interest);
+  }
   React.useEffect(() => {
     fetchLocations();
     fetchPartners();
     fetchAges();
+    fetchDistinctInterest();
   }, []);
 
   return (
@@ -295,11 +308,11 @@ export default function CreateCampaign(): React.JSX.Element {
                 <Typography variant="h6">Exchange</Typography>
                 <Button
                   variant="text"
-                  onClick={() => setShowLocationDeviceSection((prev) => !prev)}
-                  startIcon={showLocationDeviceSection?<CaretUp/>: <CaretDown/>}
+                  onClick={() => setShowExhangeSection((prev) => !prev)}
+                  startIcon={showExhangeSection?<CaretUp/>: <CaretDown/>}
                 />
               </Box>
-              {showLocationDeviceSection && (
+              {showExhangeSection && (
                 <Grid container spacing={2} mt={2}>
                   <Grid item xs={12} md={6}>
                     <Box sx={{ minWidth: 120 }}>
@@ -308,13 +321,70 @@ export default function CreateCampaign(): React.JSX.Element {
                         <Select
                           fullWidth
                           value={formValues.partner}
-                          label="Age"
                           onChange={onSelectedChange("partner")}
                           multiple
                           MenuProps={MenuProps}
                           >
                           {partners.map((par) => (
                             <MenuItem value={par.id}>{par.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </Grid>
+                </Grid>
+              )}
+          </FormControl>
+        </CardContent>
+      </Card>
+
+      {/* Audience */}
+      <Card>
+        <CardContent>
+        <FormControl fullWidth>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h6">Category</Typography>
+                <Button
+                  variant="text"
+                  onClick={() => setShowAudienceSection((prev) => !prev)}
+                  startIcon={showAudienceSection?<CaretUp/>: <CaretDown/>}
+                />
+              </Box>
+              {showAudienceSection && (
+                <Grid container spacing={2} mt={2}>
+                  <Grid item xs={12} md={6}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <InputLabel>Category</InputLabel>
+                        <Select
+                          fullWidth
+                          value={formValues.interest}
+                          label="Age"
+                          onChange={onSelectedChange("interest")}
+                          multiple
+                          MenuProps={MenuProps}
+                          >
+                          {interests.map((interest) => (
+                            <MenuItem value={interest}>{interest}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <InputLabel>SubCategory</InputLabel>
+                        <Select
+                          fullWidth
+                          value={formValues.selectedInterest}
+                          label="Age"
+                          onChange={onSelectedChange("selectedInterest")}
+                          multiple
+                          MenuProps={MenuProps}
+                          >
+                          {selectedInterests.map((selectedInterest) => (
+                            <MenuItem value={selectedInterest.id}>{selectedInterest.subcategory}</MenuItem>
                           ))}
                         </Select>
                       </FormControl>

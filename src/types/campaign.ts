@@ -16,6 +16,12 @@ export interface Age{
     range: string
 }
 
+export interface Interest{
+    id: number,
+    name: string
+    subcategory: string
+}
+
 export interface Campaign {
     age:string
 }
