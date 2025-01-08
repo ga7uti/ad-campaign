@@ -1,28 +1,19 @@
-export interface Image {
-    id: number;
-    image: string;
-    created_at: string;
+export interface Location {
+    id:number
+    country: string;
+    state: string;
+    city: string;
+    tier: string;
+    population: number;
+}
+export interface Partners{
+    id: number,
+    name: string
 }
 
-export interface Logo {
-    id: number;
-    logo: string;
-    created_at: string;
-}
-
-export interface TargetDemographic {
-    id: number;
-    name: string;
-}
-
-export interface Keyword {
-    id: number;
-    keyword: string;
-}
-
-export interface Topic {
-    id: number;
-    topic: string;
+export interface Age{
+    id: number,
+    range: string
 }
 
 export interface Campaign {
