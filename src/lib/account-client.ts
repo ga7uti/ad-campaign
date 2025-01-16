@@ -4,21 +4,14 @@
 import { User } from '@/types/user';
 import axiosInstance from './axios-instance';
 
-
-export interface UpdatePassword {
-  old_password: string;
-  new_password: string;
-  confirm_new_password:string
-}
-
 class AccountClient {
 
     async getUser(): Promise<User> {
       try {
-        const response = await axiosInstance.get('/api/user/', {
+        const response = await axiosInstance.get('/api/profile/', {
           headers: { 'Content-Type': 'application/json' },
         });
-        return response.data;
+        return response.data.data;
       } catch (error: any) {
         throw new Error('Failed to fetch campaigns');
       }
@@ -35,14 +28,14 @@ class AccountClient {
       }
     }
 
-    async updatePassword(password: UpdatePassword): Promise<{success:boolean, error?:string | null}> {
+    async updatePassword(password:any): Promise<{success:boolean, error?:string | null}> {
       try {
-        const response = await axiosInstance.put('/api/user/change-password/', password, {
+        await axiosInstance.put('/api/user/change-password/', password, {
           headers: { 'Content-Type': 'application/json' },
         });
         return {success:true};
       } catch (error: any) {
-        return {success:false, error:error.response.data.error};
+        return { success: false, error: error.response.data.message };
       }
     }
 

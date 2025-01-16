@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth-client';
 import { logger } from '@/lib/default-logger';
 import type { Auth } from '@/types/auth';
 

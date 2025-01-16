@@ -1,51 +1,59 @@
-export interface Image {
+export interface Location {
+    id:number
+    country: string;
+    state: string;
+    city: string;
+    tier: string;
+    population: number;
+}
+export interface Partners{
+    id: number,
+    name: string
+}
+
+export interface Age{
+    id: number,
+    range: string
+}
+
+export interface Interest{
+    id: number,
+    name: string
+    subcategory: string
+}
+
+export interface Images {
     id: number;
     image: string;
     created_at: string;
 }
 
-export interface Logo {
+export interface FileUpload{
     id: number;
-    logo: string;
-    created_at: string;
-}
-
-export interface TargetDemographic {
-    id: number;
-    name: string;
-}
-
-export interface Keyword {
-    id: number;
-    keyword: string;
-}
-
-export interface Topic {
-    id: number;
-    topic: string;
-}
+    file: string;
+};
 
 export interface Campaign {
     id: number;
-    images: Image[];
-    logos: Logo[];
-    target_demographics: TargetDemographic[];
-    keywords: Keyword[];
-    topics: Topic[];
-    final_url: string;
-    business_name: string;
-    campaign_type: string;
-    text: string;
-    geo_location: string;
-    budget: string;
-    file: string | null;
-    created_at: string;
-    updated_at: string;
-    language: string;
-    bidding: string;
-    bidding_focus: string;
-    target_people: string;
-    target_content: string;
-    target_optimize: boolean;
-    video: string | null;
+    images: Images[];
+    keywords: FileUpload[]; 
+    name: string;
+    age: string[]; 
+    day_part: string|null;
+    device: string[]; 
+    environment: string[]; 
+    exchange: string[];
+    interset: Interest[]|null; 
+    created_at: string; 
+    updated_at: string; 
+    language: string[];
+    carrier: string[]; 
+    device_price: string[]; 
+    start_time: string; 
+    end_time: string; 
+    proximity_store: string[]; 
+    proximity: string[];
+    weather: string[]; 
+    location: string[];
 }
+  
