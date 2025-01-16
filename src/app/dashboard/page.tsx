@@ -26,9 +26,14 @@ export default function Page(): React.JSX.Element {
   async function fetchCampaigns() {
     try {
       const data = await campaignClient.getCampaigns();
-      setCampaigns(data);
+      if (Array.isArray(data)) {
+        setCampaigns(data);
+      } else {
+        setCampaigns([]);
+      }
     } catch (error) {
-      console.error('Failed to fetch campaigns:', error);
+      console.error('Error fetching campaigns:', error);
+      setCampaigns([]);
     } finally {
       setLoading(false);
     }
