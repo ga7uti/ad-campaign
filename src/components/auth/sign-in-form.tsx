@@ -2,7 +2,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth-client';
 import { paths } from '@/paths';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';

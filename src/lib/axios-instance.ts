@@ -1,6 +1,6 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 import axios from 'axios';
-import { authClient } from './auth/client';
+import { authClient } from './auth-client';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 

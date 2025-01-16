@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { useAuth } from '@/hooks/use-auth';
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth-client';
 import { logger } from '@/lib/default-logger';
 import { paths } from '@/paths';
 

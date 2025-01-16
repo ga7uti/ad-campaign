@@ -2,7 +2,7 @@
 'use client';
 
 import { Auth } from '@/types/auth';
-import axiosInstance from '../axios-instance';
+import axiosInstance from './axios-instance';
 
 // Interface Definitions
 export interface SignUpParams {

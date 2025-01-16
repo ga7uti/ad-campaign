@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-import { authClient } from '../../lib/auth/client';
+import { authClient } from '../../lib/auth-client';
 import { paths } from '@/paths';
 
 const schema = zod.object({
