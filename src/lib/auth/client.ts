@@ -41,17 +41,14 @@ class AuthClient {
   }
 
   async signIn(params: SignInParams): Promise<{ success: boolean; data?: any; error?: string }> {
-
     try {
 
       const response = await axiosInstance.post('/api/token/', params, {
         headers: { 'Content-Type': 'application/json' },
       });
-      // Access the nested data object
       const responseData = response.data.data;
       const { access, refresh, user_type } = responseData;
       if (!access || !refresh) {
-        console.error('5a. Missing tokens:', { access, refresh });
         throw new Error('Invalid tokens');
       }
       localStorage.setItem('accessToken', access);
@@ -59,7 +56,7 @@ class AuthClient {
       localStorage.setItem('usertype', user_type ? 'admin' : 'user');
       return { success: true, data: responseData };
     } catch (error: any) {
-      return { success: false, error: error.response.data.error.message };
+      return { success: false, error: error.response.data.message.non_field_errors };
     }
   }
 
