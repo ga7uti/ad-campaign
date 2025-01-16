@@ -33,6 +33,8 @@ export function AccountDetailsForm(): React.JSX.Element {
 
   const [user, setUser] = React.useState<User | null>(null);
   const [isPending, setIsPending] = React.useState<boolean>(false);
+     const [isProfileUpdated,setIsProfileUpdated] = React.useState<boolean>(false);
+  
   const {
     control,
     handleSubmit,
@@ -43,15 +45,9 @@ export function AccountDetailsForm(): React.JSX.Element {
 
   async function fetchUser() {
     try {
-      // const response = await accountClient.getUser();
-      const user ={
-        first_name: 'Anshul',
-        last_name: 'Kumar',
-        email: 'anshul@gmail.com',
-        phone_no: '1234567890',
-      }
-      setUser(user);
-      reset(user);  
+      const response = await accountClient.getUser();
+      setUser(response);
+      reset(response);  
     } catch (error) {
       console.error('Failed to fetch user:', error);
     }
@@ -61,9 +57,10 @@ export function AccountDetailsForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       setIsPending(true);
       try {
-        const updatedUser = await accountClient.updateUser(values);
-        setUser(updatedUser);
+        await accountClient.updateUser(values);
+        setIsProfileUpdated(true)
         setIsPending(false);
+        fetchUser();
       } catch (error) {
         if (error instanceof Error) {
           setError('root', { type: 'manual', message: error.message });
@@ -143,6 +140,7 @@ export function AccountDetailsForm(): React.JSX.Element {
             {isPending ? 'Saving...' : 'Save'}
           </Button>        
         </CardActions>
+        {isProfileUpdated ? <Alert color="success">Profile updated successfully</Alert> : null} 
       </Card>
     </form>
   );

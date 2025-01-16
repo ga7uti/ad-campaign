@@ -1,8 +1,9 @@
 /* eslint-disable eslint-comments/require-description -- This directive is necessary to disable the requirement for descriptions in ESLint comments */
 'use client';
 
+import { accountClient } from '@/lib/account-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormHelperText } from '@mui/material';
+import { Alert, FormHelperText } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -34,32 +35,34 @@ const schema = zod.object({
       /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
       'Password must include at least one uppercase letter, one number, and one special character'
     ),
-  confirm_password: zod
+    confirm_new_password: zod
     .string()
     .min(6, { message: 'Password must be at least 6 characters long' })
     .regex(
       /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
       'Password must include at least one uppercase letter, one number, and one special character'
     ),
-  }).refine((data) => data.new_password === data.confirm_password, {
+  }).refine((data) => data.new_password === data.confirm_new_password, {
     message: "Passwords don't match",
-    path: ['confirm_password'],
+    path: ['confirm_new_password'],
   });
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = {confirm_password: '',old_password:'',new_password:''} satisfies Values;
+const defaultValues = {confirm_new_password: '',old_password:'',new_password:''} satisfies Values;
 
 export function UpdatePasswordForm(): React.JSX.Element {
  
    const [isPending, setIsPending] = React.useState<boolean>(false);
    const [showOldPassword, setShowOldPassword] = React.useState<boolean>(false);
    const [showNewPassword, setShowNewPassword] = React.useState<boolean>(false);
- 
+   const [isPasswordUpdated,setIsPasswordUpdated] = React.useState<boolean>(false);
+
    const {
      control,
      handleSubmit,
      setError,
+     reset,
      formState: { errors },
    } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
  
@@ -67,8 +70,13 @@ export function UpdatePasswordForm(): React.JSX.Element {
        async (values: Values): Promise<void> => {
          setIsPending(true);
          try {
-           // eslint-disable-next-line no-console
-           console.log('Values:', values);
+          const response = await accountClient.updatePassword(values);
+          reset(defaultValues);
+          if (response.error) {
+            setError('root', { type: 'server', message: response.error });
+          } else {
+            setIsPasswordUpdated(true);
+          }
          } catch (error: unknown) {
            setError('root', {
              type: 'server',
@@ -157,12 +165,12 @@ export function UpdatePasswordForm(): React.JSX.Element {
              />
              <Controller
               control={control}
-              name="confirm_password"
+              name="confirm_new_password"
               render={({ field }) => (
-                <FormControl error={Boolean(errors.confirm_password)}>
+                <FormControl error={Boolean(errors.confirm_new_password)}>
                   <InputLabel>Confirm Password</InputLabel>
                   <OutlinedInput {...field} label="Password" type="password" />
-                  {errors.confirm_password ? <FormHelperText>{errors.confirm_password.message}</FormHelperText> : null}
+                  {errors.confirm_new_password ? <FormHelperText>{errors.confirm_new_password.message}</FormHelperText> : null}
                 </FormControl>
               )}
              />
@@ -170,9 +178,12 @@ export function UpdatePasswordForm(): React.JSX.Element {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button disabled={isPending} type="submit" variant="contained">
-            {isPending ? 'Updating...' : 'Update'}
-          </Button>        </CardActions>
+          <Button disabled={isPending} type="submit" variant="contained">
+              {isPending ? 'Updating...' : 'Update'}
+          </Button>     
+        </CardActions>
+        {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}   
+        {isPasswordUpdated ? <Alert color="success">Password updated successfully</Alert> : null} 
       </Card>
     </form>
   );
