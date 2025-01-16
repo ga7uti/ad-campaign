@@ -33,7 +33,7 @@ export function AccountDetailsForm(): React.JSX.Element {
 
   const [user, setUser] = React.useState<User | null>(null);
   const [isPending, setIsPending] = React.useState<boolean>(false);
-     const [isProfileUpdated,setIsProfileUpdated] = React.useState<boolean>(false);
+  const [isProfileUpdated,setIsProfileUpdated] = React.useState<boolean>(false);
   
   const {
     control,
