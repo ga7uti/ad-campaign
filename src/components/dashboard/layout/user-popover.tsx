@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -10,11 +11,11 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { useAuth } from '@/hooks/use-auth';
+import { accountClient } from '@/lib/account-client';
 import { authClient } from '@/lib/auth-client';
 import { logger } from '@/lib/default-logger';
 import { paths } from '@/paths';
 import { User } from '@/types/user';
-import { accountClient } from '@/lib/account-client';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;

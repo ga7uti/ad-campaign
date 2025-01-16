@@ -1,16 +1,15 @@
-import * as React from 'react';
+import { Campaign } from '@/types/campaign';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Clock as ClockIcon } from '@phosphor-icons/react/dist/ssr/Clock';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import dayjs from 'dayjs';
-import { Campaign } from '@/types/campaign';
-import Grid from '@mui/material/Grid';
+import * as React from 'react';
 
 export interface Integration {
   id: string;
