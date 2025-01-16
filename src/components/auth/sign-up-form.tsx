@@ -69,13 +69,10 @@ export function SignUpForm(): React.JSX.Element {
         if (result.error) {
           setError('root', { type: 'server', message: result.error });
         } else {
-          setError('root', { type: 'server', message: 'Registration successful!' });
-          // Refresh the auth state and redirect if needed
           await checkSession?.();
           router.push(paths.auth.signIn); // Redirect to dashboard or any other page
         }
       } catch (error: unknown) {
-        // Handle error cases
         setError('root', {
           type: 'server',
           message: 'An unexpected error occurred. Please try again later.',

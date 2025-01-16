@@ -56,7 +56,7 @@ export function SignInForm(): React.JSX.Element {
         router.refresh();
       }catch(error){
         setIsPending(false);
-        setError('root', { type: 'server', message: "Something went wrong" });
+        setError('root', { type: 'server', message: "An unexpected error occurred. Please try again later." });
       }
     },
     [checkSession, router, setError]

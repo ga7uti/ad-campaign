@@ -30,13 +30,9 @@ class AuthClient {
         email: params.email,
         password: params.password,
       });
-
-      if (response.status === 201 || response.status === 200) {
-        return { success: true };
-      }
-      return { success: false, error: response.data.message || 'Registration failed' };
+      return { success: true };
     } catch (error: any) {
-      return { success: false, error: error.response.data.error };
+      return { success: false, error: error.response.data.message };
     }
   }
 
