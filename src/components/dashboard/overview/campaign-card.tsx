@@ -33,27 +33,21 @@ export function CampaignCard({ campaign }: CampaignCardProps): React.JSX.Element
           <Grid container spacing={2}>
             <Grid item>
               <Box sx={{ width: 100, height: 100 }}>
-                <Avatar src={campaign.images[0].image} variant="square" sx={{ width: '100%', height: '100%' }} />
+                <Avatar src={campaign.images?campaign.images[0]?.image:''} variant="square" sx={{ width: '100%', height: '100%' }} />
               </Box>
             </Grid>
             <Grid item xs>
-              <Typography variant="h5">{campaign.business_name}</Typography>
-              <Typography variant="body2">Location: {campaign.geo_location}</Typography>
-              <Typography variant="body2">Type: {campaign.campaign_type}</Typography>
-              <Typography variant="body2">Language: {campaign.language}</Typography>
-              <Typography variant="body2">Bidding: {campaign.bidding}</Typography>
+              <Typography variant="h5">{campaign.name}</Typography>
+              <Typography variant="body2">Language: {campaign.language.join(', ')}</Typography> 
+              <Typography variant="body2">Device: {campaign.device.join(', ')}</Typography> 
+              <Typography variant="body2">Exchange: {campaign.exchange.join(', ')}</Typography> 
+              <Typography variant="body2">Environment: {campaign.environment.join(', ')}</Typography> 
             </Grid>
           </Grid>
         </Stack>
       </CardContent>
       <Divider />
       <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between', p: 2 }}>
-        <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
-          <ClockIcon fontSize="var(--icon-fontSize-sm)" />
-          <Typography color="text.secondary" display="inline" variant="body2">
-           Budget: {campaign.budget}
-          </Typography>
-        </Stack>
         <Stack sx={{ alignItems: 'center' }} direction="row" spacing={1}>
           <DownloadIcon fontSize="var(--icon-fontSize-sm)" />
           <Typography color="text.secondary" display="inline" variant="body2">

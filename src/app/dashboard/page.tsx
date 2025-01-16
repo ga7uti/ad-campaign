@@ -13,16 +13,14 @@ import ExportForm from '@/components/dashboard/create-campaign/ExportForm';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { campaignClient } from '@/lib/campaign-client';
-import { Campaign } from '@/types/campaign';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Campaign } from '@/types/campaign';
 
 
 
 export default function Page(): React.JSX.Element {
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
   
   
   async function fetchCampaigns() {
@@ -37,11 +35,9 @@ export default function Page(): React.JSX.Element {
   }
 
   React.useEffect(() => {
-    if(localStorage.getItem('accessToken') === null) {
-      router.refresh();
-    }
     fetchCampaigns();
   }, []);
+
 
   return (
     <Stack spacing={3}>
@@ -55,12 +51,12 @@ export default function Page(): React.JSX.Element {
         </div>
       </Stack>
       <Grid container spacing={3}>
-        {loading && <Typography>Loading...</Typography>}
-        {campaigns.map((campaign) => (
+        {loading ?<Typography>Loading...</Typography>:
+        campaigns?.length > 0 ?campaigns.map((campaign) => (
           <Grid key={campaign.id} lg={4} md={6} xs={12}>
             <CampaignCard campaign={campaign} />
           </Grid>
-        ))}
+        )): <Typography>No campaigns available.</Typography> }
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Pagination count={campaigns.length} size="small" />

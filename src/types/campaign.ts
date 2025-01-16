@@ -22,6 +22,38 @@ export interface Interest{
     subcategory: string
 }
 
-export interface Campaign {
-    age:string
+export interface Images {
+    id: number;
+    image: string;
+    created_at: string;
 }
+
+export interface FileUpload{
+    id: number;
+    file: string;
+};
+
+export interface Campaign {
+    id: number;
+    images: Images[];
+    keywords: FileUpload[]; 
+    name: string;
+    age: string[]; 
+    day_part: string|null;
+    device: string[]; 
+    environment: string[]; 
+    exchange: string[];
+    interset: Interest[]|null; 
+    created_at: string; 
+    updated_at: string; 
+    language: string[];
+    carrier: string[]; 
+    device_price: string[]; 
+    start_time: string; 
+    end_time: string; 
+    proximity_store: string[]; 
+    proximity: string[];
+    weather: string[]; 
+    location: string[];
+}
+  

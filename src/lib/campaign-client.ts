@@ -12,7 +12,7 @@ class CampaignClient {
         const response = await axiosInstance.get('/api/fetch_user_campgain/', {
           headers: { 'Content-Type': 'application/json' },
         });
-        return response.data;
+        return response.data.data;
       } catch (error: any) {
         throw new Error('Failed to fetch campaigns');
       }
