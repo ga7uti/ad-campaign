@@ -7,6 +7,7 @@ import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Downloa
 import { usePopover } from '@/hooks/use-popover';
 import { useAuth } from '@/hooks/use-auth';
 
+/* eslint-disable-next-line react/function-component-definition -- Allow function component definition for consistency */
 const ExportForm: React.FC = () => {
   const exportPopOver = usePopover<HTMLDivElement>();
   const {auth} = useAuth();
@@ -33,9 +34,9 @@ const ExportForm: React.FC = () => {
             <ExportFormPopover anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open} />
           </Stack>
     );
-  }else{
+  }
     return null;
-  } 
+   
 };
 
 export default ExportForm;
