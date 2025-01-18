@@ -22,8 +22,8 @@ import { authClient } from '../../lib/auth-client';
 import { paths } from '@/paths';
 
 const schema = zod.object({
-  firstName: zod.string().min(5, { message: 'First name must be at least 5 characters long' }),
-  lastName: zod.string().min(5, { message: 'Last name must be at least 5 characters long' }),
+  first_name: zod.string().min(5, { message: 'First name must be at least 5 characters long' }),
+  last_name: zod.string().min(5, { message: 'Last name must be at least 5 characters long' }),
   email: zod.string().min(1, { message: 'Email is required' }).email(),
   password: zod
     .string()
@@ -37,7 +37,7 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { firstName: '', lastName: '', email: '', password: '', terms: false } satisfies Values;
+const defaultValues = { first_name: '', last_name: '', email: '', password: '', terms: false } satisfies Values;
 
 export function SignUpForm(): React.JSX.Element {
   const router = useRouter();
@@ -45,6 +45,7 @@ export function SignUpForm(): React.JSX.Element {
   const { checkSession } = useAuth();
 
     const [isPending, setIsPending] = React.useState<boolean>(false);
+    const [isUserCreated,setIsUserCreated] = React.useState<boolean>(false);
 
     const {
       control,
@@ -56,27 +57,17 @@ export function SignUpForm(): React.JSX.Element {
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-
       try {
-        // Call the signUp method from AuthClient
-        const result = await authClient.signUp({
-          firstName: values.firstName,
-          lastName: values.lastName,
-          email: values.email,
-          password: values.password,
-        });
-
-        if (result.error) {
-          setError('root', { type: 'server', message: result.error });
-        } else {
+        const result = await authClient.signUp(values);
+        if (result) {
+          setIsUserCreated(true);
           await checkSession?.();
-          router.push(paths.auth.signIn); // Redirect to dashboard or any other page
+          setTimeout(()=>{
+            router.push(paths.auth.signIn);
+          },100)
         }
-      } catch (error: unknown) {
-        setError('root', {
-          type: 'server',
-          message: 'An unexpected error occurred. Please try again later.',
-        });
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
       } finally {
         setIsPending(false);
       }
@@ -99,23 +90,23 @@ export function SignUpForm(): React.JSX.Element {
         <Stack spacing={2}>
           <Controller
             control={control}
-            name="firstName"
+            name="first_name"
             render={({ field }) => (
-              <FormControl error={Boolean(errors.firstName)}>
+              <FormControl error={Boolean(errors.first_name)}>
                 <InputLabel>First name</InputLabel>
                 <OutlinedInput {...field} label="First name" />
-                {errors.firstName ? <FormHelperText>{errors.firstName.message}</FormHelperText> : null}
+                {errors.first_name ? <FormHelperText>{errors.first_name.message}</FormHelperText> : null}
               </FormControl>
             )}
           />
           <Controller
             control={control}
-            name="lastName"
+            name="last_name"
             render={({ field }) => (
-              <FormControl error={Boolean(errors.lastName)}>
+              <FormControl error={Boolean(errors.last_name)}>
                 <InputLabel>Last name</InputLabel>
                 <OutlinedInput {...field} label="Last name" />
-                {errors.lastName ? <FormHelperText>{errors.lastName.message}</FormHelperText> : null}
+                {errors.last_name ? <FormHelperText>{errors.last_name.message}</FormHelperText> : null}
               </FormControl>
             )}
           />
@@ -162,6 +153,7 @@ export function SignUpForm(): React.JSX.Element {
           <Button disabled={isPending} type="submit" variant="contained">
             {isPending ? 'Signing up...' : 'Sign up'}
           </Button>
+          {isUserCreated ? <Alert color="success">User created successfully</Alert> : null} 
         </Stack>
       </form>
     </Stack>

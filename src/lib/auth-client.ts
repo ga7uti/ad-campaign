@@ -3,14 +3,8 @@
 
 import { Auth } from '@/types/auth';
 import axiosInstance from './axios-instance';
-
-// Interface Definitions
-export interface SignUpParams {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
+import { User } from '@/types/user';
+import { utils } from './common';
 
 export interface SignInParams {
   username: string;
@@ -22,21 +16,16 @@ export interface ResetPasswordParams {
 }
 
 class AuthClient {
-  async signUp(params: SignUpParams): Promise<{ success: boolean; error?: string }> {
+  async signUp(user: User): Promise<boolean> {
     try {
-      const response = await axiosInstance.post(`/api/register/`, {
-        first_name: params.firstName,
-        last_name: params.lastName,
-        email: params.email,
-        password: params.password,
-      });
-      return { success: true };
+      const response = await axiosInstance.post(`/api/register/`, user);
+      return true
     } catch (error: any) {
-      return { success: false, error: error.response.data.message };
+        throw new Error(utils.handleErrorMessage(error));
     }
   }
 
-  async signIn(params: SignInParams): Promise<{ success: boolean; data?: any; error?: string }> {
+  async signIn(params: SignInParams): Promise<boolean> {
     try {
 
       const response = await axiosInstance.post('/api/token/', params, {
@@ -50,9 +39,9 @@ class AuthClient {
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
       localStorage.setItem('usertype', user_type ? 'admin' : 'user');
-      return { success: true, data: responseData };
+      return true
     } catch (error: any) {
-      return { success: false, error: error.response.data.message.non_field_errors };
+      throw new Error(utils.handleErrorMessage(error));
     }
   }
 
@@ -60,18 +49,18 @@ class AuthClient {
     try {
       await axiosInstance.post(`/api/reset-password/`, params);
     } catch (error: any) {
-      console.error('Error:', error);
+      throw new Error(utils.handleErrorMessage(error));
     }
   }
 
-  async signOut(): Promise<{ success: boolean; error?: string }> {
+  async signOut(): Promise<boolean> {
     try {
       await axiosInstance.post(`/api/logout/`,{ refresh: localStorage.getItem('refreshToken') },{ withCredentials: true });
     } catch (error: any) {
       console.error('Error:', error);
     }
     this.clearLocalStorage()
-    return { success: true };
+    return true;
   }
 
   async refreshToken(): Promise<string> {
