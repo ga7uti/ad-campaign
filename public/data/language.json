@@ -1,0 +1,91 @@
+{
+    "success": true,
+    "message": "Data succcessfully fetched",
+    "data": [  
+      {
+        "name": "Hindi",
+        "iso_code": "hi"
+      },
+      {
+        "name": "Bengali",
+        "iso_code": "bn"
+      },
+      {
+        "name": "Telugu",
+        "iso_code": "te"
+      },
+      {
+        "name": "Marathi",
+        "iso_code": "mr"
+      },
+      {
+        "name": "Tamil",
+        "iso_code": "ta"
+      },
+      {
+        "name": "Urdu",
+        "iso_code": "ur"
+      },
+      {
+        "name": "Gujarati",
+        "iso_code": "gu"
+      },
+      {
+        "name": "Malayalam",
+        "iso_code": "ml"
+      },
+      {
+        "name": "Kannada",
+        "iso_code": "kn"
+      },
+      {
+        "name": "Odia",
+        "iso_code": "or"
+      },
+      {
+        "name": "Punjabi",
+        "iso_code": "pa"
+      },
+      {
+        "name": "Assamese",
+        "iso_code": "as"
+      },
+      {
+        "name": "Maithili",
+        "iso_code": "mai"
+      },
+      {
+        "name": "Sanskrit",
+        "iso_code": "sa"
+      },
+      {
+        "name": "Konkani",
+        "iso_code": "kok"
+      },
+      {
+        "name": "Sindhi",
+        "iso_code": "sd"
+      },
+      {
+        "name": "Dogri",
+        "iso_code": "doi"
+      },
+      {
+        "name": "Manipuri",
+        "iso_code": "mni"
+      },
+      {
+        "name": "Nepali",
+        "iso_code": "ne"
+      },
+      {
+        "name": "Santali",
+        "iso_code": "sat"
+      },
+      {
+        "name": "Kashmiri",
+        "iso_code": "ks"
+      }
+    ]
+  }
+  

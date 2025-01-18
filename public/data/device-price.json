@@ -1,0 +1,11 @@
+{
+    "message": "Data succcessfully fetched",
+    "data": [    
+        { "id": 1, "range": "<10k" },
+        { "id": 2, "range": "10K-30K" },
+        { "id": 3, "range": "31K-50K" },
+        { "id": 4, "range": "51K-90K" },
+        { "id": 5, "range": ">90K" }
+    ],
+    "success": true
+}
