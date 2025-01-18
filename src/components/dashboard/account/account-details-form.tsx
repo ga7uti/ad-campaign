@@ -48,9 +48,9 @@ export function AccountDetailsForm(): React.JSX.Element {
       const response = await accountClient.getUser();
       setUser(response);
       reset(response);  
-    } catch (error) {
-      console.error('Failed to fetch user:', error);
-    }
+    } catch (error:any) {
+      setError('root', { type: 'server', message: error.message});
+     }
   }  
   
   const onSubmit = React.useCallback(
@@ -61,12 +61,11 @@ export function AccountDetailsForm(): React.JSX.Element {
         setIsProfileUpdated(true)
         setIsPending(false);
         fetchUser();
-      } catch (error) {
-        if (error instanceof Error) {
-          setError('root', { type: 'manual', message: error.message });
-        }
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
+      }finally{
+        setIsPending(false);
       }
-      setIsPending(false);
     },
     [setError]
   );

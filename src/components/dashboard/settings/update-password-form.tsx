@@ -72,16 +72,10 @@ export function UpdatePasswordForm(): React.JSX.Element {
          try {
           const response = await accountClient.updatePassword(values);
           reset(defaultValues);
-          if (response.error) {
-            setError('root', { type: 'server', message: response.error });
-          } else {
+          if (response) 
             setIsPasswordUpdated(true);
-          }
-         } catch (error: unknown) {
-           setError('root', {
-             type: 'server',
-             message: 'An unexpected error occurred. Please try again later.',
-           });
+         } catch (error:any) {
+          setError('root', { type: 'server', message: error.message});
          } finally {
            setIsPending(false);
          }
