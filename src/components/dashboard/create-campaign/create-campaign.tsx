@@ -310,8 +310,8 @@ export default function CreateCampaign(): React.JSX.Element {
           )}
           
           {isPending && (
-              <Box display="flex" justifyContent="flex-start" alignItems="center">
-                <Box sx={{ marginLeft: 2 }}>
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Box sx={{ marginLeft: 2 }}>
                   <CircularProgress />
                 </Box>
               </Box>
