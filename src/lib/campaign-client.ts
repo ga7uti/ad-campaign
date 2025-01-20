@@ -5,6 +5,7 @@ import { Campaign, CommonSelectResponse, Interest, Location } from '@/types/camp
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
+import { CampaignFormData } from '@/types/create-form';
 
 
 class CampaignClient {
@@ -19,6 +20,18 @@ class CampaignClient {
         throw new Error(utils.handleErrorMessage(error));
       }
     }
+
+    async postCampaign(campaign:CampaignFormData): Promise<boolean> {
+      try {
+        axiosInstance.post('/api/campaigns/', campaign, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return true
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
 
     async uploadFile(file: File,fileType:string):Promise<number> {
       const formData = new FormData();

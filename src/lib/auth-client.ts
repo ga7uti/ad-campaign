@@ -18,7 +18,7 @@ export interface ResetPasswordParams {
 class AuthClient {
   async signUp(user: User): Promise<boolean> {
     try {
-      const response = await axiosInstance.post(`/api/register/`, user);
+      await axiosInstance.post(`/api/register/`, user);
       return true
     } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));

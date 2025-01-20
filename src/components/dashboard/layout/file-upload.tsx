@@ -1,14 +1,14 @@
 import { campaignClient } from "@/lib/campaign-client";
-import { FormData, ValidFieldNames } from "@/types/create-form";
-import { Alert, Box, Button, CircularProgress, Typography } from "@mui/material";
+import { CampaignFormData, ValidFieldNames } from "@/types/create-form";
+import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 interface FileUploadProps {
   name: ValidFieldNames;
   placeholder: string;
-  register: UseFormRegister<FormData>;
-  setValue: UseFormSetValue<FormData>; // Add setValue to update form state
+  register: UseFormRegister<CampaignFormData>;
+  setValue: UseFormSetValue<CampaignFormData>; // Add setValue to update form state
 }
 
 export default function FileUpload({

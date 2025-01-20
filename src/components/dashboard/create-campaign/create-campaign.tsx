@@ -1,16 +1,21 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
 import { CommonSelectResponse, Location } from '@/types/campaign';
-import { CampaignFormSchema, FormData } from '@/types/create-form';
+import { CampaignFormSchema, CampaignFormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
+import { paths } from '@/paths';
+import { useRouter } from 'next/navigation';
+
 
 export default function CreateCampaign(): React.JSX.Element {
+
+    const router = useRouter();
     const [ages, setAge] = React.useState<CommonSelectResponse[]>([]);
     const [devices, setDevices] = React.useState<CommonSelectResponse[]>([]);
     const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
@@ -19,7 +24,10 @@ export default function CreateCampaign(): React.JSX.Element {
     const [language, setLanguage] = React.useState<CommonSelectResponse[]>([]);
     const [carrier, setCarrier] = React.useState<CommonSelectResponse[]>([]);
     const [devicePrice, setDevicePrice] = React.useState<CommonSelectResponse[]>([]);
-    const [formData, setFormData] = React.useState<FormData>();
+    const [formData, setFormData] = React.useState<CampaignFormData>();
+    const [isPending, setIsPending] = React.useState<boolean>(false);
+    const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
+
 
     const {
       register,
@@ -28,21 +36,21 @@ export default function CreateCampaign(): React.JSX.Element {
       clearErrors,
       handleSubmit,
       formState: { errors },
-    } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema) });
+    } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: FormData) => {
       if (!data.images || data.images.length === 0) {
         setError('images',{message:"Image is required"});
+        return;
       }
 
       if (!data.keywords || data.keywords.length === 0) {
         setError('keywords',{message:"Keyword is required"});
+        return;
       }
-      
-      else {
-        clearErrors();
-        setFormData(data);
-      }
+      clearErrors();
+      setFormData(data);
+      createCampaign();
     };
   
     const fetchData = async () => {
@@ -71,6 +79,25 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     };
   
+    const createCampaign = async() => {
+      if(!formData) 
+        return;
+      
+      try {
+        const result = await campaignClient.postCampaign(formData);
+        if (result) {
+          setIsCampaignCreated(true);
+          setTimeout(()=>{
+            router.push(paths.dashboard.overview);
+          },100)
+        }
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
+      } finally {
+        setIsPending(false);
+      }
+    }
+
     React.useEffect(() => {
       fetchData();
     }, []);
@@ -279,7 +306,7 @@ export default function CreateCampaign(): React.JSX.Element {
             </Button>
           </Box>
         </Box>
-        <Typography>{JSON.stringify(formData)}</Typography>
+        {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
       </form>
     );
   }
