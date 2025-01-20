@@ -8,6 +8,10 @@ export type FormData = {
     environment: string[];
     location: number[];
     image: number[];
+    keywords: number[];
+    proximitystore?: number[];
+    proximity?: number[];
+    weather?: number[];
 };
 
   export type FormFieldProps<T> = {
@@ -28,6 +32,10 @@ export type FormData = {
   | "environment"
   | "location"
   | "image"
+  | "keywords"
+  | "proximitystore"
+  | "proximity"
+  | "weather"
 
 
   export const CampaignFormSchema: ZodType<FormData> = z.object({
@@ -37,4 +45,8 @@ export type FormData = {
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
     image: z.array(z.number(), { message: "Image is required" }),
+    keywords: z.array(z.number(), { message: "Keywords is required" }),
+    proximitystore: z.array(z.number()).optional(),
+    proximity: z.array(z.number()).optional(),
+    weather: z.array(z.number()).optional(),
   });

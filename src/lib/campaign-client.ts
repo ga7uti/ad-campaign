@@ -22,10 +22,32 @@ class CampaignClient {
 
     async uploadFile(file: File,fileType:string):Promise<number> {
       const formData = new FormData();
-      formData.append(fileType, file);
-      console.log(formData)
       try {
-        const uri = fileType=='image'?'campaign-images':'campaign-logos';
+        let uri='';
+        switch(fileType){
+          case 'image':
+            formData.append('image', file);
+            uri="campaign-images"
+            break;
+          case 'proximitystore':
+            formData.append('file', file);
+            uri="proximityStore"
+            break;
+          case 'proximity':
+            formData.append('file', file);
+            uri="proximity"
+            break;
+          case 'weather':
+            formData.append('file', file);
+            uri="weather"
+            break;
+          case 'keywords':
+            formData.append('file', file);
+            uri="keywords"
+            break;
+          default:
+            throw new Error("Invalid File Type")
+        }
         const response = await axiosInstance.post(`/api/${uri}/`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });

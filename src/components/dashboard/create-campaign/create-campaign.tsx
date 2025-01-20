@@ -28,8 +28,14 @@ export default function CreateCampaign(): React.JSX.Element {
   
     const onSubmit = async (data: FormData) => {
       if (!data.image || data.image.length === 0) {
-        setError("image", { message: "Image is required" });
-      } else {
+        setError('image',{message:"Image is required"});
+      }
+
+      if (!data.keywords || data.keywords.length === 0) {
+        setError('keywords',{message:"Keyword is required"});
+      }
+      
+      else {
         clearErrors();
         setFormData(data);
       }
@@ -140,18 +146,55 @@ export default function CreateCampaign(): React.JSX.Element {
             <Grid container spacing={2} mt={2}>
                 {/* Image Upload */}
                 <Grid item xs={12} md={6} lg={4} mb={1}>
-                <FileUpload
-                  name="image"
-                  register={register}
-                  setValue={setValue} // Pass setValue here
-                  placeholder="Select Campaign Image"
-                  fileType="image"
-                />
-                {errors.image && 
-                  <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                    {errors.image?.message}
-                  </Typography>
-                }
+                  <FileUpload
+                    name="image"
+                    register={register}
+                    setValue={setValue} // Pass setValue here
+                    placeholder="Select Campaign Image"
+                  />
+                  {errors.image && 
+                    <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                      {errors.image?.message}
+                    </Typography>
+                  }
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={4} mb={1}>
+                  <FileUpload
+                    name="keywords"
+                    register={register}
+                    setValue={setValue}
+                    placeholder="Select keywords"
+                  />
+                  {errors.keywords && 
+                    <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                      {errors.keywords?.message}
+                    </Typography>
+                  }
+                </Grid>
+                <Grid item xs={12} md={6} lg={4} mb={1}>
+                  <FileUpload
+                    name="proximitystore"
+                    register={register}
+                    setValue={setValue}
+                    placeholder="Select Proximity Store"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} lg={4} mb={1}>
+                  <FileUpload
+                    name="proximity"
+                    register={register}
+                    setValue={setValue} 
+                    placeholder="Select Proximity"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} lg={4} mb={1}>
+                  <FileUpload
+                    name="weather"
+                    register={register}
+                    setValue={setValue}
+                    placeholder="Select Weather"
+                  />
                 </Grid>
             </Grid>
           </CardSection>
