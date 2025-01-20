@@ -39,7 +39,6 @@ export default function FileUpload({
   };
 
   const handleUpload = async (selectedFile:File) => {
-    console.log("File",file,name)
     if (!selectedFile) return;
     setUploading(true);
     setError("");
