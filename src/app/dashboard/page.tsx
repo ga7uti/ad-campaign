@@ -9,7 +9,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 
 import * as React from 'react';
 
-import ExportForm from '@/components/dashboard/create-campaign/ExportForm';
+import ExportForm from '@/components/dashboard/create-campaign/export-form';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { campaignClient } from '@/lib/campaign-client';
