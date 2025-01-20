@@ -15,6 +15,7 @@ import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { campaignClient } from '@/lib/campaign-client';
 import { useState } from 'react';
 import { Campaign } from '@/types/campaign';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -55,17 +56,29 @@ export default function Page(): React.JSX.Element {
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
-      <Grid container spacing={3}>
-        {loading ?<Typography>Loading...</Typography>:
-        campaigns?.length > 0 ?campaigns.map((campaign) => (
-          <Grid key={campaign.id} lg={4} md={6} xs={12}>
-            <CampaignCard campaign={campaign} />
-          </Grid>
-        )): <Typography>No campaigns available.</Typography> }
-      </Grid>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination count={campaigns.length} size="small" />
-      </Box>
+      {loading ? 
+          <Box  
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <CircularProgress />
+          </Box>
+        :
+        <Grid container spacing={3}>
+          {loading ?<Typography>Loading...</Typography>:
+          campaigns?.length > 0 ?campaigns.map((campaign) => (
+            <Grid key={campaign.id} lg={4} md={6} xs={12}>
+              <CampaignCard campaign={campaign} />
+            </Grid>
+          )): <Typography>No campaigns available.</Typography> }
+        </Grid>
+        }
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Pagination count={campaigns.length} size="small" />
+        </Box>
+      
     </Stack>
   );
 }
