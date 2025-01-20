@@ -264,7 +264,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="keywords"
                       register={register}
                       setValue={setValue}
-                      placeholder="Select keywords"
+                      placeholder="Select Keywords"
                     />
                     {errors.keywords && 
                       <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>

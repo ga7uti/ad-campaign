@@ -78,6 +78,7 @@ export default function FileUpload({
             />
             <Button
               component="span"
+              fullWidth
               sx={{ color: "primary.main", paddingLeft: 2 }}
               onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement).click()}
             >
