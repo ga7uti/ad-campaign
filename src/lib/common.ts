@@ -27,6 +27,13 @@ class Utils {
                 }
             }
             
+        }else if(error.response?.data && typeof error.response?.data === 'object'){
+            const errorMessages = Object.values(error.response?.data);
+            for (const errors of errorMessages) {
+                if (Array.isArray(errors) && errors.length > 0) {
+                    return errors[0]; 
+                }
+            }
         }
         return "An unexpected error occurred. Please try again later." ;
       }

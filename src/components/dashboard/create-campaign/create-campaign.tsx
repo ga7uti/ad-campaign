@@ -8,6 +8,7 @@ import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FormField from '../layout/form-field';
+import FileUpload from '../layout/file-upload';
 
 export default function CreateCampaign(): React.JSX.Element {
     const [ages, setAge] = React.useState<CommonSelectResponse[]>([]);
@@ -15,7 +16,13 @@ export default function CreateCampaign(): React.JSX.Element {
     const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
     const [location, setLocation] = React.useState<Location[]>([]);
     const [formData, setFormData] = React.useState<FormData>();
-  
+    const [uploadResponse, setUploadResponse] = React.useState<number[]>([]);
+
+    const handleUploadComplete = (response: number[]) => {
+      setUploadResponse(response);
+      console.log("File uploaded successfully:", response);
+    };
+
     const {
       register,
       handleSubmit,
@@ -129,18 +136,12 @@ export default function CreateCampaign(): React.JSX.Element {
         {/* Campaign Details Section */}
         <CardSection title="File Upload">
             <Grid container spacing={2} mt={2}>
-                {/* Name */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                    <FormField
-                        type="text"
-                        placeholder="Enter campaign name"
-                        name="name"
-                        register={register}
-                        error={errors.name}
-                        data={undefined}
-                    />
-                    </Box>
+                {/* Image Upload */}
+                <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                        placeholder="Select Campaign Image"
+                        onUploadComplete={handleUploadComplete}
+                        fileType='image'/>        
                 </Grid>
             </Grid>
           </CardSection>

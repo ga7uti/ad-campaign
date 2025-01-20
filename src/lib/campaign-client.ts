@@ -20,11 +20,10 @@ class CampaignClient {
       }
     }
 
-    async uploadFile(files: FileList,fileType:string):Promise<number> {
+    async uploadFile(file: File,fileType:string):Promise<number> {
       const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append(fileType, files[i]);
-      }
+      formData.append(fileType, file);
+      console.log(formData)
       try {
         const uri = fileType=='image'?'campaign-images':'campaign-logos';
         const response = await axiosInstance.post(`/api/${uri}/`, formData, {
