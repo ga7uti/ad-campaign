@@ -1,31 +1,17 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
 import { z, ZodType } from "zod"; // Add new import
-
-export interface CampaignFormData  {
-    name: string;
-    age: string[];
-    device: string[];
-    environment: string[];
-    location: number[];
-    images: number[];
-    keywords: number[];
-    exchange: string[];
-    language: string[];
-    carrier: string[];
-    device_price: string[];
-    proximity_store?: number[];
-    proximity?: number[];
-    weather?: number[];
-};
+import { User } from "./user";
+import { CampaignFormData } from "./campaign";
 
   export interface FormFieldProps<T>  {
     type: string;
     placeholder: string;
     name: ValidFieldNames;
-    register: UseFormRegister<CampaignFormData>;
+    register: UseFormRegister<any>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
-    data: T[] | undefined;
+    data?: T[];
+    disabled?:boolean
   };
 
 
@@ -44,6 +30,10 @@ export interface CampaignFormData  {
   | "proximity_store"
   | "proximity"
   | "weather"
+  | "first_name"
+  | "last_name"
+  | "email"
+  | "phone_no"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -62,3 +52,12 @@ export interface CampaignFormData  {
     proximity: z.any(),
     weather: z.any(),
   });
+
+
+  export const profileSchema: ZodType<User> = z.object({
+    first_name: z.string().min(5, { message: 'First name  is required & must be at least 5 characters long' }),
+    last_name: z.string().min(5, { message: 'Last name  is required & must be at least 5 characters long' }),
+    phone_no: z.string().regex(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' }),
+    email: z.string().email({ message: 'Email is required' })
+  });
+  

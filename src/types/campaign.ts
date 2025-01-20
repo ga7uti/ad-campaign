@@ -52,4 +52,20 @@ export interface Campaign {
     weather: string[]; 
     location: string[];
 }
-  
+
+export interface CampaignFormData  {
+    name: string;
+    age: string[];
+    device: string[];
+    environment: string[];
+    location: number[];
+    images: number[];
+    keywords: number[];
+    exchange: string[];
+    language: string[];
+    carrier: string[];
+    device_price: string[];
+    proximity_store?: number[];
+    proximity?: number[];
+    weather?: number[];
+};

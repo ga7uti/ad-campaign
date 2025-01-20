@@ -5,7 +5,7 @@ import { Campaign, CommonSelectResponse, Interest, Location } from '@/types/camp
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
-import { CampaignFormData } from '@/types/create-form';
+import { CampaignFormData } from '@/types/form-data';
 
 
 class CampaignClient {

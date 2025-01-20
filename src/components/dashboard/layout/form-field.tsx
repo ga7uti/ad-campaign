@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 
 import { CommonSelectResponse, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/create-form';
+import { FormFieldProps } from '@/types/form-data';
 import { FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import * as React from 'react';
 
@@ -22,7 +22,8 @@ const FormField : React.FC<FormFieldProps<any>> = ({
     register,
     error,
     valueAsNumber,
-    data
+    data,
+    disabled = false
   }) => (
     <div>
       {!data?
@@ -31,6 +32,7 @@ const FormField : React.FC<FormFieldProps<any>> = ({
             <TextField
                 type={type}
                 fullWidth
+                disabled={disabled}
                 {...register(name,{valueAsNumber})}
                 >
             </TextField>

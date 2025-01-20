@@ -1,17 +1,17 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
-import { CommonSelectResponse, Location } from '@/types/campaign';
-import { CampaignFormSchema, CampaignFormData } from '@/types/create-form';
+import { paths } from '@/paths';
+import { CampaignFormData, CommonSelectResponse, Location } from '@/types/campaign';
+import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
-import { paths } from '@/paths';
-import { useRouter } from 'next/navigation';
 
 
 export default function CreateCampaign(): React.JSX.Element {

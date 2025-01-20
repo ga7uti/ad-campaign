@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 
 import { campaignClient } from "@/lib/campaign-client";
-import { CampaignFormData, ValidFieldNames } from "@/types/create-form";
+import { CampaignFormData, ValidFieldNames } from "@/types/form-data";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
