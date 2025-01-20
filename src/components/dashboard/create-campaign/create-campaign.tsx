@@ -51,7 +51,7 @@ export default function CreateCampaign(): React.JSX.Element {
       }
       clearErrors();
       setFormData(data);
-      createCampaign();
+      createCampaign(data);
     };
   
     const fetchData = async () => {
@@ -80,17 +80,18 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     };
   
-    const createCampaign = async() => {
-      if(!formData) 
+    const createCampaign = async(data:CampaignFormData) => {
+      setIsPending(true);
+      if(!data) 
         return;
       
       try {
-        const result = await campaignClient.postCampaign(formData);
+        const result = await campaignClient.postCampaign(data);
         if (result) {
           setIsCampaignCreated(true);
           setTimeout(()=>{
             router.push(paths.dashboard.overview);
-          },100)
+          },1000)
         }
       } catch (error:any) {
         setError('root', { type: 'server', message: error.message});
