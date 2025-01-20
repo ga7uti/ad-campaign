@@ -22,7 +22,7 @@ export type CampaignFormData = {
     type: string;
     placeholder: string;
     name: ValidFieldNames;
-    register: UseFormRegister<FormData>;
+    register: UseFormRegister<CampaignFormData>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
     data: T[] | undefined;
