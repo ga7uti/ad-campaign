@@ -1,10 +1,10 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Age, Campaign, Interest, Location, Partners } from '@/types/campaign';
+import { Campaign, CommonSelectResponse, Interest, Location, Partners } from '@/types/campaign';
+import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
-import axios from 'axios';
 
 
 class CampaignClient {
@@ -69,7 +69,7 @@ class CampaignClient {
       }
     }
 
-    async getAge(): Promise<Age[]> {
+    async getAge(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/age.json', {
           headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,18 @@ class CampaignClient {
       }
     }
 
-    async getLanguage(): Promise<Age[]> {
+    async getDevice(): Promise<CommonSelectResponse[]> {
+      try {
+        const response = await axios.get('/data/device.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getLanguage(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/language.json', {
           headers: { 'Content-Type': 'application/json' },
@@ -91,7 +102,7 @@ class CampaignClient {
       }
     }
 
-    async getDevicePrice(): Promise<Age[]> {
+    async getDevicePrice(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/device-price.json', {
           headers: { 'Content-Type': 'application/json' },

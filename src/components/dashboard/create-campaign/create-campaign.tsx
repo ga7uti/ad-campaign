@@ -1,17 +1,19 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
-import { Age } from '@/types/campaign';
+import { CommonSelectResponse } from '@/types/campaign';
 import { CampaignFormSchema, FormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import FormField from './form-field';
+import FormField from '../layout/form-field';
 
 export default function CreateCampaign(): React.JSX.Element {
     const [showTargetingType, setShowTargetingType] = React.useState<boolean>(true);
-    const [ages,setAge]=React.useState<Age[]>([])
+    const [ages,setAge]=React.useState<CommonSelectResponse[]>([])
+    const [devices,setDevices]=React.useState<CommonSelectResponse[]>([])
+    const [formData,SetFormData]=React.useState<FormData[]>([])
 
     const {
         register,
@@ -21,20 +23,30 @@ export default function CreateCampaign(): React.JSX.Element {
       } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema)});
     
       const onSubmit = async (data: FormData) => {
-          console.log("SUCCESS",data);
+        SetFormData(data)
       }
 
     const fetchAgeRange = async () => {
         try {
-            const ages = await campaignClient.getAge();
-            setAge(ages)
+            const response = await campaignClient.getAge();
+            setAge(response)
             } catch (error) {
-            console.error("Failed to age", error);
+            console.error("Failed to load age", error);
+        }
+    };
+
+    const fetchDevice = async () => {
+        try {
+            const response = await campaignClient.getDevice();
+            setDevices(response)
+            } catch (error) {
+            console.error("Failed to load device", error);
         }
     };
 
     React.useEffect(()=>{
         fetchAgeRange();
+        fetchDevice();
     },[])
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -53,7 +65,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             {showTargetingType && (
                                 <Grid container spacing={2} mt={2}>
                                     {/* Name */}
-                                    <Grid item xs={12} md={6} mb={2}>
+                                    <Grid item xs={12} md={6} mb={1}>
                                         <Box sx={{ minWidth: 120 }}>
                                         <FormField
                                             type="text"
@@ -66,8 +78,8 @@ export default function CreateCampaign(): React.JSX.Element {
                                         </Box>
                                     </Grid>
 
-                                    {/* Name */}
-                                    <Grid item xs={12} md={6} mb={2}>
+                                    {/* Age */}
+                                    <Grid item xs={12} md={6} mb={1}>
                                         <Box sx={{ minWidth: 120 }}>
                                         <FormField
                                             type="text"
@@ -79,7 +91,24 @@ export default function CreateCampaign(): React.JSX.Element {
                                         />
                                         </Box>
                                     </Grid>
+
+
+                                    {/* Device */}
+                                    <Grid item xs={12} md={6} mb={1}>
+                                        <Box sx={{ minWidth: 120 }}>
+                                        <FormField
+                                            type="text"
+                                            placeholder="Select age range"
+                                            name="device"
+                                            register={register}
+                                            error={errors.device}
+                                            data={devices}
+                                        />
+                                        </Box>
+                                    </Grid>
+
                                 </Grid>
+                                
                             )}
                     </CardContent>
                 </Card>
@@ -87,6 +116,8 @@ export default function CreateCampaign(): React.JSX.Element {
                     <button type="submit" className="submit-button">Submit</button>
                 </Box>
             </Box>
+            <Typography>{JSON.stringify(formData)}</Typography>
+
         </form>
     );
 }

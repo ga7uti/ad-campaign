@@ -11,10 +11,11 @@ export interface Partners{
     name: string
 }
 
-export interface Age{
+export interface CommonSelectResponse{
     id: number,
     value: string
 }
+
 
 export interface Interest{
     id: number,
