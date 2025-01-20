@@ -34,16 +34,17 @@ export default function FileUpload({
           return;
         }
         setFile(selectedFile);
-        handleUpload();
+        handleUpload(selectedFile);
     }
   };
 
-  const handleUpload = async () => {
-    if (!file) return;
+  const handleUpload = async (selectedFile:File) => {
+    console.log("File",file,name)
+    if (!selectedFile) return;
     setUploading(true);
     setError("");
     try {
-      const id = await campaignClient.uploadFile(file, name.toString()); // Upload the file
+      const id = await campaignClient.uploadFile(selectedFile, name.toString()); // Upload the file
       setUploadSuccess(true);
       setValue(name, [id]); // Update form state with the uploaded file's ID
     } catch (e: any) {
