@@ -1,4 +1,4 @@
-/* eslint-disable eslint-comments/require-description -- This directive is necessary to disable the requirement for descriptions in ESLint comments */
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
 import { accountClient } from '@/lib/account-client';

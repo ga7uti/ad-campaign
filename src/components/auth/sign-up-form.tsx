@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';

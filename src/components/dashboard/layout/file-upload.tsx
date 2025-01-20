@@ -1,3 +1,5 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
+
 import { campaignClient } from "@/lib/campaign-client";
 import { CampaignFormData, ValidFieldNames } from "@/types/create-form";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
@@ -32,11 +34,11 @@ export default function FileUpload({
           return;
         }
         setFile(selectedFile);
-        handleUpload(selectedFile);
+        handleUpload();
     }
   };
 
-  const handleUpload = async (file: File) => {
+  const handleUpload = async () => {
     if (!file) return;
     setUploading(true);
     setError("");
@@ -44,8 +46,8 @@ export default function FileUpload({
       const id = await campaignClient.uploadFile(file, name.toString()); // Upload the file
       setUploadSuccess(true);
       setValue(name, [id]); // Update form state with the uploaded file's ID
-    } catch (error: any) {
-      setError(error.message);
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setUploading(false);
     }

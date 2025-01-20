@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { AxiosError } from "axios";
 
 

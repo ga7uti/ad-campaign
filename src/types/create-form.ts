@@ -1,7 +1,7 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
 import { z, ZodType } from "zod"; // Add new import
 
-export type CampaignFormData = {
+export interface CampaignFormData  {
     name: string;
     age: string[];
     device: string[];
@@ -18,7 +18,7 @@ export type CampaignFormData = {
     weather?: number[];
 };
 
-  export type FormFieldProps<T> = {
+  export interface FormFieldProps<T>  {
     type: string;
     placeholder: string;
     name: ValidFieldNames;

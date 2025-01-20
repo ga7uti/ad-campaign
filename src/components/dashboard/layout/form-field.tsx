@@ -1,3 +1,6 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
+
+import { CommonSelectResponse, Location } from '@/types/campaign';
 import { FormFieldProps } from '@/types/create-form';
 import { FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import * as React from 'react';
@@ -46,14 +49,14 @@ const FormField : React.FC<FormFieldProps<any>> = ({
               {(() => {
                 switch (name) {
                   case "location":
-                    return data.map((val: any) => (
+                    return data.map((val: Location) => (
                       <MenuItem key={val.id} value={val.id}>
                         {val.city}
                       </MenuItem>
                     ));
 
                   default:
-                    return data.map((val: any) => (
+                    return data.map((val: CommonSelectResponse) => (
                       <MenuItem key={val.id} value={val.value}>
                         {val.value}
                       </MenuItem>

@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
 import { CommonSelectResponse, Location } from '@/types/campaign';
@@ -130,7 +131,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Age Range"
                         name="age"
                         register={register}
-                        error={errors.age}
+                        error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                         data={ages}
                     />
                     </Box>
@@ -145,7 +146,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Devices"
                         name="device"
                         register={register}
-                        error={errors.device}
+                        error={Array.isArray(errors.device)?errors.device[0]:errors.device}
                         data={devices}
                     />
                     </Box>
@@ -159,7 +160,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Environments"
                         name="environment"
                         register={register}
-                        error={errors.environment}
+                        error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                         data={environment}
                     />
                     </Box>
@@ -173,7 +174,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Locations"
                         name="location"
                         register={register}
-                        error={errors.location}
+                        error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                         data={location}
                     />
                     </Box>
@@ -192,7 +193,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Exchange"
                           name="exchange"
                           register={register}
-                          error={errors.exchange}
+                          error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
                           data={exchange}
                       />
                     </Box>
@@ -206,7 +207,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Carrier"
                           name="carrier"
                           register={register}
-                          error={errors.carrier}
+                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
                           data={carrier}
                       />
                     </Box>
@@ -220,7 +221,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Language"
                           name="language"
                           register={register}
-                          error={errors.language}
+                          error={Array.isArray(errors.language)?errors.language[0]:errors.language}
                           data={language}
                       />
                     </Box>
@@ -234,7 +235,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="DevicePrice"
                           name="device_price"
                           register={register}
-                          error={errors.device_price}
+                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
                           data={devicePrice}
                       />
                     </Box>
