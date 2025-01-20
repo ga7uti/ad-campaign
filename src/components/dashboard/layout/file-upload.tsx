@@ -1,18 +1,28 @@
 import { campaignClient } from "@/lib/campaign-client";
+import { FormData, ValidFieldNames } from "@/types/create-form";
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
-import { UploadSimple } from "@phosphor-icons/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useFormContext, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 interface FileUploadProps {
-  fileType: string
-  placeholder: string; 
-  onUploadComplete: (response: any) => void; // Callback to send the response back to the parent
+  name: ValidFieldNames;
+  fileType: string;
+  placeholder: string;
+  register: UseFormRegister<FormData>;
+  setValue: UseFormSetValue<FormData>; // Add setValue to update form state
 }
 
-export default function FileUpload({ placeholder, onUploadComplete,fileType }: FileUploadProps): React.JSX.Element {
+export default function FileUpload({
+  name,
+  placeholder,
+  fileType,
+  register,
+  setValue,
+}: FileUploadProps): React.JSX.Element {
+
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>(""); // Local error state
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,16 +32,15 @@ export default function FileUpload({ placeholder, onUploadComplete,fileType }: F
     }
   };
 
-  const handleUpload = async (file:File) => {
+  const handleUpload = async (file: File) => {
     if (!file) return;
     setUploading(true);
     setError("");
     try {
-      console.log("File",file)
-      const id = await campaignClient.uploadFile(file,fileType);
-      setUploadSuccess(true)
-      onUploadComplete([id]);
-    } catch (error:any) {
+      const id = await campaignClient.uploadFile(file, fileType); // Upload the file
+      setUploadSuccess(true);
+      setValue(name, [id]); // Update form state with the uploaded file's ID
+    } catch (error: any) {
       setError(error.message);
     } finally {
       setUploading(false);
@@ -59,15 +68,16 @@ export default function FileUpload({ placeholder, onUploadComplete,fileType }: F
         >
           {/* Hidden file input */}
           <input
+            {...register(name)} // Register the input with React Hook Form
             type="file"
             style={{ display: "none" }}
             onChange={handleFileChange}
-            accept="image/*" // Adjust accept types as needed
+            accept="image/*" // Accept only image files
           />
           <Button
             component="span"
             sx={{ color: "primary.main", paddingLeft: 2 }}
-            onClick={() => document.querySelector('input[type="file"]')?.click()}
+            onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement).click()}
           >
             {placeholder}
           </Button>
@@ -83,25 +93,28 @@ export default function FileUpload({ placeholder, onUploadComplete,fileType }: F
           </Box>
         )}
       </Grid>
-      {uploading && (
-          <Box sx={{ marginLeft: 2 }}>
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
-              Uploading... {file?.name}
-            </Typography>
-          </Box>
-        )}
-       {/* Display error if any */}
-       {error && (
-          <Box sx={{ marginTop: 2 }}>
-           <Alert color="error">{error}</Alert>
-          </Box>
-        )}
 
-        {uploadSuccess && (
-          <Box sx={{ marginTop: 2 }}>
-           <Alert color="success">Uploaded {file?.name}</Alert>
-          </Box>
-        )}
+      {uploading && (
+        <Box sx={{ marginLeft: 2 }}>
+          <Typography variant="body2" sx={{ marginLeft: 1 }}>
+            Uploading... {file?.name}
+          </Typography>
+        </Box>
+      )}
+
+      {/* Display error if any */}
+      {error && (
+        <Box sx={{ marginTop: 2 }}>
+          <Alert color="error">{error}</Alert>
+        </Box>
+      )}
+
+      {/* Display success message after upload */}
+      {uploadSuccess && (
+        <Box sx={{ marginTop: 2 }}>
+          <Alert color="success">Uploaded</Alert>
+        </Box>
+      )}
     </Grid>
   );
-};
+}

@@ -7,6 +7,7 @@ export type FormData = {
     device: string[];
     environment: string[];
     location: number[];
+    image: number[];
 };
 
   export type FormFieldProps<T> = {
@@ -26,6 +27,7 @@ export type FormData = {
   | "device"
   | "environment"
   | "location"
+  | "image"
 
 
   export const CampaignFormSchema: ZodType<FormData> = z.object({
@@ -34,4 +36,5 @@ export type FormData = {
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
+    image: z.array(z.number(), { message: "Image is required" }),
   });

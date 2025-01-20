@@ -3,12 +3,12 @@ import { campaignClient } from '@/lib/campaign-client';
 import { CommonSelectResponse, Location } from '@/types/campaign';
 import { CampaignFormSchema, FormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Card, CardContent, Drawer, Grid, LinearProgress, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import FormField from '../layout/form-field';
 import FileUpload from '../layout/file-upload';
+import FormField from '../layout/form-field';
 
 export default function CreateCampaign(): React.JSX.Element {
     const [ages, setAge] = React.useState<CommonSelectResponse[]>([]);
@@ -16,21 +16,23 @@ export default function CreateCampaign(): React.JSX.Element {
     const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
     const [location, setLocation] = React.useState<Location[]>([]);
     const [formData, setFormData] = React.useState<FormData>();
-    const [uploadResponse, setUploadResponse] = React.useState<number[]>([]);
-
-    const handleUploadComplete = (response: number[]) => {
-      setUploadResponse(response);
-      console.log("File uploaded successfully:", response);
-    };
 
     const {
       register,
+      setValue,
+      setError,
+      clearErrors,
       handleSubmit,
       formState: { errors },
     } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: FormData) => {
-      setFormData(data);
+      if (!data.image || data.image.length === 0) {
+        setError("image", { message: "Image is required" });
+      } else {
+        clearErrors();
+        setFormData(data);
+      }
     };
   
     const fetchData = async () => {
@@ -138,10 +140,14 @@ export default function CreateCampaign(): React.JSX.Element {
             <Grid container spacing={2} mt={2}>
                 {/* Image Upload */}
                 <Grid item xs={12} md={6} lg={4} mb={1}>
-                    <FileUpload
-                        placeholder="Select Campaign Image"
-                        onUploadComplete={handleUploadComplete}
-                        fileType='image'/>        
+                <FileUpload
+                  name="image"
+                  register={register}
+                  setValue={setValue} // Pass setValue here
+                  placeholder="Select Campaign Image"
+                  fileType="image"
+                />
+                {errors.image && <Typography>{errors.image.message}</Typography>}
                 </Grid>
             </Grid>
           </CardSection>
