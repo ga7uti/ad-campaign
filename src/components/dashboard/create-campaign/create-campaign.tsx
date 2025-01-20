@@ -1,7 +1,7 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
 import { Age } from '@/types/campaign';
-import { CampaignFormSchema } from '@/types/create-form';
+import { CampaignFormSchema, FormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
@@ -21,7 +21,7 @@ export default function CreateCampaign(): React.JSX.Element {
       } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema)});
     
       const onSubmit = async (data: FormData) => {
-          console.log("SUCCESS");
+          console.log("SUCCESS",data);
       }
 
     async function fetchAgeRange() {
@@ -61,6 +61,7 @@ export default function CreateCampaign(): React.JSX.Element {
                                             name="name"
                                             register={register}
                                             error={errors.name}
+                                            data={undefined}
                                         />
                                         </Box>
                                     </Grid>
@@ -69,7 +70,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     </CardContent>
                 </Card>
                 <Box sx={{ textAlign: "center", mt: 3 }}>
-                <button type="submit" className="submit-button">Submit</button>
+                    <button type="submit" className="submit-button">Submit</button>
                 </Box>
             </Box>
         </form>

@@ -3,7 +3,6 @@ import { z, ZodType } from "zod"; // Add new import
 
 export type FormData = {
     name: string;
-    age: string;
 };
 
   export type FormFieldProps<T> = {
@@ -13,17 +12,15 @@ export type FormData = {
     register: UseFormRegister<FormData>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
-    data: T[]
+    data: T[] | undefined
   };
 
 
   export type ValidFieldNames =
   | "name"
-  | "age"
 
 
   export const CampaignFormSchema: ZodType<FormData> = z
   .object({
-    name: z.string(),
-    age: z.string(),
+    name: z.string().min(4, { message: 'Name is required' })
   })
