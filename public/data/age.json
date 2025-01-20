@@ -1,13 +1,13 @@
 {
     "message": "Data succcessfully fetched",
     "data": [    
-        { "id": 1, "range": "25" },
-        { "id": 2, "range": "26-35" },
-        { "id": 3, "range": "36-45" },
-        { "id": 4, "range": "46-55" },
-        { "id": 5, "range": "56-65" },
-        { "id": 6, "range": "56-65" },
-        { "id": 7, "range": "65+" }
+        { "id": 1, "value": "25" },
+        { "id": 2, "value": "26-35" },
+        { "id": 3, "value": "36-45" },
+        { "id": 4, "value": "46-55" },
+        { "id": 5, "value": "56-65" },
+        { "id": 6, "value": "56-65" },
+        { "id": 7, "value": "65+" }
     ],
     "success": true
 }

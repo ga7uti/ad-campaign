@@ -1,5 +1,5 @@
 import { FormFieldProps } from '@/types/create-form';
-import { FormHelperText, TextField } from '@mui/material';
+import { FormHelperText, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import * as React from 'react';
 
 const ITEM_HEIGHT = 48;
@@ -22,13 +22,35 @@ const FormField : React.FC<FormFieldProps<any>> = ({
     data
   }) => (
     <div>
-        <TextField
-            type={type}
-            fullWidth
-            {...register(name,{valueAsNumber})}
-            placeholder={placeholder}
+      {!data?
+      <div>
+          <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
+          <TextField
+              type={type}
+              fullWidth
+              {...register(name,{valueAsNumber})}
+              >
+          </TextField>
+        </div>
+        : 
+        <div>
+          <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
+          <Select
+              type={type}
+              fullWidth
+              {...register(name, { valueAsNumber })}
+              multiple
+              MenuProps={MenuProps}
+              defaultValue={[]} // Ensure default value is an array
             >
-        </TextField>
+              {data.map((val: any) => (
+                <MenuItem key={val.id} value={val.value}>
+                  {val.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+        }
         {error ? <FormHelperText>{error.message}</FormHelperText> : null}
     </div>
 );

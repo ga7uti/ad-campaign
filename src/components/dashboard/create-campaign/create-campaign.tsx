@@ -24,14 +24,14 @@ export default function CreateCampaign(): React.JSX.Element {
           console.log("SUCCESS",data);
       }
 
-    async function fetchAgeRange() {
+    const fetchAgeRange = async () => {
         try {
-            const response = await campaignClient.getAge();
-            setAge(response);
-        } catch (error:any) {
-            console.log(error)
+            const ages = await campaignClient.getAge();
+            setAge(ages)
+            } catch (error) {
+            console.error("Failed to age", error);
         }
-    }  
+    };
 
     React.useEffect(()=>{
         fetchAgeRange();
@@ -52,7 +52,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             </Box>
                             {showTargetingType && (
                                 <Grid container spacing={2} mt={2}>
-                                {/* Name */}
+                                    {/* Name */}
                                     <Grid item xs={12} md={6} mb={2}>
                                         <Box sx={{ minWidth: 120 }}>
                                         <FormField
@@ -62,6 +62,20 @@ export default function CreateCampaign(): React.JSX.Element {
                                             register={register}
                                             error={errors.name}
                                             data={undefined}
+                                        />
+                                        </Box>
+                                    </Grid>
+
+                                    {/* Name */}
+                                    <Grid item xs={12} md={6} mb={2}>
+                                        <Box sx={{ minWidth: 120 }}>
+                                        <FormField
+                                            type="text"
+                                            placeholder="Select age range"
+                                            name="age"
+                                            register={register}
+                                            error={errors.age}
+                                            data={ages}
                                         />
                                         </Box>
                                     </Grid>

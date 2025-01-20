@@ -13,7 +13,7 @@ export interface Partners{
 
 export interface Age{
     id: number,
-    range: string
+    value: string
 }
 
 export interface Interest{
