@@ -1,6 +1,6 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
-import { CommonSelectResponse } from '@/types/campaign';
+import { CommonSelectResponse, Location } from '@/types/campaign';
 import { CampaignFormSchema, FormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
@@ -14,6 +14,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const [ages,setAge]=React.useState<CommonSelectResponse[]>([])
     const [devices,setDevices]=React.useState<CommonSelectResponse[]>([])
     const [environment,setEnvrionment]=React.useState<CommonSelectResponse[]>([])
+    const [location,setLocation]=React.useState<Location[]>([])
     const [formData,setFormData]=React.useState<FormData>()
 
     const {
@@ -54,10 +55,20 @@ export default function CreateCampaign(): React.JSX.Element {
         }
     };
 
+    const fetchLocation = async () => {
+        try {
+            const response = await campaignClient.getLocations();
+            setLocation(response)
+            } catch (error) {
+            console.error("Failed to load device", error);
+        }
+    };
+
     React.useEffect(()=>{
         fetchAgeRange();
         fetchDevice();
         fetchEnv();
+        fetchLocation();
     },[])
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -132,6 +143,19 @@ export default function CreateCampaign(): React.JSX.Element {
                                         </Box>
                                     </Grid>
 
+                                    {/* Location */}
+                                    <Grid item xs={12} md={6} mb={1}>
+                                        <Box sx={{ minWidth: 120 }}>
+                                        <FormField
+                                            type="text"
+                                            placeholder="Select location"
+                                            name="location"
+                                            register={register}
+                                            error={errors.location}
+                                            data={location}
+                                        />
+                                        </Box>
+                                    </Grid>
 
                                 </Grid>
                                 
@@ -139,7 +163,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     </CardContent>
                 </Card>
                 <Box sx={{ textAlign: "center", mt: 3 }}>
-                    <button type="submit" className="submit-button">Submit</button>
+                    <Button variant="contained" color="primary" type="submit">Submit</Button>
                 </Box>
             </Box>
             <Typography>{JSON.stringify(formData)}</Typography>

@@ -6,6 +6,7 @@ export type FormData = {
     age: string[];
     device: string[];
     environment: string[];
+    location: number[];
 };
 
   export type FormFieldProps<T> = {
@@ -15,7 +16,7 @@ export type FormData = {
     register: UseFormRegister<FormData>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
-    data: T[] | undefined
+    data: T[] | undefined;
   };
 
 
@@ -24,6 +25,7 @@ export type FormData = {
   | "age"
   | "device"
   | "environment"
+  | "location"
 
 
   export const CampaignFormSchema: ZodType<FormData> = z
@@ -32,4 +34,5 @@ export type FormData = {
     age: z.string().array().min(1,{ message: 'Age is required' }),
     device: z.string().array().min(1,{ message: 'Device is required' }),
     environment: z.string().array().min(1,{ message: 'Environment is required' }),
+    location: z.number().array().min(1,{ message: 'Location is required' }),
   })

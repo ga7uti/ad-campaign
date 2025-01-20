@@ -23,31 +23,46 @@ const FormField : React.FC<FormFieldProps<any>> = ({
   }) => (
     <div>
       {!data?
-      <div>
-          <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
-          <TextField
-              type={type}
-              fullWidth
-              {...register(name,{valueAsNumber})}
-              >
-          </TextField>
-        </div>
-        : 
         <div>
-          <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
-          <Select
+            <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
+            <TextField
+                type={type}
+                fullWidth
+                {...register(name,{valueAsNumber})}
+                >
+            </TextField>
+          </div>
+          : 
+          <div>
+            <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
+            <Select
               type={type}
               fullWidth
               {...register(name, { valueAsNumber })}
               multiple
               MenuProps={MenuProps}
-              defaultValue={[]} // Ensure default value is an array
+              defaultValue={[]}
             >
-              {data.map((val: any) => (
-                <MenuItem key={val.id} value={val.value}>
-                  {val.value}
-                </MenuItem>
-              ))}
+              {(() => {
+                console.log("Select name:", name);
+                console.log("Data:", data);
+
+                switch (name) {
+                  case "location":
+                    return data.map((val: any) => (
+                      <MenuItem key={val.id} value={val.id}>
+                        {val.city}
+                      </MenuItem>
+                    ));
+
+                  default:
+                    return data.map((val: any) => (
+                      <MenuItem key={val.id} value={val.value}>
+                        {val.value}
+                      </MenuItem>
+                    ));
+                }
+              })()}
             </Select>
           </div>
         }

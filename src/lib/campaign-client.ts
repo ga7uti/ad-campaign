@@ -38,7 +38,7 @@ class CampaignClient {
 
     async getLocations() :Promise<Location[]>{
       try {
-        const response = await axios.get('/data/location.json', {
+        const response = await axiosInstance.get('/api/location', {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;
