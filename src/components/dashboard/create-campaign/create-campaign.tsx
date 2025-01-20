@@ -147,7 +147,11 @@ export default function CreateCampaign(): React.JSX.Element {
                   placeholder="Select Campaign Image"
                   fileType="image"
                 />
-                {errors.image && <Typography>{errors.image.message}</Typography>}
+                {errors.image && 
+                  <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                    {errors.image?.message}
+                  </Typography>
+                }
                 </Grid>
             </Grid>
           </CardSection>
