@@ -91,6 +91,17 @@ class CampaignClient {
       }
     }
 
+    async getEnv(): Promise<CommonSelectResponse[]> {
+      try {
+        const response = await axios.get('/data/environment.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
     async getLanguage(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/language.json', {

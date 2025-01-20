@@ -13,7 +13,8 @@ export default function CreateCampaign(): React.JSX.Element {
     const [showTargetingType, setShowTargetingType] = React.useState<boolean>(true);
     const [ages,setAge]=React.useState<CommonSelectResponse[]>([])
     const [devices,setDevices]=React.useState<CommonSelectResponse[]>([])
-    const [formData,SetFormData]=React.useState<FormData[]>([])
+    const [environment,setEnvrionment]=React.useState<CommonSelectResponse[]>([])
+    const [formData,setFormData]=React.useState<FormData>()
 
     const {
         register,
@@ -23,7 +24,7 @@ export default function CreateCampaign(): React.JSX.Element {
       } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema)});
     
       const onSubmit = async (data: FormData) => {
-        SetFormData(data)
+        setFormData(data)
       }
 
     const fetchAgeRange = async () => {
@@ -43,10 +44,20 @@ export default function CreateCampaign(): React.JSX.Element {
             console.error("Failed to load device", error);
         }
     };
+    
+    const fetchEnv = async () => {
+        try {
+            const response = await campaignClient.getEnv();
+            setEnvrionment(response)
+            } catch (error) {
+            console.error("Failed to load device", error);
+        }
+    };
 
     React.useEffect(()=>{
         fetchAgeRange();
         fetchDevice();
+        fetchEnv();
     },[])
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,6 +117,21 @@ export default function CreateCampaign(): React.JSX.Element {
                                         />
                                         </Box>
                                     </Grid>
+
+                                    {/* Environment */}
+                                    <Grid item xs={12} md={6} mb={1}>
+                                        <Box sx={{ minWidth: 120 }}>
+                                        <FormField
+                                            type="text"
+                                            placeholder="Select environment"
+                                            name="environment"
+                                            register={register}
+                                            error={errors.environment}
+                                            data={environment}
+                                        />
+                                        </Box>
+                                    </Grid>
+
 
                                 </Grid>
                                 
