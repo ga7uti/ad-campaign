@@ -15,6 +15,10 @@ export default function CreateCampaign(): React.JSX.Element {
     const [devices, setDevices] = React.useState<CommonSelectResponse[]>([]);
     const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
     const [location, setLocation] = React.useState<Location[]>([]);
+    const [exchange, setExchanges] = React.useState<CommonSelectResponse[]>([]);
+    const [language, setLanguage] = React.useState<CommonSelectResponse[]>([]);
+    const [carrier, setCarrier] = React.useState<CommonSelectResponse[]>([]);
+    const [devicePrice, setDevicePrice] = React.useState<CommonSelectResponse[]>([]);
     const [formData, setFormData] = React.useState<FormData>();
 
     const {
@@ -27,8 +31,8 @@ export default function CreateCampaign(): React.JSX.Element {
     } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: FormData) => {
-      if (!data.image || data.image.length === 0) {
-        setError('image',{message:"Image is required"});
+      if (!data.images || data.images.length === 0) {
+        setError('images',{message:"Image is required"});
       }
 
       if (!data.keywords || data.keywords.length === 0) {
@@ -43,16 +47,25 @@ export default function CreateCampaign(): React.JSX.Element {
   
     const fetchData = async () => {
       try {
-        const [ageRes, deviceRes, envRes, locRes] = await Promise.all([
+        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
+          carrierRes,devicePriceRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
           campaignClient.getLocations(),
+          campaignClient.getExchange(),
+          campaignClient.getLanguage(),
+          campaignClient.getCarrier(),
+          campaignClient.getDevicePrice(),
         ]);
         setAge(ageRes);
         setDevices(deviceRes);
         setEnvironment(envRes);
         setLocation(locRes);
+        setExchanges(exchangeRes);
+        setLanguage(langRes);
+        setCarrier(carrierRes);
+        setDevicePrice(devicePriceRes);
       } catch (error) {
         console.error("Failed to load campaign data", error);
       }
@@ -140,63 +153,123 @@ export default function CreateCampaign(): React.JSX.Element {
                 </Grid>
             </Grid>
           </CardSection>
-  
-        {/* Campaign Details Section */}
-        <CardSection title="File Upload">
+          
+          {/* Campaign Details Section */}
+          <CardSection title="Targeting Type">
             <Grid container spacing={2} mt={2}>
-                {/* Image Upload */}
-                <Grid item xs={12} md={6} lg={4} mb={1}>
-                  <FileUpload
-                    name="image"
-                    register={register}
-                    setValue={setValue} // Pass setValue here
-                    placeholder="Select Campaign Image"
-                  />
-                  {errors.image && 
-                    <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                      {errors.image?.message}
-                    </Typography>
-                  }
-                </Grid>
+                  {/* Exchange */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="Exchange"
+                          name="exchange"
+                          register={register}
+                          error={errors.exchange}
+                          data={exchange}
+                      />
+                    </Box>
+                  </Grid>
 
-                <Grid item xs={12} md={6} lg={4} mb={1}>
-                  <FileUpload
-                    name="keywords"
-                    register={register}
-                    setValue={setValue}
-                    placeholder="Select keywords"
-                  />
-                  {errors.keywords && 
-                    <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                      {errors.keywords?.message}
-                    </Typography>
-                  }
-                </Grid>
-                <Grid item xs={12} md={6} lg={4} mb={1}>
-                  <FileUpload
-                    name="proximitystore"
-                    register={register}
-                    setValue={setValue}
-                    placeholder="Select Proximity Store"
-                  />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4} mb={1}>
-                  <FileUpload
-                    name="proximity"
-                    register={register}
-                    setValue={setValue} 
-                    placeholder="Select Proximity"
-                  />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4} mb={1}>
-                  <FileUpload
-                    name="weather"
-                    register={register}
-                    setValue={setValue}
-                    placeholder="Select Weather"
-                  />
-                </Grid>
-            </Grid>
+                  {/* Carrier */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="Carrier"
+                          name="carrier"
+                          register={register}
+                          error={errors.carrier}
+                          data={carrier}
+                      />
+                    </Box>
+                  </Grid>
+
+                  {/* Langugage */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="Language"
+                          name="language"
+                          register={register}
+                          error={errors.language}
+                          data={language}
+                      />
+                    </Box>
+                  </Grid>
+
+                  {/* DevicePrice */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="DevicePrice"
+                          name="device_price"
+                          register={register}
+                          error={errors.device_price}
+                          data={devicePrice}
+                      />
+                    </Box>
+                  </Grid>
+              </Grid>
+            </CardSection>
+          {/* Campaign File Upload Section */}
+          <CardSection title="File Upload">
+              <Grid container spacing={2} mt={2}>
+                  {/* Image Upload */}
+                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                      name="images"
+                      register={register}
+                      setValue={setValue} // Pass setValue here
+                      placeholder="Select Campaign Image"
+                    />
+                    {errors.images && 
+                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                        {errors.images?.message}
+                      </Typography>
+                    }
+                  </Grid>
+
+                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                      name="keywords"
+                      register={register}
+                      setValue={setValue}
+                      placeholder="Select keywords"
+                    />
+                    {errors.keywords && 
+                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                        {errors.keywords?.message}
+                      </Typography>
+                    }
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                      name="proximity_store"
+                      register={register}
+                      setValue={setValue}
+                      placeholder="Select Proximity Store Visit"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                      name="proximity"
+                      register={register}
+                      setValue={setValue} 
+                      placeholder="Select Proximity"
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                    <FileUpload
+                      name="weather"
+                      register={register}
+                      setValue={setValue}
+                      placeholder="Select Weather"
+                    />
+                  </Grid>
+              </Grid>
           </CardSection>
   
           {/* Submit Button */}

@@ -7,8 +7,12 @@ export type FormData = {
     device: string[];
     environment: string[];
     location: number[];
-    image: number[];
+    images: number[];
     keywords: number[];
+    exchange: string[];
+    language: string[];
+    carrier: string[];
+    device_price: string[];
     proximitystore?: number[];
     proximity?: number[];
     weather?: number[];
@@ -31,9 +35,13 @@ export type FormData = {
   | "device"
   | "environment"
   | "location"
-  | "image"
+  | "images"
   | "keywords"
-  | "proximitystore"
+  | "exchange"
+  | "language"
+  | "carrier"
+  | "device_price"
+  | "proximity_store"
   | "proximity"
   | "weather"
 
@@ -44,9 +52,13 @@ export type FormData = {
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
-    image: z.array(z.number(), { message: "Image is required" }),
+    images: z.array(z.number(), { message: "Image is required" }),
     keywords: z.array(z.number(), { message: "Keywords is required" }),
-    proximitystore: z.array(z.number()).optional(),
+    exchange: z.array(z.string(), { message: "Exchange is required" }),
+    language: z.array(z.string(), { message: "Language is required" }),
+    carrier: z.array(z.string(), { message: "Carrier is required" }),
+    device_price: z.array(z.string(), { message: "Device Price is required" }),
+    proximity_store: z.array(z.number()).optional(),
     proximity: z.array(z.number()).optional(),
     weather: z.array(z.number()).optional(),
   });

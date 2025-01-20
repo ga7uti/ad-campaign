@@ -6,16 +6,11 @@ export interface Location {
     tier: string;
     population: number;
 }
-export interface Partners{
-    id: number,
-    name: string
-}
 
 export interface CommonSelectResponse{
     id: number,
     value: string
 }
-
 
 export interface Interest{
     id: number,

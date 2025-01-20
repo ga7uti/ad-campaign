@@ -1,21 +1,21 @@
 {
     "message": "Data succcessfully fetched",
     "data": [    
-        { "id": 1, "name": "InMobi" },
-        { "id": 2, "name": "OpenX" },
-        { "id": 3, "name": "ImproveDigital" },
-        { "id": 4, "name": "Pubmatic" },
-        { "id": 5, "name": "Xandr" },
-        { "id": 6, "name": "M|SSP" },
-        { "id": 7, "name": "GoogleAdx" },
-        { "id": 8, "name": "Magnite" },
-        { "id": 9, "name": "Triplelift" },
-        { "id": 10, "name": "Smaato" },
-        { "id": 11, "name": "Equativ" },
-        { "id": 12, "name": "Medialink-X" },
-        { "id": 13, "name": "Index Exchange" },
-        { "id": 14, "name": "Axonix" },
-        { "id": 15, "name": "ADS" }
+        { "id": 1, "value": "InMobi" },
+        { "id": 2, "value": "OpenX" },
+        { "id": 3, "value": "ImproveDigital" },
+        { "id": 4, "value": "Pubmatic" },
+        { "id": 5, "value": "Xandr" },
+        { "id": 6, "value": "M|SSP" },
+        { "id": 7, "value": "GoogleAdx" },
+        { "id": 8, "value": "Magnite" },
+        { "id": 9, "value": "Triplelift" },
+        { "id": 10, "value": "Smaato" },
+        { "id": 11, "value": "Equativ" },
+        { "id": 12, "value": "Medialink-X" },
+        { "id": 13, "value": "Index Exchange" },
+        { "id": 14, "value": "Axonix" },
+        { "id": 15, "value": "ADS" }
     ],
     "success": true
 }

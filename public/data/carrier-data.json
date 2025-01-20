@@ -1,0 +1,10 @@
+{
+    "message": "Data succcessfully fetched",
+    "data": [    
+        { "id": 1, "value": "JIO" },
+        { "id": 2, "value": "Airtel" },
+        { "id": 3, "value": "VI" },
+        { "id": 4, "value": "BSNL" }
+    ],
+    "success": true
+}

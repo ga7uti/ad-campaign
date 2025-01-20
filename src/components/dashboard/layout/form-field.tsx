@@ -44,9 +44,6 @@ const FormField : React.FC<FormFieldProps<any>> = ({
               defaultValue={[]}
             >
               {(() => {
-                console.log("Select name:", name);
-                console.log("Data:", data);
-
                 switch (name) {
                   case "location":
                     return data.map((val: any) => (

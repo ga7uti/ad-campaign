@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Campaign, CommonSelectResponse, Interest, Location, Partners } from '@/types/campaign';
+import { Campaign, CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
@@ -25,11 +25,11 @@ class CampaignClient {
       try {
         let uri='';
         switch(fileType){
-          case 'image':
+          case 'images':
             formData.append('image', file);
             uri="campaign-images"
             break;
-          case 'proximitystore':
+          case 'proximity_store':
             formData.append('file', file);
             uri="proximityStore"
             break;
@@ -68,7 +68,7 @@ class CampaignClient {
       }
     }
 
-    async getAdPartners(): Promise<Partners[]> {
+    async getExchange(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/exchange.json', {
           headers: { 'Content-Type': 'application/json' },
@@ -126,6 +126,17 @@ class CampaignClient {
     async getLanguage(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/language.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getCarrier(): Promise<CommonSelectResponse[]> {
+      try {
+        const response = await axios.get('/data/carrier-data.json', {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;
