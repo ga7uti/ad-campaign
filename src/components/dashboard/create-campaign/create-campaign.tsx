@@ -3,7 +3,7 @@ import { campaignClient } from '@/lib/campaign-client';
 import { CommonSelectResponse, Location } from '@/types/campaign';
 import { CampaignFormSchema, CampaignFormData } from '@/types/create-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -38,7 +38,7 @@ export default function CreateCampaign(): React.JSX.Element {
       formState: { errors },
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: CampaignFormData) => {
       if (!data.images || data.images.length === 0) {
         setError('images',{message:"Image is required"});
         return;
@@ -300,11 +300,21 @@ export default function CreateCampaign(): React.JSX.Element {
           </CardSection>
   
           {/* Submit Button */}
-          <Box sx={{ textAlign: "center", mt: 3 }}>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
-          </Box>
+          {!isPending && (
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Button variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </Box>
+          )}
+          
+          {isPending && (
+              <Box display="flex" justifyContent="flex-start" alignItems="center">
+                <Box sx={{ marginLeft: 2 }}>
+                  <CircularProgress />
+                </Box>
+              </Box>
+          )}
         </Box>
         {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
       </form>

@@ -13,7 +13,7 @@ export type CampaignFormData = {
     language: string[];
     carrier: string[];
     device_price: string[];
-    proximitystore?: number[];
+    proximity_store?: number[];
     proximity?: number[];
     weather?: number[];
 };
@@ -46,7 +46,7 @@ export type CampaignFormData = {
   | "weather"
 
 
-  export const CampaignFormSchema: ZodType<FormData> = z.object({
+  export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     name: z.string().min(4, { message: "Name is required" }),
     age: z.array(z.string(), { message: "Age is required" }),
     environment: z.array(z.string(), { message: "Environment is required" }),
