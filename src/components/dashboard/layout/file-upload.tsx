@@ -9,24 +9,27 @@ interface FileUploadProps {
   onUploadComplete: (response: any) => void; // Callback to send the response back to the parent
 }
 
-export default function FileUpload({ placeholder, onUploadComplete }: FileUploadProps): React.JSX.Element {
+export default function FileUpload({ placeholder, onUploadComplete,fileType }: FileUploadProps): React.JSX.Element {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
+      handleUpload(e.target.files[0]);
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (file:File) => {
     if (!file) return;
     setUploading(true);
     setError("");
     try {
       console.log("File",file)
-      const id = await campaignClient.uploadFile(file,"image");
+      const id = await campaignClient.uploadFile(file,fileType);
+      setUploadSuccess(true)
       onUploadComplete([id]);
     } catch (error:any) {
       setError(error.message);
@@ -73,26 +76,30 @@ export default function FileUpload({ placeholder, onUploadComplete }: FileUpload
 
       {/* Upload Icon Section */}
       <Grid item xs={12} sm={6} display="flex" justifyContent="flex-start" alignItems="center">
-        {/* Upload Button and Progress */}
-        {file && !uploading && (
-          <Box sx={{ marginLeft: 2 }}>
-            <Button onClick={handleUpload} startIcon={<UploadSimple fontSize="var(--icon-fontSize-md)" />} variant="contained">Upload</Button>
-          </Box>
-        )}
-
+        {/* Upload Progress */}
         {uploading && (
           <Box sx={{ marginLeft: 2 }}>
             <CircularProgress />
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
-              Uploading...
-            </Typography>
           </Box>
         )}
       </Grid>
+      {uploading && (
+          <Box sx={{ marginLeft: 2 }}>
+            <Typography variant="body2" sx={{ marginLeft: 1 }}>
+              Uploading... {file?.name}
+            </Typography>
+          </Box>
+        )}
        {/* Display error if any */}
        {error && (
           <Box sx={{ marginTop: 2 }}>
            <Alert color="error">{error}</Alert>
+          </Box>
+        )}
+
+        {uploadSuccess && (
+          <Box sx={{ marginTop: 2 }}>
+           <Alert color="success">Uploaded {file?.name}</Alert>
           </Box>
         )}
     </Grid>
