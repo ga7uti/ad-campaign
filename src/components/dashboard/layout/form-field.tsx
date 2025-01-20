@@ -34,7 +34,7 @@ const FormField : React.FC<FormFieldProps<any>> = ({
           </div>
           : 
           <div>
-            <InputLabel>{name.charAt(0).toUpperCase() + name.slice(1)}</InputLabel>
+            <InputLabel>{placeholder}</InputLabel>
             <Select
               type={type}
               fullWidth

@@ -10,164 +10,141 @@ import { useForm } from 'react-hook-form';
 import FormField from '../layout/form-field';
 
 export default function CreateCampaign(): React.JSX.Element {
-    const [showTargetingType, setShowTargetingType] = React.useState<boolean>(true);
-    const [ages,setAge]=React.useState<CommonSelectResponse[]>([])
-    const [devices,setDevices]=React.useState<CommonSelectResponse[]>([])
-    const [environment,setEnvrionment]=React.useState<CommonSelectResponse[]>([])
-    const [location,setLocation]=React.useState<Location[]>([])
-    const [formData,setFormData]=React.useState<FormData>()
+  const [ages, setAge] = React.useState<CommonSelectResponse[]>([]);
+  const [devices, setDevices] = React.useState<CommonSelectResponse[]>([]);
+  const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
+  const [location, setLocation] = React.useState<Location[]>([]);
+  const [formData, setFormData] = React.useState<FormData>();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setError,
-      } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema)});
-    
-      const onSubmit = async (data: FormData) => {
-        setFormData(data)
-      }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(CampaignFormSchema) });
 
-    const fetchAgeRange = async () => {
-        try {
-            const response = await campaignClient.getAge();
-            setAge(response)
-            } catch (error) {
-            console.error("Failed to load age", error);
-        }
-    };
+  const onSubmit = async (data: FormData) => {
+    setFormData(data);
+  };
 
-    const fetchDevice = async () => {
-        try {
-            const response = await campaignClient.getDevice();
-            setDevices(response)
-            } catch (error) {
-            console.error("Failed to load device", error);
-        }
-    };
-    
-    const fetchEnv = async () => {
-        try {
-            const response = await campaignClient.getEnv();
-            setEnvrionment(response)
-            } catch (error) {
-            console.error("Failed to load device", error);
-        }
-    };
+  const fetchData = async () => {
+    try {
+      const [ageRes, deviceRes, envRes, locRes] = await Promise.all([
+        campaignClient.getAge(),
+        campaignClient.getDevice(),
+        campaignClient.getEnv(),
+        campaignClient.getLocations(),
+      ]);
+      setAge(ageRes);
+      setDevices(deviceRes);
+      setEnvironment(envRes);
+      setLocation(locRes);
+    } catch (error) {
+      console.error("Failed to load campaign data", error);
+    }
+  };
 
-    const fetchLocation = async () => {
-        try {
-            const response = await campaignClient.getLocations();
-            setLocation(response)
-            } catch (error) {
-            console.error("Failed to load device", error);
-        }
-    };
+  React.useEffect(() => {
+    fetchData();
+  }, []);
 
-    React.useEffect(()=>{
-        fetchAgeRange();
-        fetchDevice();
-        fetchEnv();
-        fetchLocation();
-    },[])
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                {/* Targeting Type Card */}
-                <Card>
-                    <CardContent>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Typography variant="h6">Targeting Type</Typography>
-                                <Button
-                                variant="text"
-                                onClick={() => setShowTargetingType((prev) => !prev)}
-                                startIcon={showTargetingType?<CaretUp/>: <CaretDown/>}
-                                />
-                            </Box>
-                            {showTargetingType && (
-                                <Grid container spacing={2} mt={2}>
-                                    {/* Name */}
-                                    <Grid item xs={12} md={6} mb={1}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <FormField
-                                            type="text"
-                                            placeholder="Enter campaign name"
-                                            name="name"
-                                            register={register}
-                                            error={errors.name}
-                                            data={undefined}
-                                        />
-                                        </Box>
-                                    </Grid>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        {/* Campaign Name Section */}
+        <CardSection title="Campaign Name">
+          <FormField
+            type="text"
+            placeholder="Campaign name"
+            name="name"
+            register={register}
+            error={errors.name}
+            data={undefined}
+          />
+        </CardSection>
 
-                                    {/* Age */}
-                                    <Grid item xs={12} md={6} mb={1}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <FormField
-                                            type="text"
-                                            placeholder="Select age range"
-                                            name="age"
-                                            register={register}
-                                            error={errors.age}
-                                            data={ages}
-                                        />
-                                        </Box>
-                                    </Grid>
+        {/* Age Section */}
+        <CardSection title="Age Range">
+          <FormField
+            type="text"
+            placeholder="Age Range"
+            name="age"
+            register={register}
+            error={errors.age}
+            data={ages.length > 0 ? ages : [{ id: 0, value: "No data available" }]}
+          />
+        </CardSection>
 
+        {/* Device Section */}
+        <CardSection title="Devices">
+          <FormField
+            type="text"
+            placeholder="Devices"
+            name="device"
+            register={register}
+            error={errors.device}
+            data={devices.length > 0 ? devices : [{ id: 0, value: "No data available" }]}
+          />
+        </CardSection>
 
-                                    {/* Device */}
-                                    <Grid item xs={12} md={6} mb={1}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <FormField
-                                            type="text"
-                                            placeholder="Select age range"
-                                            name="device"
-                                            register={register}
-                                            error={errors.device}
-                                            data={devices}
-                                        />
-                                        </Box>
-                                    </Grid>
+        {/* Environment Section */}
+        <CardSection title="Environment">
+          <FormField
+            type="text"
+            placeholder="Environments"
+            name="environment"
+            register={register}
+            error={errors.environment}
+            data={environment.length > 0 ? environment : [{ id: 0, value: "No data available" }]}
+          />
+        </CardSection>
 
-                                    {/* Environment */}
-                                    <Grid item xs={12} md={6} mb={1}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <FormField
-                                            type="text"
-                                            placeholder="Select environment"
-                                            name="environment"
-                                            register={register}
-                                            error={errors.environment}
-                                            data={environment}
-                                        />
-                                        </Box>
-                                    </Grid>
+        {/* Location Section */}
+        <CardSection title="Locations">
+          <FormField
+            type="text"
+            placeholder="Locations"
+            name="location"
+            register={register}
+            error={errors.location}
+            data={location.length > 0 ? location : [{ id: 0, city: "No data available" }]}
+          />
+        </CardSection>
 
-                                    {/* Location */}
-                                    <Grid item xs={12} md={6} mb={1}>
-                                        <Box sx={{ minWidth: 120 }}>
-                                        <FormField
-                                            type="text"
-                                            placeholder="Select location"
-                                            name="location"
-                                            register={register}
-                                            error={errors.location}
-                                            data={location}
-                                        />
-                                        </Box>
-                                    </Grid>
+        {/* Submit Button */}
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <Button variant="contained" color="primary" type="submit">
+            Submit
+          </Button>
+        </Box>
+      </Box>
+      <Typography>{JSON.stringify(formData)}</Typography>
+    </form>
+  );
+}
 
-                                </Grid>
-                                
-                            )}
-                    </CardContent>
-                </Card>
-                <Box sx={{ textAlign: "center", mt: 3 }}>
-                    <Button variant="contained" color="primary" type="submit">Submit</Button>
-                </Box>
-            </Box>
-            <Typography>{JSON.stringify(formData)}</Typography>
+// CardSection Component
+function CardSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}): React.JSX.Element {
+  const [expanded, setExpanded] = React.useState<boolean>(true);
 
-        </form>
-    );
+  return (
+    <Card>
+      <CardContent>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6">{title}</Typography>
+          <Button
+            variant="text"
+            onClick={() => setExpanded((prev) => !prev)}
+            startIcon={expanded ? <CaretUp /> : <CaretDown />}
+          />
+        </Box>
+        {expanded && <Box sx={{ mt: 2 }}>{children}</Box>}
+      </CardContent>
+    </Card>
+  );
 }

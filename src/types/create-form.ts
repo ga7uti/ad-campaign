@@ -28,11 +28,10 @@ export type FormData = {
   | "location"
 
 
-  export const CampaignFormSchema: ZodType<FormData> = z
-  .object({
-    name: z.string().min(4, { message: 'Name is required' }),
-    age: z.string().array().min(1,{ message: 'Age is required' }),
-    device: z.string().array().min(1,{ message: 'Device is required' }),
-    environment: z.string().array().min(1,{ message: 'Environment is required' }),
-    location: z.number().array().min(1,{ message: 'Location is required' }),
-  })
+  export const CampaignFormSchema: ZodType<FormData> = z.object({
+    name: z.string().min(4, { message: "Name is required" }),
+    age: z.array(z.string(), { message: "Age is required" }),
+    environment: z.array(z.string(), { message: "Environment is required" }),
+    location: z.array(z.number(), { message: "Location is required" }),
+    device: z.array(z.string(), { message: "Device is required" }),
+  });
