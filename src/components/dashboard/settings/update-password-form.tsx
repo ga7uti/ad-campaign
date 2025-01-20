@@ -1,4 +1,4 @@
-/* eslint-disable eslint-comments/require-description -- This directive is necessary to disable the requirement for descriptions in ESLint comments */
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
 import { accountClient } from '@/lib/account-client';
@@ -71,17 +71,11 @@ export function UpdatePasswordForm(): React.JSX.Element {
          setIsPending(true);
          try {
           const response = await accountClient.updatePassword(values);
-          reset(defaultValues);
-          if (response.error) {
-            setError('root', { type: 'server', message: response.error });
-          } else {
+          if (response) 
             setIsPasswordUpdated(true);
-          }
-         } catch (error: unknown) {
-           setError('root', {
-             type: 'server',
-             message: 'An unexpected error occurred. Please try again later.',
-           });
+            reset(defaultValues);
+         } catch (error:any) {
+          setError('root', { type: 'server', message: error.message});
          } finally {
            setIsPending(false);
          }

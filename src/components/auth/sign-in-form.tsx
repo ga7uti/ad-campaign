@@ -46,17 +46,15 @@ export function SignInForm(): React.JSX.Element {
     async (values: Values): Promise<void> => {
       try{
         setIsPending(true);
-        const { error } = await authClient.signIn(values);
-        if (error) {
-          setError('root', { type: 'server', message: error });
-          setIsPending(false);
-          return;
+        const response = await authClient.signIn(values);
+        if (response) {
+          await checkSession?.();
+          router.refresh();
         }
-        await checkSession?.();
-        router.refresh();
-      }catch(error){
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
+      } finally {
         setIsPending(false);
-        setError('root', { type: 'server', message: "An unexpected error occurred. Please try again later." });
       }
     },
     [checkSession, router, setError]
