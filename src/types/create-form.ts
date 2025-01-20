@@ -58,7 +58,7 @@ export interface CampaignFormData  {
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),
     device_price: z.array(z.string(), { message: "Device Price is required" }),
-    proximity_store: z.array(z.number()).optional(),
-    proximity: z.array(z.number()).optional(),
-    weather: z.array(z.number()).optional(),
+    proximity_store: z.any(),
+    proximity: z.any(),
+    weather: z.any(),
   });
