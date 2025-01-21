@@ -39,7 +39,7 @@ export interface Campaign {
     device: string[]; 
     environment: string[]; 
     exchange: string[];
-    interset: Interest[]; 
+    target_type: Interest[]; 
     created_at: string; 
     updated_at: string; 
     language: string[];
@@ -60,7 +60,7 @@ export interface CampaignFormData  {
     images: number[];
     keywords: number[];
     distinct_interest: string[];
-    interest: number[];
+    target_type: number[];
     exchange: string[];
     language: string[];
     carrier: string[];

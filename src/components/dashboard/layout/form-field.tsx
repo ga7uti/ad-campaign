@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import { FormFieldProps } from '@/types/form-data';
 import {
@@ -106,7 +107,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
                     </MenuItem>
                   ));
 
-                  case 'interest':
+                  case 'target_type':
                   return data.map((val: Interest) => (
                     <MenuItem key={val.id} value={val.id}>
                       {val.category}

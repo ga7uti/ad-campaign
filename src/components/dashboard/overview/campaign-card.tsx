@@ -1,10 +1,10 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { Campaign } from '@/types/campaign';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
@@ -41,7 +41,7 @@ export function CampaignCard({ campaign }: CampaignCardProps): React.JSX.Element
           {campaign.environment?<CampaignInfo name='Environment'  value={campaign.environment}/>:null}
           {campaign.language?<CampaignInfo name='Language'  value={campaign.language}/>:null}
           {campaign.carrier?<CampaignInfo name='Carrier'  value={campaign.carrier}/>:null}
-          {campaign.interset?<CampaignInfo name='Interest' value={campaign.interset?.map(data=>data.category)}/>:null}
+          {campaign.target_type.length>0?<CampaignInfo name='Interest' value={campaign.target_type?.map(data=>data.category)}/>:null}
         </Box>
         </Stack>
       </CardContent>

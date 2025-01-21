@@ -300,9 +300,9 @@ export default function CreateCampaign(): React.JSX.Element {
                       <FormField
                           type="text"
                           placeholder="SubCategory"
-                          name="interest"
+                          name="target_type"
                           register={register}
-                          error={Array.isArray(errors.interest)?errors.interest[0]:errors.carrier}
+                          error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
                           data={selectedInterest.length > 0 ? selectedInterest.slice(0,20) : [{ id: 0, category: 'No data available. Please select Interest' }]}
                           />
                     </Box>
@@ -362,7 +362,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="weather"
                       register={register}
                       setValue={setValue}
-                      placeholder="Select Weather"
+                      placeholder="Select Weather(.pdf)"
                     />
                   </Grid>
               </Grid>

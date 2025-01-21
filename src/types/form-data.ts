@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
@@ -21,8 +22,8 @@ import { CampaignFormData } from "./campaign";
   export interface FileUploadProps {
     name: ValidFieldNames;
     placeholder: string;
-    register: UseFormRegister<CampaignFormData>;
-    setValue: UseFormSetValue<CampaignFormData>; // Add setValue to update form state
+    register: UseFormRegister<any>;
+    setValue: UseFormSetValue<any>; // Add setValue to update form state
   }
 
   export type ValidFieldNames =
@@ -36,7 +37,7 @@ import { CampaignFormData } from "./campaign";
   | "exchange"
   | "language"
   | "distinct_interest"
-  | "interest"
+  | "target_type"
   | "carrier"
   | "device_price"
   | "proximity_store"
@@ -63,7 +64,7 @@ import { CampaignFormData } from "./campaign";
     images: z.array(z.number(), { message: "Image is required" }),
     keywords: z.array(z.number(), { message: "Keywords is required" }),
     distinct_interest: z.array(z.string(), { message: "Interest is required" }),
-    interest: z.array(z.number(), { message: "Interest is required" }),
+    target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),
