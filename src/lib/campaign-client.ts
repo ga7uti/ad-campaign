@@ -9,12 +9,12 @@ import { utils } from './common';
 
 class CampaignClient {
    
-    async getCampaigns(): Promise<Campaign[]> {
+    async getCampaigns(): Promise<{count:number,data: Campaign[]}> {
       try {
         const response = await axiosInstance.get('/api/fetch_user_campgain/', {
           headers: { 'Content-Type': 'application/json' },
         });
-        return response.data.results.data;
+        return {count: response.data.count,data:response.data.results.data};
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }
@@ -104,7 +104,7 @@ class CampaignClient {
 
     async getSelectedInterest(query:string): Promise<Interest[]> {
       try {
-        const response = await axiosInstance.get(`api/target_type`, {
+        const response = await axiosInstance.get(`api/target_type?query=${query}`, {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;

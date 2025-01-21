@@ -21,12 +21,14 @@ import { CircularProgress } from '@mui/material';
 
 export default function Page(): React.JSX.Element {
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
+  const [count, setCount] = React.useState<number>();
   const [loading, setLoading] = useState<boolean>(true);
   
   
   async function fetchCampaigns() {
     try {
-      const data = await campaignClient.getCampaigns();
+      const {count,data} = await campaignClient.getCampaigns();
+      setCount(Math.ceil(count/10));
       if (Array.isArray(data)) {
         setCampaigns(data);
       } else {
@@ -76,7 +78,7 @@ export default function Page(): React.JSX.Element {
         </Grid>
         }
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination count={campaigns.length} size="small" />
+          <Pagination count={count} size="small" />
         </Box>
       
     </Stack>
