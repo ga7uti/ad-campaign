@@ -104,7 +104,7 @@ class CampaignClient {
 
     async getSelectedInterest(query:string): Promise<Interest[]> {
       try {
-        const response = await axiosInstance.get(`api/target_type?query=${query}`, {
+        const response = await axiosInstance.get(`api/target_type?query=${encodeURIComponent(query)}`, {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;
