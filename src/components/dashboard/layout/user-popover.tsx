@@ -15,7 +15,7 @@ import { accountClient } from '@/lib/account-client';
 import { authClient } from '@/lib/auth-client';
 import { logger } from '@/lib/default-logger';
 import { paths } from '@/paths';
-import { User } from '@/types/user';
+import { User } from '@/types/auth';
 
 export interface UserPopoverProps {
   anchorEl: Element | null;

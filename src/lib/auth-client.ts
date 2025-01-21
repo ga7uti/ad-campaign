@@ -1,19 +1,9 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Auth } from '@/types/auth';
+import { Auth, ResetPasswordParams, SignInParams, User } from '@/types/auth';
 import axiosInstance from './axios-instance';
-import { User } from '@/types/user';
 import { utils } from './common';
-
-export interface SignInParams {
-  username: string;
-  password: string;
-}
-
-export interface ResetPasswordParams {
-  email: string;
-}
 
 class AuthClient {
   async signUp(user: User): Promise<boolean> {

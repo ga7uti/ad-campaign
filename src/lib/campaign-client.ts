@@ -1,21 +1,20 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Campaign, CommonSelectResponse, Interest, Location } from '@/types/campaign';
+import { Campaign, CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
-import { CampaignFormData } from '@/types/create-form';
 
 
 class CampaignClient {
    
-    async getCampaigns(): Promise<Campaign[]> {
+    async getCampaigns(): Promise<{count:number,data: Campaign[]}> {
       try {
         const response = await axiosInstance.get('/api/fetch_user_campgain/', {
           headers: { 'Content-Type': 'application/json' },
         });
-        return response.data.data;
+        return {count: response.data.count,data:response.data.results.data};
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }
@@ -92,9 +91,20 @@ class CampaignClient {
       }
     }
 
-    async getAudienceInterest(): Promise<Interest[]> {
+    async getDistinctInterest(): Promise<CommonSelectResponse[]> {
       try {
-        const response = await axios.get('/data/location.json', {
+        const response = await axios.get('/data/distinct-interest.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getSelectedInterest(query:string): Promise<Interest[]> {
+      try {
+        const response = await axiosInstance.get(`api/target_type?query=${encodeURIComponent(query)}`, {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;
