@@ -1,17 +1,9 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 
 import { campaignClient } from "@/lib/campaign-client";
-import { CampaignFormData, ValidFieldNames } from "@/types/form-data";
+import { FileUploadProps } from "@/types/form-data";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-
-interface FileUploadProps {
-  name: ValidFieldNames;
-  placeholder: string;
-  register: UseFormRegister<CampaignFormData>;
-  setValue: UseFormSetValue<CampaignFormData>; // Add setValue to update form state
-}
 
 export default function FileUpload({
   name,

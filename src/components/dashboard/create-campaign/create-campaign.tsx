@@ -279,12 +279,12 @@ export default function CreateCampaign(): React.JSX.Element {
            {/* Targeting Interest Section */}
            <CardSection title="Interest">
             <Grid container spacing={2} mt={2}>
-                  {/* Exchange */}
+                  {/* Interest */}
                   <Grid item xs={12} md={6} mb={1}>
                     <Box sx={{ minWidth: 120 }}>
                       <FormField
                           type="text"
-                          placeholder="Interest"
+                          placeholder="Category"
                           name="distinct_interest"
                           register={register}
                           onChange={handleSelectChange}
@@ -294,7 +294,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     </Box>
                   </Grid>
 
-                  {/* Carrier */}
+                  {/* Interest Category*/}
                   <Grid item xs={12} md={6} mb={1}>
                     <Box sx={{ minWidth: 120 }}>
                       <FormField
@@ -319,7 +319,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="images"
                       register={register}
                       setValue={setValue} // Pass setValue here
-                      placeholder="Select Campaign Image"
+                      placeholder="Select Campaign Image(.jpeg,.png)"
                     />
                     {errors.images && 
                       <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
@@ -333,7 +333,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="keywords"
                       register={register}
                       setValue={setValue}
-                      placeholder="Select Keywords"
+                      placeholder="Select Keywords(.pdf)"
                     />
                     {errors.keywords && 
                       <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
@@ -346,7 +346,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="proximity_store"
                       register={register}
                       setValue={setValue}
-                      placeholder="Select Proximity Store Visit"
+                      placeholder="Select Proximity Store Visit(.pdf)"
                     />
                   </Grid>
                   <Grid item xs={12} md={6} lg={4} mb={1}>
@@ -354,7 +354,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="proximity"
                       register={register}
                       setValue={setValue} 
-                      placeholder="Select Proximity"
+                      placeholder="Select Proximity(.pdf)"
                     />
                   </Grid>
                   <Grid item xs={12} md={6} lg={4} mb={1}>

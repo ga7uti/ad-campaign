@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from "@mui/material";
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
@@ -17,6 +17,13 @@ import { CampaignFormData } from "./campaign";
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
+
+  export interface FileUploadProps {
+    name: ValidFieldNames;
+    placeholder: string;
+    register: UseFormRegister<CampaignFormData>;
+    setValue: UseFormSetValue<CampaignFormData>; // Add setValue to update form state
+  }
 
   export type ValidFieldNames =
   | "name"
