@@ -35,22 +35,20 @@ export interface Campaign {
     keywords: FileUpload[]; 
     name: string;
     age: string[]; 
-    day_part: string|null;
+    day_part: string;
     device: string[]; 
     environment: string[]; 
     exchange: string[];
-    interset: Interest[]|null; 
+    interset: Interest[]; 
     created_at: string; 
     updated_at: string; 
     language: string[];
     carrier: string[]; 
-    device_price: string[]; 
-    start_time: string; 
-    end_time: string; 
-    proximity_store: string[]; 
-    proximity: string[];
-    weather: string[]; 
-    location: string[];
+    device_price: string[];  
+    proximity_store: FileUpload[]; 
+    proximity: FileUpload[];
+    weather: FileUpload[]; 
+    location: Location[];
 }
 
 export interface CampaignFormData  {

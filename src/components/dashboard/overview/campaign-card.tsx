@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { Download as DownloadIcon } from '@phosphor-icons/react/dist/ssr/Download';
 import dayjs from 'dayjs';
 import * as React from 'react';
+import CampaignInfo from './campaign-info';
 
 export interface Integration {
   id: string;
@@ -29,20 +30,19 @@ export function CampaignCard({ campaign }: CampaignCardProps): React.JSX.Element
     <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <CardContent sx={{ flex: '1 1 auto' }}>
         <Stack spacing={2}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <Box sx={{ width: 100, height: 100 }}>
-                <Avatar src={campaign.images?campaign.images[0]?.image:''} variant="square" sx={{ width: '100%', height: '100%' }} />
-              </Box>
-            </Grid>
-            <Grid item xs>
-              <Typography variant="h5">{campaign.name}</Typography>
-              <Typography variant="body2">Language: {campaign.language.join(', ')}</Typography> 
-              <Typography variant="body2">Device: {campaign.device.join(', ')}</Typography> 
-              <Typography variant="body2">Exchange: {campaign.exchange.join(', ')}</Typography> 
-              <Typography variant="body2">Environment: {campaign.environment.join(', ')}</Typography> 
-            </Grid>
-          </Grid>
+        <Box sx={{ height: '200px' }}>
+          <Avatar src={campaign.images?campaign.images[0]?.image:''} variant="square" sx={{ width: '100%', height: '100%' }} />
+        </Box>
+        <Box>
+          <Typography sx={{marginBottom:'1rem'}} variant="h5">{campaign.name}</Typography>
+          {campaign.location?<CampaignInfo name='Location' value={campaign.location.map(location => location.city)}/>:null}
+          {campaign.device?<CampaignInfo name='Device'  value={campaign.device}/>:null}
+          {campaign.exchange?<CampaignInfo name='Exchange'  value={campaign.exchange}/>:null}
+          {campaign.environment?<CampaignInfo name='Environment'  value={campaign.environment}/>:null}
+          {campaign.language?<CampaignInfo name='Language'  value={campaign.language}/>:null}
+          {campaign.carrier?<CampaignInfo name='Carrier'  value={campaign.carrier}/>:null}
+          {campaign.interset?<CampaignInfo name='Interest' value={campaign.interset?.map(data=>data.category)}/>:null}
+        </Box>
         </Stack>
       </CardContent>
       <Divider />
