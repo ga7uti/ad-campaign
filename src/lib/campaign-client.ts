@@ -1,11 +1,10 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Campaign, CommonSelectResponse, Interest, Location } from '@/types/campaign';
+import { Campaign, CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
-import { CampaignFormData } from '@/types/form-data';
 
 
 class CampaignClient {
@@ -15,7 +14,7 @@ class CampaignClient {
         const response = await axiosInstance.get('/api/fetch_user_campgain/', {
           headers: { 'Content-Type': 'application/json' },
         });
-        return response.data.data;
+        return response.data.results.data;
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }

@@ -2,6 +2,7 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 import { z, ZodType } from "zod"; // Add new import
 import { User } from "./user";
 import { CampaignFormData } from "./campaign";
+import { SignInParams } from "./auth";
 
   export interface FormFieldProps<T>  {
     type: string;
@@ -34,6 +35,8 @@ import { CampaignFormData } from "./campaign";
   | "last_name"
   | "email"
   | "phone_no"
+  | "username"
+  | "password"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -59,5 +62,10 @@ import { CampaignFormData } from "./campaign";
     last_name: z.string().min(5, { message: 'Last name  is required & must be at least 5 characters long' }),
     phone_no: z.string().regex(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' }),
     email: z.string().email({ message: 'Email is required' })
+  });
+
+  export const signInSchema: ZodType<SignInParams> = z.object({
+    username: z.string().min(1, { message: 'Email is required' }).email(),
+    password: z.string().min(1, { message: 'Password is required' }),
   });
   

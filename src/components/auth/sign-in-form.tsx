@@ -4,7 +4,10 @@
 import { useAuth } from '@/hooks/use-auth';
 import { authClient } from '@/lib/auth-client';
 import { paths } from '@/paths';
+import { SignInParams } from '@/types/auth';
+import { signInSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Grid } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -21,13 +24,9 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
+import FormField from '../dashboard/layout/form-field';
 
-const schema = zod.object({
-  username: zod.string().min(1, { message: 'Email is required' }).email(),
-  password: zod.string().min(1, { message: 'Password is required' }),
-});
 
-type Values = zod.infer<typeof schema>;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -39,11 +38,12 @@ export function SignInForm(): React.JSX.Element {
     control,
     handleSubmit,
     setError,
+    register,
     formState: { errors },
-  } = useForm<Values>({ resolver: zodResolver(schema) });
+  } = useForm<SignInParams>({ resolver: zodResolver(signInSchema) });
 
   const onSubmit = React.useCallback(
-    async (values: Values): Promise<void> => {
+    async (values: SignInParams): Promise<void> => {
       try{
         setIsPending(true);
         const response = await authClient.signIn(values);
@@ -73,51 +73,31 @@ export function SignInForm(): React.JSX.Element {
       </Stack>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
-          <Controller
-            control={control}
-            name="username"
-            render={({ field }) => (
-              <FormControl error={Boolean(errors.username)}>
-                <InputLabel>Email address</InputLabel>
-                <OutlinedInput {...field} label="Email address" type="email" />
-                {errors.username ? <FormHelperText>{errors.username.message}</FormHelperText> : null}
-              </FormControl>
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormControl error={Boolean(errors.password)}>
-                <InputLabel>Password</InputLabel>
-                <OutlinedInput
-                  {...field}
-                  endAdornment={
-                    showPassword ? (
-                      <EyeIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowPassword(false);
-                        }}
-                      />
-                    ) : (
-                      <EyeSlashIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowPassword(true);
-                        }}
-                      />
-                    )
-                  }
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                />
-                {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
-              </FormControl>
-            )}
-          />
+          {/* UserName */}
+          <Grid item xs={12} md={6} mb={1}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormField
+                  type="text"
+                  placeholder="Username"
+                  name="username"
+                  register={register}
+                  error={errors.username}
+              />
+            </Box>
+          </Grid>
+
+          {/* Password */}
+          <Grid item xs={12} md={6} mb={1}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormField
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  register={register}
+                  error={errors.password}
+              />
+            </Box>
+          </Grid>
           <div>
             <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2">
               Forgot password?
