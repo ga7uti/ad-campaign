@@ -147,7 +147,7 @@ export function AccountDetailsForm(): React.JSX.Element {
         {!isPending && (
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Button variant="contained" color="primary" type="submit">
-                Submit
+                Update Profile
               </Button>
             </Box>
           )}

@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { User } from '@/types/auth';
+import { UpdatePasswordParams, User } from '@/types/auth';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
 
@@ -29,7 +29,7 @@ class AccountClient {
       }
     }
 
-    async updatePassword(password:any): Promise<boolean> {
+    async updatePassword(password:UpdatePasswordParams): Promise<boolean> {
       try {
         await axiosInstance.put('/api/user/change-password/', password, {
           headers: { 'Content-Type': 'application/json' },

@@ -2,72 +2,38 @@
 'use client';
 
 import { accountClient } from '@/lib/account-client';
+import { UpdatePasswordParams } from '@/types/auth';
+import { updatePaswordSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, FormHelperText } from '@mui/material';
+import { Alert, Box, CircularProgress, Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
-import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
-import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z as zod } from 'zod';
+import { useForm } from 'react-hook-form';
+import FormField from '../layout/form-field';
 
-const schema = zod.object({
-  old_password: zod
-    .string()
-    .min(6, { message: 'Password must be at least 6 characters long' })
-    .regex(
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
-      'Password must include at least one uppercase letter, one number, and one special character'
-    ),
-  new_password: zod
-    .string()
-    .min(6, { message: 'Password must be at least 6 characters long' })
-    .regex(
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
-      'Password must include at least one uppercase letter, one number, and one special character'
-    ),
-    confirm_new_password: zod
-    .string()
-    .min(6, { message: 'Password must be at least 6 characters long' })
-    .regex(
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
-      'Password must include at least one uppercase letter, one number, and one special character'
-    ),
-  }).refine((data) => data.new_password === data.confirm_new_password, {
-    message: "Passwords don't match",
-    path: ['confirm_new_password'],
-  });
-
-type Values = zod.infer<typeof schema>;
-
-const defaultValues = {confirm_new_password: '',old_password:'',new_password:''} satisfies Values;
 
 export function UpdatePasswordForm(): React.JSX.Element {
  
    const [isPending, setIsPending] = React.useState<boolean>(false);
-   const [showOldPassword, setShowOldPassword] = React.useState<boolean>(false);
-   const [showNewPassword, setShowNewPassword] = React.useState<boolean>(false);
    const [isPasswordUpdated,setIsPasswordUpdated] = React.useState<boolean>(false);
+   const defaultValues = {confirm_new_password: '',old_password:'',new_password:''} satisfies UpdatePasswordParams;
 
    const {
-     control,
+     register,
      handleSubmit,
      setError,
      reset,
      formState: { errors },
-   } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+   } = useForm<UpdatePasswordParams>({resolver: zodResolver(updatePaswordSchema) });
  
    const onSubmit = React.useCallback(
-       async (values: Values): Promise<void> => {
+       async (values: UpdatePasswordParams): Promise<void> => {
          setIsPending(true);
          try {
           const response = await accountClient.updatePassword(values);
@@ -89,92 +55,62 @@ export function UpdatePasswordForm(): React.JSX.Element {
         <Divider />
         <CardContent>
           <Stack spacing={3} sx={{ maxWidth: 'sm' }}>
-            <Controller
-              control={control}
-              name="old_password"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.old_password)}>
-                  <InputLabel>Old Password</InputLabel>
-                  <OutlinedInput
-                  {...field}
-                  endAdornment={
-                    showOldPassword ? (
-                      <EyeIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowOldPassword(false);
-                        }}
-                      />
-                    ) : (
-                      <EyeSlashIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowOldPassword(true);
-                        }}
-                      />
-                    )
-                  }
-                  label="Password"
-                  type={showOldPassword ? 'text' : 'password'}
+            {/* Old Password */}
+            <Grid item xs={12} md={6} mb={1}>
+              <Box sx={{ minWidth: 120 }}>
+                <FormField
+                    type="password"
+                    placeholder="Old Password"
+                    name="old_password"
+                    register={register}
+                    error={errors.old_password}
                 />
-                  {errors.old_password ? <FormHelperText>{errors.old_password.message}</FormHelperText> : null}
-                </FormControl>
-              )}
-            />
-            <Controller
-              control={control}
-              name="new_password"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.new_password)}>
-                  <InputLabel>New Password</InputLabel>
-                  <OutlinedInput
-                  {...field}
-                  endAdornment={
-                    showNewPassword ? (
-                      <EyeIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowNewPassword(false);
-                        }}
-                      />
-                    ) : (
-                      <EyeSlashIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => {
-                          setShowNewPassword(true);
-                        }}
-                      />
-                    )
-                  }
-                  label="Password"
-                  type={showNewPassword ? 'text' : 'password'}
+              </Box>
+            </Grid>
+            {/* New Password */}
+            <Grid item xs={12} md={6} mb={1}>
+              <Box sx={{ minWidth: 120 }}>
+                <FormField
+                    type="password"
+                    placeholder="New Password"
+                    name="new_password"
+                    register={register}
+                    error={errors.new_password}
                 />
-                  {errors.new_password ? <FormHelperText>{errors.new_password.message}</FormHelperText> : null}
-                </FormControl>
-              )}
-             />
-             <Controller
-              control={control}
-              name="confirm_new_password"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.confirm_new_password)}>
-                  <InputLabel>Confirm Password</InputLabel>
-                  <OutlinedInput {...field} label="Password" type="password" />
-                  {errors.confirm_new_password ? <FormHelperText>{errors.confirm_new_password.message}</FormHelperText> : null}
-                </FormControl>
-              )}
-             />
+              </Box>
+            </Grid>
+            {/* Confirm New Password */}
+            <Grid item xs={12} md={6} mb={1}>
+              <Box sx={{ minWidth: 120 }}>
+                <FormField
+                    type="password"
+                    placeholder="Confirm New Password"
+                    name="confirm_new_password"
+                    register={register}
+                    hidePasswordIcon={true}
+                    error={errors.confirm_new_password}
+                />
+              </Box>
+            </Grid>
           </Stack>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button disabled={isPending} type="submit" variant="contained">
-              {isPending ? 'Updating...' : 'Update'}
-          </Button>     
+        {!isPending && (
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Button variant="contained" color="primary" type="submit">
+              Update Password
+              </Button>
+            </Box>
+          )}
+          
+          {isPending && (
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Box sx={{ marginLeft: 2 }}>
+                  <CircularProgress />
+                </Box>
+              </Box>
+          )}  
         </CardActions>
         {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}   
         {isPasswordUpdated ? <Alert color="success">Password updated successfully</Alert> : null} 

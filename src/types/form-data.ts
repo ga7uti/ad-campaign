@@ -2,6 +2,7 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
+import { zhHK } from "@mui/x-date-pickers/locales";
 
   export interface FormFieldProps<T>  {
     type: string;
@@ -12,6 +13,7 @@ import { CampaignFormData } from "./campaign";
     valueAsNumber?: boolean;
     data?: T[];
     disabled?:boolean
+    hidePasswordIcon?:boolean
   };
 
 
@@ -37,6 +39,9 @@ import { CampaignFormData } from "./campaign";
   | "username"
   | "password"
   | "terms"
+  | "old_password"
+  | "new_password"
+  | "confirm_new_password"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -82,4 +87,32 @@ import { CampaignFormData } from "./campaign";
         'Password must include at least one uppercase letter, one number, and one special character'
       ),
     terms: z.boolean().refine((value) => value, 'You must accept the terms and conditions'),
+  });
+
+
+  export const updatePaswordSchema = z.object({
+    old_password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters long' })
+      .regex(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+        'Password must include at least one uppercase letter, one number, and one special character'
+      ),
+    new_password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters long' })
+      .regex(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+        'Password must include at least one uppercase letter, one number, and one special character'
+      ),
+      confirm_new_password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters long' })
+      .regex(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+        'Password must include at least one uppercase letter, one number, and one special character'
+      ),
+    }).refine((data) => data.new_password === data.confirm_new_password, {
+      message: "Passwords don't match",
+      path: ['confirm_new_password'],
   });

@@ -36,6 +36,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   valueAsNumber,
   data,
   disabled = false,
+  hidePasswordIcon=false
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const labelId = `${name}-label`; // Unique label ID for Select
@@ -61,7 +62,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           {...register(name, { valueAsNumber })}
           label={placeholder} // Label for the text field
           InputProps={
-            type === 'password'
+            type === 'password' && !hidePasswordIcon
               ? {
                   endAdornment: (
                     <InputAdornment position="end">
