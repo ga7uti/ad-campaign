@@ -20,13 +20,18 @@ export default function FileUpload({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      if (e.target.files) {
       const selectedFile = e.target.files[0];
-      const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf']; // Add more types as needed
-      if (!allowedTypes.includes(selectedFile.type)) {
-          setError("Invalid file type. Only PNG, JPEG, and PDF are allowed.");
+      const allowedTypesForImages = ['image/png', 'image/jpeg']; // Only allow images (PNG, JPEG)
+      const allowedTypesForPdf = ['application/pdf']; // Only allow PDFs
+      if (name === 'images' && !allowedTypesForImages.includes(selectedFile.type)) {
+          setError("Invalid file type. Only PNG and JPEG images are allowed.");
           return;
-        }
-        setFile(selectedFile);
-        handleUpload(selectedFile);
+      }
+      if (['proximity', 'proximity_store', 'weather', 'keywords'].includes(name) && !allowedTypesForPdf.includes(selectedFile.type)) {
+          setError("Invalid file type. Only PDF files are allowed.");
+          return;
+      }
+      setFile(selectedFile);
+      handleUpload(selectedFile);
     }
   };
 

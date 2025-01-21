@@ -303,7 +303,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="interest"
                           register={register}
                           error={Array.isArray(errors.interest)?errors.interest[0]:errors.carrier}
-                          data={selectedInterest.length > 0 ? selectedInterest : [{ id: 0, category: 'No data available. Please select Interest' }]}
+                          data={selectedInterest.length > 0 ? selectedInterest.slice(0,20) : [{ id: 0, category: 'No data available. Please select Interest' }]}
                           />
                     </Box>
                   </Grid>
