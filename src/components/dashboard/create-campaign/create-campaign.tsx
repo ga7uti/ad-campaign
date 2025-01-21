@@ -124,7 +124,7 @@ export default function CreateCampaign(): React.JSX.Element {
       const selectedValue = event.target.value;
       if (name === "distinct_interest") {
         try {
-          await fetchSelectedInterest((selectedValue as string[]).join(", "));
+          await fetchSelectedInterest((selectedValue as string[]).join(","));
         } catch (error) {
           setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
         }
@@ -132,6 +132,7 @@ export default function CreateCampaign(): React.JSX.Element {
     };
 
     React.useEffect(() => {
+      console.log(selectedInterest)
       fetchData();
     }, [selectedInterest]);
   
