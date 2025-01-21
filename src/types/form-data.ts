@@ -1,8 +1,8 @@
+import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
-import { zhHK } from "@mui/x-date-pickers/locales";
 
   export interface FormFieldProps<T>  {
     type: string;
@@ -13,7 +13,8 @@ import { zhHK } from "@mui/x-date-pickers/locales";
     valueAsNumber?: boolean;
     data?: T[];
     disabled?:boolean
-    hidePasswordIcon?:boolean
+    hidePasswordIcon?:boolean;
+    onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
 
@@ -27,6 +28,8 @@ import { zhHK } from "@mui/x-date-pickers/locales";
   | "keywords"
   | "exchange"
   | "language"
+  | "distinct_interest"
+  | "interest"
   | "carrier"
   | "device_price"
   | "proximity_store"
@@ -52,6 +55,8 @@ import { zhHK } from "@mui/x-date-pickers/locales";
     device: z.array(z.string(), { message: "Device is required" }),
     images: z.array(z.number(), { message: "Image is required" }),
     keywords: z.array(z.number(), { message: "Keywords is required" }),
+    distinct_interest: z.array(z.string(), { message: "Interest is required" }),
+    interest: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),

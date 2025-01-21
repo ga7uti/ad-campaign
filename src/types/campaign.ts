@@ -14,8 +14,8 @@ export interface CommonSelectResponse{
 
 export interface Interest{
     id: number,
-    name: string
-    subcategory: string
+    targeting_type: string
+    category: string
 }
 
 export interface Images {
@@ -61,6 +61,8 @@ export interface CampaignFormData  {
     location: number[];
     images: number[];
     keywords: number[];
+    distinct_interest: string[];
+    interest: number[];
     exchange: string[];
     language: string[];
     carrier: string[];

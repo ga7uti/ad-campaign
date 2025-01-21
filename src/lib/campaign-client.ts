@@ -91,9 +91,20 @@ class CampaignClient {
       }
     }
 
-    async getAudienceInterest(): Promise<Interest[]> {
+    async getDistinctInterest(): Promise<CommonSelectResponse[]> {
       try {
-        const response = await axios.get('/data/location.json', {
+        const response = await axios.get('/data/distinct-interest.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getSelectedInterest(query:string): Promise<Interest[]> {
+      try {
+        const response = await axiosInstance.get(`api/target_type?query=${query}`, {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;

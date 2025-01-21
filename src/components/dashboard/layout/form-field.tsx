@@ -1,20 +1,20 @@
-import React from 'react';
+import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
+import { FormFieldProps } from '@/types/form-data';
 import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
   FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
-  FormControl,
-  InputAdornment,
-  IconButton,
-  InputLabel,
-  Checkbox,
-  FormControlLabel,
 } from '@mui/material';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
-import { CommonSelectResponse, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/form-data';
+import React from 'react';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,7 +36,8 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   valueAsNumber,
   data,
   disabled = false,
-  hidePasswordIcon=false
+  hidePasswordIcon=false,
+  onChange
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const labelId = `${name}-label`; // Unique label ID for Select
@@ -86,7 +87,8 @@ const FormField: React.FC<FormFieldProps<any>> = ({
             MenuProps={MenuProps}
             defaultValue={[]}
             label={placeholder}
-            labelId={labelId} // Associate the label with the Select
+            labelId={labelId}
+            onChange={(e) => onChange && onChange(e, name)}
           >
             {(() => {
               switch (name) {
@@ -94,6 +96,20 @@ const FormField: React.FC<FormFieldProps<any>> = ({
                   return data.map((val: Location) => (
                     <MenuItem key={val.id} value={val.id}>
                       {val.city}
+                    </MenuItem>
+                  ));
+
+                  case 'distinct_interest':
+                  return data.map((val: CommonSelectResponse) => (
+                    <MenuItem key={val.id} value={val.value}>
+                      {val.value}
+                    </MenuItem>
+                  ));
+
+                  case 'interest':
+                  return data.map((val: Interest) => (
+                    <MenuItem key={val.id} value={val.id}>
+                      {val.category}
                     </MenuItem>
                   ));
 

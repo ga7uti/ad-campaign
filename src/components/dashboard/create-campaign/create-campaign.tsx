@@ -1,19 +1,18 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
+import { utils } from '@/lib/common';
 import { paths } from '@/paths';
-import { CampaignFormData, CommonSelectResponse, Location } from '@/types/campaign';
+import { CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, SelectChangeEvent, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
-import { utils } from '@/lib/common';
-import { error } from 'console';
 
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -27,9 +26,10 @@ export default function CreateCampaign(): React.JSX.Element {
     const [language, setLanguage] = React.useState<CommonSelectResponse[]>([]);
     const [carrier, setCarrier] = React.useState<CommonSelectResponse[]>([]);
     const [devicePrice, setDevicePrice] = React.useState<CommonSelectResponse[]>([]);
+    const [distinctInterest, setDistinctInterest] = React.useState<CommonSelectResponse[]>([]);
+    const [selectedInterest, setSelectedInterest] = React.useState<Interest[]>([]);
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
-
 
     const {
       register,
@@ -57,7 +57,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const fetchData = async () => {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes] = await Promise.all([
+          carrierRes,devicePriceRes, interestRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
@@ -66,6 +66,7 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getLanguage(),
           campaignClient.getCarrier(),
           campaignClient.getDevicePrice(),
+          campaignClient.getDistinctInterest(),
         ]);
         setAge(ageRes);
         setDevices(deviceRes);
@@ -75,11 +76,21 @@ export default function CreateCampaign(): React.JSX.Element {
         setLanguage(langRes);
         setCarrier(carrierRes);
         setDevicePrice(devicePriceRes);
+        setDistinctInterest(interestRes)
       } catch (error) {
-        console.error("Failed to load campaign data", error);
+        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
       }
     };
   
+    const fetchSelectedInterest = async (interest: string) => {
+      try {
+        const result = await campaignClient.getSelectedInterest(interest);
+        setSelectedInterest(result);
+      } catch (error) {
+        setError('root', { type: 'server', message: "Failed to fetch selected category. Error: " + error});
+      }
+    };
+
     const createCampaign = async(data:CampaignFormData) => {
       if(!data) 
         return;
@@ -106,9 +117,23 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     }
 
+    const handleSelectChange = async (
+      event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
+      name: string
+    ) => {
+      const selectedValue = event.target.value;
+      if (name === "distinct_interest") {
+        try {
+          await fetchSelectedInterest((selectedValue as string[]).join(", "));
+        } catch (error) {
+          setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
+        }
+      }
+    };
+
     React.useEffect(() => {
       fetchData();
-    }, []);
+    }, [selectedInterest]);
   
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -139,7 +164,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="age"
                         register={register}
                         error={Array.isArray(errors.age)?errors.age[0]:errors.age}
-                        data={ages}
+                        data={ages.length > 0 ? ages : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                     </Box>
                 </Grid>
@@ -154,7 +179,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="device"
                         register={register}
                         error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                        data={devices}
+                        data={devices.length > 0 ? devices : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                     </Box>
                 </Grid>
@@ -168,7 +193,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="environment"
                         register={register}
                         error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                        data={environment}
+                        data={environment.length > 0 ? environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                     </Box>
                 </Grid>
@@ -182,14 +207,14 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="location"
                         register={register}
                         error={Array.isArray(errors.location)?errors.location[0]:errors.location}
-                        data={location}
+                        data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
                     />
                     </Box>
                 </Grid>
             </Grid>
           </CardSection>
           
-          {/* Campaign Details Section */}
+          {/* Targeting Type Section */}
           <CardSection title="Targeting Type">
             <Grid container spacing={2} mt={2}>
                   {/* Exchange */}
@@ -201,7 +226,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="exchange"
                           register={register}
                           error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
-                          data={exchange}
+                          data={exchange.length > 0 ? exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
                     </Box>
                   </Grid>
@@ -215,7 +240,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="carrier"
                           register={register}
                           error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={carrier}
+                          data={carrier.length > 0 ? carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
                     </Box>
                   </Grid>
@@ -229,7 +254,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="language"
                           register={register}
                           error={Array.isArray(errors.language)?errors.language[0]:errors.language}
-                          data={language}
+                          data={language.length > 0 ? language : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
                     </Box>
                   </Grid>
@@ -243,13 +268,47 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="device_price"
                           register={register}
                           error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={devicePrice}
+                          data={devicePrice.length > 0 ? devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
                     </Box>
                   </Grid>
               </Grid>
           </CardSection>
           
+           {/* Targeting Interest Section */}
+           <CardSection title="Interest">
+            <Grid container spacing={2} mt={2}>
+                  {/* Exchange */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="Interest"
+                          name="distinct_interest"
+                          register={register}
+                          onChange={handleSelectChange}
+                          data={distinctInterest.length > 0 ? distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
+                          error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
+                      />
+                    </Box>
+                  </Grid>
+
+                  {/* Carrier */}
+                  <Grid item xs={12} md={6} mb={1}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormField
+                          type="text"
+                          placeholder="SubCategory"
+                          name="interest"
+                          register={register}
+                          error={Array.isArray(errors.interest)?errors.interest[0]:errors.carrier}
+                          data={selectedInterest.length > 0 ? selectedInterest : [{ id: 0, category: 'No data available. Please select Interest' }]}
+                          />
+                    </Box>
+                  </Grid>
+              </Grid>
+          </CardSection>
+
           {/* Campaign File Upload Section */}
           <CardSection title="File Upload">
               <Grid container spacing={2} mt={2}>
