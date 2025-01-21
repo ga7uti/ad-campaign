@@ -7,23 +7,16 @@ import { paths } from '@/paths';
 import { SignInParams } from '@/types/auth';
 import { signInSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Grid } from '@mui/material';
+import { Box, CircularProgress, Grid } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import InputLabel from '@mui/material/InputLabel';
 import Link from '@mui/material/Link';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
-import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z as zod } from 'zod';
+import { useForm } from 'react-hook-form';
 import FormField from '../dashboard/layout/form-field';
 
 
@@ -35,7 +28,6 @@ export function SignInForm(): React.JSX.Element {
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
   const {
-    control,
     handleSubmit,
     setError,
     register,
@@ -104,9 +96,21 @@ export function SignInForm(): React.JSX.Element {
             </Link>
           </div>
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-          <Button disabled={isPending} type="submit" variant="contained">
-            {isPending ? 'Signing in...' : 'Sign in'}
-          </Button>
+          {!isPending && (
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Button variant="contained" color="primary" type="submit">
+              Sign in
+              </Button>
+            </Box>
+          )}
+          
+          {isPending && (
+            <Box sx={{ textAlign: "center", mt: 3 }}>
+              <Box sx={{ marginLeft: 2 }}>
+                  <CircularProgress />
+                </Box>
+              </Box>
+          )}  
         </Stack>
       </form>
     </Stack>

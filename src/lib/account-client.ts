@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { User } from '@/types/user';
+import { User } from '@/types/auth';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
 

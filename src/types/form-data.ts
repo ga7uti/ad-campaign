@@ -1,8 +1,7 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
-import { z, ZodType } from "zod"; // Add new import
-import { User } from "./user";
+import { z, ZodType } from "zod";
+import { SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
-import { SignInParams } from "./auth";
 
   export interface FormFieldProps<T>  {
     type: string;
@@ -37,6 +36,7 @@ import { SignInParams } from "./auth";
   | "phone_no"
   | "username"
   | "password"
+  | "terms"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -69,3 +69,17 @@ import { SignInParams } from "./auth";
     password: z.string().min(1, { message: 'Password is required' }),
   });
   
+
+  export const signUpSchema: ZodType<User> = z.object({
+    first_name: z.string().min(5, { message: 'First name must be at least 5 characters long' }),
+    last_name: z.string().min(5, { message: 'Last name must be at least 5 characters long' }),
+    email: z.string().min(1, { message: 'Email is required' }).email(),
+    password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters long' })
+      .regex(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/,
+        'Password must include at least one uppercase letter, one number, and one special character'
+      ),
+    terms: z.boolean().refine((value) => value, 'You must accept the terms and conditions'),
+  });

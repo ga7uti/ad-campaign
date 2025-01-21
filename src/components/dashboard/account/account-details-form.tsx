@@ -2,7 +2,7 @@
 'use client';
 
 import { accountClient } from '@/lib/account-client';
-import { User } from '@/types/user';
+import { profileSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -14,9 +14,8 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { z as zod } from 'zod';
 import FormField from '../layout/form-field';
-import { profileSchema } from '@/types/form-data';
+import { User } from '@/types/auth';
 
 export function AccountDetailsForm(): React.JSX.Element {
 

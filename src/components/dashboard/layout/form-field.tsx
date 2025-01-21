@@ -1,20 +1,20 @@
-/* eslint-disable -- Disabling all Eslint rules for the file */
-
 import React from 'react';
-import { CommonSelectResponse, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/form-data';
 import {
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
   FormControl,
   InputAdornment,
   IconButton,
+  InputLabel,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import { CommonSelectResponse, Location } from '@/types/campaign';
+import { FormFieldProps } from '@/types/form-data';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -38,16 +38,28 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   disabled = false,
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const labelId = `${name}-label`; // Unique label ID for Select
 
   return (
-    <FormControl fullWidth error={Boolean(error)} margin="normal">
-      {!data ? (
+    <FormControl fullWidth error={Boolean(error)}>
+      {type === 'checkbox' ? (
+        // Handle Checkbox Type
+        <FormControlLabel
+          control={<Checkbox {...register(name)} />}
+          label={
+            <React.Fragment>
+               <a href="/terms">{placeholder}</a>
+            </React.Fragment>
+          }
+        />
+      ) : !data ? (
+        // Handle TextField Types
         <TextField
           type={type === 'password' && showPassword ? 'text' : type}
           fullWidth
           disabled={disabled}
-          label={placeholder}
           {...register(name, { valueAsNumber })}
+          label={placeholder} // Label for the text field
           InputProps={
             type === 'password'
               ? {
@@ -63,16 +75,16 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           }
         />
       ) : (
-        <FormControl fullWidth>
-          <InputLabel id="select-label">{placeholder}</InputLabel>
+        // Handle Select Types
+        <>
+          <InputLabel id={labelId}>{placeholder}</InputLabel>
           <Select
             fullWidth
             {...register(name, { valueAsNumber })}
             multiple
             MenuProps={MenuProps}
-            label={placeholder}
             defaultValue={[]}
-            labelId="select-label"
+            labelId={labelId} // Associate the label with the Select
           >
             {(() => {
               switch (name) {
@@ -92,9 +104,10 @@ const FormField: React.FC<FormFieldProps<any>> = ({
               }
             })()}
           </Select>
-        </FormControl>
+        </>
       )}
 
+      {/* Error Handling */}
       {error && <FormHelperText>{error.message}</FormHelperText>}
     </FormControl>
   );
