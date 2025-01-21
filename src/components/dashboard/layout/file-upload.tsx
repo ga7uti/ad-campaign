@@ -14,7 +14,7 @@ export default function FileUpload({
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [error, setError] = useState<string>(""); // Local error state
+  const [error, setError] = useState<string>("");
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,17 +64,17 @@ export default function FileUpload({
           >
             {/* Hidden file input */}
             <input
+              className={name}
               {...register(name)} // Register the input with React Hook Form
               type="file"
               style={{ display: "none" }}
               onChange={handleFileChange}
-              accept="image/*" // Accept only image files
             />
             <Button
               component="span"
               fullWidth
               sx={{ color: "primary.main", paddingLeft: 2 }}
-              onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement).click()}
+              onClick={() => (document.querySelector(`input[type="file"].${name}`) as HTMLInputElement).click()}
             >
               {placeholder}
             </Button>
