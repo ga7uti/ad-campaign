@@ -22,12 +22,18 @@ import { CircularProgress } from '@mui/material';
 export default function Page(): React.JSX.Element {
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [count, setCount] = React.useState<number>();
-  const [loading, setLoading] = useState<boolean>(true);
-  
-  
-  async function fetchCampaigns() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = React.useState(1);
+
+  const handlPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value)
+    fetchCampaigns(value);
+  };
+
+  async function fetchCampaigns(pageNo:number) {
+    setLoading(true)
     try {
-      const {count,data} = await campaignClient.getCampaigns();
+      const {count,data} = await campaignClient.getCampaigns(pageNo);
       setCount(Math.ceil(count/10));
       if (Array.isArray(data)) {
         setCampaigns(data);
@@ -43,7 +49,7 @@ export default function Page(): React.JSX.Element {
   }
 
   React.useEffect(() => {
-    fetchCampaigns();
+    fetchCampaigns(1);
   }, []);
 
 
@@ -78,7 +84,7 @@ export default function Page(): React.JSX.Element {
         </Grid>
         }
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination count={count} size="small" />
+          <Pagination onChange={handlPageChange}  page={page} count={count} color="primary" />
         </Box>
       
     </Stack>

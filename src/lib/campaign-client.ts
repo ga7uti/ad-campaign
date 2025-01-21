@@ -9,9 +9,9 @@ import { utils } from './common';
 
 class CampaignClient {
    
-    async getCampaigns(): Promise<{count:number,data: Campaign[]}> {
+    async getCampaigns(pageNo:number): Promise<{count:number,data: Campaign[]}> {
       try {
-        const response = await axiosInstance.get('/api/fetch_user_campgain/', {
+        const response = await axiosInstance.get(`/api/fetch_user_campgain/?page=${pageNo}`, {
           headers: { 'Content-Type': 'application/json' },
         });
         return {count: response.data.count,data:response.data.results.data};
