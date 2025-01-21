@@ -12,6 +12,8 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
+import { utils } from '@/lib/common';
+import { error } from 'console';
 
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -25,7 +27,6 @@ export default function CreateCampaign(): React.JSX.Element {
     const [language, setLanguage] = React.useState<CommonSelectResponse[]>([]);
     const [carrier, setCarrier] = React.useState<CommonSelectResponse[]>([]);
     const [devicePrice, setDevicePrice] = React.useState<CommonSelectResponse[]>([]);
-    const [formData, setFormData] = React.useState<CampaignFormData>();
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
 
@@ -50,7 +51,6 @@ export default function CreateCampaign(): React.JSX.Element {
         return;
       }
       clearErrors();
-      setFormData(data);
       createCampaign(data);
     };
   
@@ -81,10 +81,16 @@ export default function CreateCampaign(): React.JSX.Element {
     };
   
     const createCampaign = async(data:CampaignFormData) => {
-      setIsPending(true);
       if(!data) 
         return;
+
+      const errors = utils.validateMandatoryFields(data);
+      if(errors && Object.keys(errors).length > 0){
+        setError('root',{message:Object.values(errors)[0]});
+        return
+      }
       
+      setIsPending(true);
       try {
         const result = await campaignClient.postCampaign(data);
         if (result) {
@@ -106,7 +112,7 @@ export default function CreateCampaign(): React.JSX.Element {
   
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 ,marginBottom: "1rem"}}>
           {/* Campaign Details Section */}
           <CardSection title="Campaign Details">
             <Grid container spacing={2} mt={2}>
@@ -242,7 +248,8 @@ export default function CreateCampaign(): React.JSX.Element {
                     </Box>
                   </Grid>
               </Grid>
-            </CardSection>
+          </CardSection>
+          
           {/* Campaign File Upload Section */}
           <CardSection title="File Upload">
               <Grid container spacing={2} mt={2}>
@@ -305,7 +312,7 @@ export default function CreateCampaign(): React.JSX.Element {
           {!isPending && (
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Button variant="contained" color="primary" type="submit">
-                Submit
+                Create Campaign
               </Button>
             </Box>
           )}
@@ -318,6 +325,7 @@ export default function CreateCampaign(): React.JSX.Element {
               </Box>
           )}
         </Box>
+        {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
         {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
       </form>
     );

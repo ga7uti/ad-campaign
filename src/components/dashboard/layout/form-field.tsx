@@ -85,6 +85,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
             multiple
             MenuProps={MenuProps}
             defaultValue={[]}
+            label={placeholder}
             labelId={labelId} // Associate the label with the Select
           >
             {(() => {

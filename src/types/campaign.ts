@@ -69,3 +69,4 @@ export interface CampaignFormData  {
     proximity?: number[];
     weather?: number[];
 };
+  
