@@ -2,20 +2,18 @@
 "use client"
 import { paths } from '@/paths';
 import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Unstable_Grid2';
 
 import * as React from 'react';
 
-import ExportForm from '@/components/dashboard/create-campaign/export-form';
+import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
+import ExportForm from '@/components/dashboard/campaign/export-form';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
-import { CampaignCard } from '@/components/dashboard/overview/campaign-card';
 import { campaignClient } from '@/lib/campaign-client';
-import { useState } from 'react';
 import { Campaign } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
+import { useState } from 'react';
 
 
 
@@ -25,16 +23,16 @@ export default function Page(): React.JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = React.useState(1);
 
-  const handlPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value)
-    fetchCampaigns(value);
+  const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage+1)
+    fetchCampaigns(newPage+1);
   };
 
   async function fetchCampaigns(pageNo:number) {
     setLoading(true)
     try {
       const {count,data} = await campaignClient.getCampaigns(pageNo);
-      setCount(Math.ceil(count/10));
+      setCount(count);
       if (Array.isArray(data)) {
         setCampaigns(data);
       } else {
@@ -74,18 +72,8 @@ export default function Page(): React.JSX.Element {
             <CircularProgress />
           </Box>
         :
-        <Grid container spacing={3}>
-          {campaigns?.length > 0 ?campaigns.map((campaign) => (
-            <Grid key={campaign.id} lg={4} md={6} xs={12}>
-              <CampaignCard campaign={campaign} />
-            </Grid>
-          )): <Typography>No campaigns available.</Typography> }
-        </Grid>
+        <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange}/>
         }
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination onChange={handlPageChange}  page={page} count={count} color="primary" />
-        </Box>
-      
     </Stack>
   );
 }

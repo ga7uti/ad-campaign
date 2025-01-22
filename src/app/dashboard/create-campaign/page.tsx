@@ -3,7 +3,7 @@ import React from 'react';
 import BackBtn from '@/components/dashboard/layout/back-btn';
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import CreateCampaign from '@/components/dashboard/create-campaign/create-campaign';
+import CreateCampaign from '@/components/dashboard/campaign/create-campaign';
 
 
 export default function CreateCampaignPage(): React.JSX.Element {

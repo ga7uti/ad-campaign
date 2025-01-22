@@ -1,6 +1,7 @@
 'use client';
 
-import { CustomersTableProps } from '@/types/form-data';
+import { Customer } from '@/types/auth';
+import { TableProps } from '@/types/form-data';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -20,7 +21,7 @@ export function CustomersTable({
   page = 1,
   rowsPerPage = 10,
   handlePageChange
-}: CustomersTableProps): React.JSX.Element {
+}: TableProps<Customer[]>): React.JSX.Element {
   
   return (
     <Card>

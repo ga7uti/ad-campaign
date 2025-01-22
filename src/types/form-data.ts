@@ -18,10 +18,10 @@ import { CampaignFormData } from "./campaign";
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
-  export interface CustomersTableProps {
+  export interface TableProps<T> {
     count?: number;
     page?: number;
-    rows?: Customer[];
+    rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   }
