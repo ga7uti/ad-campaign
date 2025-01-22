@@ -75,8 +75,7 @@ export default function Page(): React.JSX.Element {
           </Box>
         :
         <Grid container spacing={3}>
-          {loading ?<Typography>Loading...</Typography>:
-          campaigns?.length > 0 ?campaigns.map((campaign) => (
+          {campaigns?.length > 0 ?campaigns.map((campaign) => (
             <Grid key={campaign.id} lg={4} md={6} xs={12}>
               <CampaignCard campaign={campaign} />
             </Grid>

@@ -37,7 +37,11 @@ export function SignInForm(): React.JSX.Element {
     async (values: SignInParams): Promise<void> => {
       try{
         setIsPending(true);
-        const response = await authClient.signIn(values);
+        const data = {
+          ...values, 
+          username: values.username.toLowerCase(),
+        };
+        const response = await authClient.signIn(data);
         if (response) {
           await checkSession?.();
           router.refresh();
