@@ -2,7 +2,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
-import { SignInParams, User } from "./auth";
+import { Customer, SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
 
   export interface FormFieldProps<T>  {
@@ -18,7 +18,13 @@ import { CampaignFormData } from "./campaign";
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
-
+  export interface CustomersTableProps {
+    count?: number;
+    page?: number;
+    rows?: Customer[];
+    rowsPerPage?: number;
+    handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+  }
   export interface FileUploadProps {
     name: ValidFieldNames;
     placeholder: string;

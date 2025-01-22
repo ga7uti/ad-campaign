@@ -1,7 +1,7 @@
 /* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
-import { Auth, ResetPasswordParams, SignInParams, User } from '@/types/auth';
+import { Auth, Customer, ResetPasswordParams, SignInParams, User } from '@/types/auth';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
 
@@ -75,6 +75,18 @@ class AuthClient {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userType');
   };
+
+     
+  async getCustomers(pageNo:number): Promise<{count:number,data: Customer[]}> {
+    try {
+      const response = await axiosInstance.get(`/api/users/?page=${pageNo}`, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      return {count: response.data.count,data:response.data.results};
+    } catch (error: any) {
+      throw new Error(utils.handleErrorMessage(error));
+    }
+  }
 }
 
 export const authClient = new AuthClient();

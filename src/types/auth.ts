@@ -27,3 +27,14 @@ export interface User {
     terms?:boolean
 }
   
+
+export interface Customer {
+    id:number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone_no?: string;
+    password?:string;
+    terms?:boolean
+    date_joined?:string
+}
