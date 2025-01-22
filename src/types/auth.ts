@@ -28,6 +28,10 @@ export interface User {
 }
   
 
+export interface Profile{
+    phone_no:string;
+    city:string; 
+}
 export interface Customer {
     id:number;
     email: string;
@@ -35,6 +39,7 @@ export interface Customer {
     last_name: string;
     phone_no?: string;
     password?:string;
-    terms?:boolean
-    date_joined?:string
+    terms?:boolean;
+    date_joined?:string;
+    profile?:Profile;
 }
