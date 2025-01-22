@@ -14,6 +14,7 @@ import { campaignClient } from '@/lib/campaign-client';
 import { Campaign } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
+import { Search } from '@/components/dashboard/layout/search';
 
 
 
@@ -27,6 +28,11 @@ export default function Page(): React.JSX.Element {
     setPage(newPage+1)
     fetchCampaigns(newPage+1);
   };
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value)
+  };
+
 
   async function fetchCampaigns(pageNo:number) {
     setLoading(true)
@@ -62,6 +68,7 @@ export default function Page(): React.JSX.Element {
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
+      <Search placeholder={"Search campaigns by user"} onSearch={onSearchChange} />
       {loading ? 
           <Box  
             sx={{

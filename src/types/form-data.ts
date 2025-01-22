@@ -25,6 +25,13 @@ import { CampaignFormData } from "./campaign";
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   }
+
+  export interface SearchProps {
+    placeholder: string;
+    onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
+  }
+  
+
   export interface FileUploadProps {
     name: ValidFieldNames;
     placeholder: string;
