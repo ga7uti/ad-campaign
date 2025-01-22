@@ -42,7 +42,7 @@ export function CustomersTable({
                   <TableCell>{row.id}</TableCell>
                   <TableCell>{row.first_name} {row.last_name}</TableCell>
                   <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.phone_no}</TableCell>
+                  <TableCell>{row.profile?.phone_no}</TableCell>
                   <TableCell>{dayjs(row.date_joined).format('MMM D, YYYY')}</TableCell>
                 </TableRow>
               );
