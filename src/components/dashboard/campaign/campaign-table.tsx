@@ -46,6 +46,7 @@ export function CampaignTable({
               <TableCell sx={tableCellStyles}>Carrier</TableCell>
               <TableCell sx={tableCellStyles}>Device Price</TableCell>
               <TableCell sx={tableCellStyles}>Interest</TableCell>
+              <TableCell sx={tableCellStyles}>UpdatedAt</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
