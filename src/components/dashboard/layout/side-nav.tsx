@@ -15,9 +15,14 @@ import type { NavItemConfig } from '@/types/nav';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
+import { useAuth } from '@/hooks/use-auth';
 
 export function SideNav(): React.JSX.Element {
+  const { auth } = useAuth();
   const pathname = usePathname();
+  const filteredNavItems = navItems.filter(
+    (item) => !(item.key === 'customers' && auth?.usertype !== 'admin')
+  );
 
   return (
     <Box
@@ -54,7 +59,7 @@ export function SideNav(): React.JSX.Element {
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
       <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-        {renderNavItems({ pathname, items: navItems })}
+        {renderNavItems({ pathname, items: filteredNavItems })}
       </Box>
     </Box>
   );

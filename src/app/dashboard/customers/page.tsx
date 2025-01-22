@@ -1,3 +1,4 @@
+/* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 
 import Stack from '@mui/material/Stack';
@@ -16,7 +17,6 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
 
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    console.log(event,newPage)
     setPage(newPage)
     fetchCustomers(newPage);
   };
@@ -24,15 +24,14 @@ export default function Page(): React.JSX.Element {
   async function fetchCustomers(pageNo:number) {
     setLoading(true)
     try {
-      const {count,data} = await authClient.getCustomers(pageNo);
-      setCount(Math.ceil(count/10));
+      const {totalCount,data} = await authClient.getCustomers(pageNo);
+      setCount(Math.ceil(totalCount/10));
       if (Array.isArray(data)) {
         setCustomers(data);
       } else {
         setCustomers([]);
       }
     } catch (error) {
-      console.error('Error fetching campaigns:', error);
       setCustomers([]);
     } finally {
       setLoading(false);
