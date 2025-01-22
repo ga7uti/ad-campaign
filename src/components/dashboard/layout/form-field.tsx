@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import { FormFieldProps } from '@/types/form-data';
 import {

@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 import axios from 'axios';
 import { authClient } from './auth-client';
 

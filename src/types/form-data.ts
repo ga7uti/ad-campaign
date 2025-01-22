@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";

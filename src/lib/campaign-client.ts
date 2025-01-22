@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
 import { Campaign, CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';

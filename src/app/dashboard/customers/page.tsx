@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 
 import Stack from '@mui/material/Stack';
