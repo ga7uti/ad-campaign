@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 "use client"
 
 import Stack from '@mui/material/Stack';
@@ -17,15 +16,15 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
 
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage)
-    fetchCustomers(newPage);
+    setPage(newPage+1)
+    fetchCustomers(newPage+1);
   };
 
   async function fetchCustomers(pageNo:number) {
     setLoading(true)
     try {
       const {totalCount,data} = await authClient.getCustomers(pageNo);
-      setCount(Math.ceil(totalCount/10));
+      setCount(totalCount);
       if (Array.isArray(data)) {
         setCustomers(data);
       } else {

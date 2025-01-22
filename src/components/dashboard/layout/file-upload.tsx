@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 
 import { campaignClient } from "@/lib/campaign-client";
 import { FileUploadProps } from "@/types/form-data";

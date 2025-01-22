@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 'use client';
 
 import { UpdatePasswordParams, User } from '@/types/auth';

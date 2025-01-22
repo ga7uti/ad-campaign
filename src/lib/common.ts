@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { CampaignFormData } from "@/types/campaign";
 import { AxiosError } from "axios";
 

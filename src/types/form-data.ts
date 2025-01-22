@@ -1,4 +1,3 @@
-/* eslint-disable -- Disabling all Eslint rules for the file*/
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
@@ -18,13 +17,20 @@ import { CampaignFormData } from "./campaign";
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
-  export interface CustomersTableProps {
+  export interface TableProps<T> {
     count?: number;
     page?: number;
-    rows?: Customer[];
+    rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   }
+
+  export interface SearchProps {
+    placeholder: string;
+    onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
+  }
+  
+
   export interface FileUploadProps {
     name: ValidFieldNames;
     placeholder: string;
