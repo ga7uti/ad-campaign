@@ -141,17 +141,24 @@ export default function CreateCampaign(): React.JSX.Element {
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "flex-start", // Align sections at the top
-          gap: 2, // Space between sections
+          alignItems: "flex-start",
+          gap: 2,
+          
         }}
       >
-        <Box sx={{ flex: 2 }}>
+        <Box sx={{ flex: 2 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 ,marginBottom: "1rem"}}>
+            <Box sx={{ display: "flex", 
+                flexDirection: "column",
+                gap: 3 ,
+                border: 1,
+                padding:2 ,
+                borderColor: "grey.300",
+            }}>
               {/* Campaign Details Section */}
               <CardSection title="Campaign Details" defaultExpanded={true}>
                 {/* Name */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Name"
@@ -162,7 +169,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     />
                 </Box>
                 {/* Location */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Locations"
@@ -173,7 +180,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     />
                 </Box>
                 {/* Age */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Age Range"
@@ -186,7 +193,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
 
                 {/* Device */}
-                <Box sx={{marginBottom:2}}>                        
+                <Box sx={{margin:2}}>
                   <FormField
                         type="text"
                         placeholder="Devices"
@@ -198,7 +205,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
 
                 {/* Environment */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Environments"
@@ -213,7 +220,7 @@ export default function CreateCampaign(): React.JSX.Element {
               {/* Targeting Type Section */}
               <CardSection title="Targeting Type">
                 {/* Exchange */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Exchange"
@@ -225,7 +232,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 </Box>
 
                 {/* Carrier */}
-                  <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Carrier"
@@ -237,7 +244,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
 
                 {/* Langugage */}
-                  <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Language"
@@ -249,7 +256,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
 
                 {/* DevicePrice */}
-                  <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="DevicePrice"
@@ -264,7 +271,7 @@ export default function CreateCampaign(): React.JSX.Element {
               {/* Targeting Interest Section */}
               <CardSection title="Interest">
               {/* Interest */}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                   <FormField
                       type="text"
                       placeholder="Category"
@@ -277,7 +284,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 </Box>
 
               {/* Interest Category*/}
-                <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                   <FormField
                       type="text"
                       placeholder="SubCategory"
@@ -292,7 +299,7 @@ export default function CreateCampaign(): React.JSX.Element {
               {/* Campaign File Upload Section */}
               <CardSection title="File Upload">
                   {/* Image Upload */}
-                  <Box sx={{marginBottom:2}}>
+                <Box sx={{margin:2}}>
                     <FileUpload
                         name="images"
                         register={register}
@@ -306,7 +313,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       }
                   </Box>
 
-                  <Box sx={{marginBottom:2}}>
+                  <Box sx={{margin:2}}>
                     <FileUpload
                       name="keywords"
                       register={register}
@@ -320,7 +327,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     }
                   </Box>
 
-                  <Box sx={{marginBottom:2}}>
+                  <Box sx={{margin:2}}>
                     <FileUpload
                       name="proximity_store"
                       register={register}
@@ -328,7 +335,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       placeholder="Select Proximity Store Visit(.pdf)"
                     />
                   </Box>
-                  <Box sx={{marginBottom:2}}>
+                  <Box sx={{margin:2}}>
                     <FileUpload
                       name="proximity"
                       register={register}
@@ -336,7 +343,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       placeholder="Select Proximity(.pdf)"
                     />
                   </Box>
-                  <Box sx={{marginBottom:2}}>
+                  <Box sx={{margin:2}}>
                     <FileUpload
                       name="weather"
                       register={register}
@@ -349,7 +356,7 @@ export default function CreateCampaign(): React.JSX.Element {
               {/* Submit Button */}
               {!isPending && (
                 <Box sx={{ textAlign: "center", mt: 3 }}>
-                  <Button variant="contained" color="primary" type="submit">
+                  <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
                     Create Campaign
                   </Button>
                 </Box>
@@ -376,10 +383,11 @@ export default function CreateCampaign(): React.JSX.Element {
               justifyContent: "center",
               alignItems: "center",
               bgcolor: "background.paper",
-              borderRadius: 1,
               p: 2,
+              border:1,
+              borderColor: "grey.200",
               position: "sticky",
-              top: '54px',
+              top: '72px',
               alignSelf: 'flex-start',
             }}
           >
@@ -425,19 +433,32 @@ export default function CreateCampaign(): React.JSX.Element {
   }): React.JSX.Element {
     const [expanded, setExpanded] = React.useState<boolean>(defaultExpanded);
     return (
-      <Card>
-        <CardContent>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+              p: 2,
+            }}
+          >
             <Typography variant="h6">{title}</Typography>
             <Button
               variant="text"
               onClick={() => setExpanded((prev) => !prev)}
               startIcon={expanded ? <CaretUp /> : <CaretDown />}
+              sx={{
+                color: "primary.contrastText", // Ensure button icon matches title text color
+              }}
             />
           </Box>
           {expanded && <Box sx={{ mt: 2 }}>{children}</Box>}
-        </CardContent>
-      </Card>
+        </Box>
+
+      </Box>
     );
   }
   
