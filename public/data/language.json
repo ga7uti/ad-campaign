@@ -2,27 +2,12 @@
   "success": true,
   "message": "Data successfully fetched",
   "data": [
+    { "value": "English", "iso_code": "hi", "id": 0 },
     { "value": "Hindi", "iso_code": "hi", "id": 1 },
     { "value": "Bengali", "iso_code": "bn", "id": 2 },
     { "value": "Telugu", "iso_code": "te", "id": 3 },
     { "value": "Marathi", "iso_code": "mr", "id": 4 },
-    { "value": "Tamil", "iso_code": "ta", "id": 5 },
-    { "value": "Urdu", "iso_code": "ur", "id": 6 },
-    { "value": "Gujarati", "iso_code": "gu", "id": 7 },
-    { "value": "Malayalam", "iso_code": "ml", "id": 8 },
-    { "value": "Kannada", "iso_code": "kn", "id": 9 },
-    { "value": "Odia", "iso_code": "or", "id": 10 },
-    { "value": "Punjabi", "iso_code": "pa", "id": 11 },
-    { "value": "Assamese", "iso_code": "as", "id": 12 },
-    { "value": "Maithili", "iso_code": "mai", "id": 13 },
-    { "value": "Sanskrit", "iso_code": "sa", "id": 14 },
-    { "value": "Konkani", "iso_code": "kok", "id": 15 },
-    { "value": "Sindhi", "iso_code": "sd", "id": 16 },
-    { "value": "Dogri", "iso_code": "doi", "id": 17 },
-    { "value": "Manipuri", "iso_code": "mni", "id": 18 },
-    { "value": "Nepali", "iso_code": "ne", "id": 19 },
-    { "value": "Santali", "iso_code": "sat", "id": 20 },
-    { "value": "Kashmiri", "iso_code": "ks", "id": 21 }
+    { "value": "Tamil", "iso_code": "ta", "id": 5 }
   ]
 }
 

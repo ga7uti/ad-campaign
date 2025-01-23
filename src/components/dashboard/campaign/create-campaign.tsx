@@ -5,14 +5,14 @@ import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, SelectChangeEvent, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, SelectChangeEvent, Typography } from '@mui/material';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
-import { PieChart } from '@mui/x-charts';
+import { ImpressionChart } from './impression-chart';
 
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -48,11 +48,6 @@ export default function CreateCampaign(): React.JSX.Element {
     const onSubmit = async (data: CampaignFormData) => {
       if (!data.images || data.images.length === 0) {
         setError('images',{message:"Image is required"});
-        return;
-      }
-
-      if (!data.keywords || data.keywords.length === 0) {
-        setError('keywords',{message:"Keyword is required"});
         return;
       }
       clearErrors();
@@ -149,12 +144,12 @@ export default function CreateCampaign(): React.JSX.Element {
       }
 
       // For age, device, carrier, environment
-      if ((name === "age" || name === "device" || name === "carrier" || name === "environment") 
-        && impressionData && impressionData[name]) {
+      if ((name === "age" || name === "device" || name === "carrier" || name === "environment")) {
         
           let totalPercentage = 0;
           selectedValue.forEach((value) => {
-            const data = impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
+            const data =impressionData && impressionData[name] && 
+              impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
             if (data && data.percentage) {
               totalPercentage += data.percentage;
             }
@@ -448,29 +443,7 @@ export default function CreateCampaign(): React.JSX.Element {
               alignSelf: 'flex-start',
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-                
-              }}
-            >
-              <Typography sx={{marginBottom: 3}} variant="h6">Expected Impression</Typography>
-              <PieChart
-                series={[
-                  {
-                    data: [
-                      { id: 0, value: totalPopulation , label: `Total ${totalPopulation}` },
-                      { id: 1, value: targetPopulation, label: `Target ${targetPopulation}` },
-                    ],
-                  },
-                ]}
-                width={300}
-                height={200}
-              />
-            </Box>
+            <ImpressionChart title= "Expected Impression" targetPopulation={targetPopulation} totalPopulation={totalPopulation} />
           </Box>
       </Box>
     );

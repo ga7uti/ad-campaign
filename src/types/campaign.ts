@@ -61,7 +61,7 @@ export interface CampaignFormData  {
     environment: string[];
     location: number[];
     images: number[];
-    keywords: number[];
+    keywords?: number[];
     distinct_interest: string[];
     target_type: number[];
     exchange: string[];
