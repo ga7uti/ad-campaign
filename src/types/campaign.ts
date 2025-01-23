@@ -49,6 +49,9 @@ export interface Campaign {
     proximity: FileUpload[];
     weather: FileUpload[]; 
     location: Location[];
+    click?:string;
+    pay_rate?:string;
+    impression?:string;
 }
 
 export interface CampaignFormData  {
