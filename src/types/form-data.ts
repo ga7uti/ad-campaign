@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
-import { Customer, SignInParams, User } from "./auth";
+import { SignInParams, User } from "./auth";
 import { CampaignFormData } from "./campaign";
 
   export interface FormFieldProps<T>  {
@@ -74,7 +74,7 @@ import { CampaignFormData } from "./campaign";
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
     images: z.array(z.number(), { message: "Image is required" }),
-    keywords: z.array(z.number(), { message: "Keywords is required" }),
+    keywords: z.any(),
     distinct_interest: z.array(z.string(), { message: "Interest is required" }),
     target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),

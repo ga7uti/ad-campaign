@@ -12,7 +12,7 @@ export default function CreateCampaignPage(): React.JSX.Element {
     <Box>
       <BackBtn/>
       <Box mb={2}>
-        <Typography mb={2} variant="h4">Create Campaign</Typography>
+        <Typography mb={5} variant="h4">Create Campaign</Typography>
         <CreateCampaign/>
       </Box>
     </Box>

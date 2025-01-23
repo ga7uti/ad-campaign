@@ -49,6 +49,9 @@ export interface Campaign {
     proximity: FileUpload[];
     weather: FileUpload[]; 
     location: Location[];
+    click?:string;
+    pay_rate?:string;
+    impression?:string;
 }
 
 export interface CampaignFormData  {
@@ -58,7 +61,7 @@ export interface CampaignFormData  {
     environment: string[];
     location: number[];
     images: number[];
-    keywords: number[];
+    keywords?: number[];
     distinct_interest: string[];
     target_type: number[];
     exchange: string[];
@@ -69,4 +72,16 @@ export interface CampaignFormData  {
     proximity?: number[];
     weather?: number[];
 };
+
+export interface CommonImpressionDetails{
+    label:string,
+    percentage:number
+}
+export interface ImpressionData{
+    totalPopulation: number,
+    age?: CommonImpressionDetails[],
+    device?: CommonImpressionDetails[],
+    environment?: CommonImpressionDetails[],
+    carrier?:CommonImpressionDetails[],
+}
   
