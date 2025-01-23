@@ -12,6 +12,7 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
+import { PieChart } from '@mui/x-charts';
 
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -160,7 +161,17 @@ export default function CreateCampaign(): React.JSX.Element {
                         data={undefined}
                     />
                 </Box>
-
+                {/* Location */}
+                <Box sx={{marginBottom:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Locations"
+                        name="location"
+                        register={register}
+                        error={Array.isArray(errors.location)?errors.location[0]:errors.location}
+                        data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
+                    />
+                </Box>
                 {/* Age */}
                 <Box sx={{marginBottom:2}}>
                     <FormField
@@ -195,18 +206,6 @@ export default function CreateCampaign(): React.JSX.Element {
                         register={register}
                         error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                         data={environment.length > 0 ? environment : [{ id: 0, value: 'No data available. Please try again later' }]}
-                    />
-                </Box>
-
-                {/* Location */}
-                <Box sx={{marginBottom:2}}>
-                    <FormField
-                        type="text"
-                        placeholder="Locations"
-                        name="location"
-                        register={register}
-                        error={Array.isArray(errors.location)?errors.location[0]:errors.location}
-                        data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
                     />
                 </Box>
               </CardSection>
@@ -378,11 +377,36 @@ export default function CreateCampaign(): React.JSX.Element {
               alignItems: "center",
               bgcolor: "background.paper",
               borderRadius: 1,
-              p: 2, // Add padding
+              p: 2,
+              position: "sticky",
+              top: '54px',
+              alignSelf: 'flex-start',
             }}
           >
-            {/* Replace with your chart component */}
-            <Typography variant="body1">[Chart Goes Here]</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                
+              }}
+            >
+              <Typography sx={{marginBottom: 3}} variant="h6">Expected Impression</Typography>
+              <PieChart
+                series={[
+                  {
+                    data: [
+                      { id: 0, value: 10, label: 'series A' },
+                      { id: 1, value: 15, label: 'series B' },
+                      { id: 2, value: 20, label: 'series C' },
+                    ],
+                  },
+                ]}
+                width={400}
+                height={200}
+              />
+            </Box>
           </Box>
       </Box>
     );
