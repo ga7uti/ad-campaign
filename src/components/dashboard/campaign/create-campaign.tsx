@@ -197,9 +197,9 @@ export default function CreateCampaign(): React.JSX.Element {
         sx={{
           display: "flex",
           flexDirection: {
-            xs: "column", // Stack vertically on small screens
+            xs: "column",
             sm: "column",
-            md: "row", // Side-by-side on larger screens
+            md: "row",
           },
           justifyContent: "space-between",
           alignItems: "flex-start",
