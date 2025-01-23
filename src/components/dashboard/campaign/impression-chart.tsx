@@ -19,13 +19,18 @@ export function ImpressionChart({
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center', // Center content vertically
-                alignItems: 'center', // Center content horizontally
+                justifyContent: 'center',
+                alignItems: 'center',
                 textAlign: 'center',
                 width: "100%",
               }}
             >
-              <Typography sx={{marginBottom: 3}} variant="h6">{title}</Typography>
+              <Typography sx={{
+                  marginBottom: { xs: 2, sm: 3 },
+                  fontSize: { xs: "1rem", sm: "1.25rem" },
+                }} variant="h6">
+                  {title}
+                </Typography>
               <PieChart
                 series={[
                   {

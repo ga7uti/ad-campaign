@@ -196,13 +196,19 @@ export default function CreateCampaign(): React.JSX.Element {
       <Box
         sx={{
           display: "flex",
+          flexDirection: {
+            xs: "column", // Stack vertically on small screens
+            sm: "column",
+            md: "row", // Side-by-side on larger screens
+          },
           justifyContent: "space-between",
           alignItems: "flex-start",
-          gap: 2,
+          gap: { xs: 2, sm: 3, md: 4 },
+          p: { xs: 1, sm: 2, md: 3 },
           
         }}
       >
-        <Box sx={{ flex: 2, overflow: "hidden" }}>
+        <Box sx={{ flex: { xs: "1", md: "2" }, overflow: "hidden" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: "flex", 
                 flexDirection: "column",
@@ -438,8 +444,9 @@ export default function CreateCampaign(): React.JSX.Element {
         {/* Right Section (Chart) */}
           <Box
             sx={{
-              flex: 1, // Adjust chart section size
+              flex: { xs: "1", md: "1" },
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
               bgcolor: "background.paper",
