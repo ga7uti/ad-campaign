@@ -33,6 +33,8 @@ export default function CreateCampaign(): React.JSX.Element {
     const [impressionData,setImpressionData] = React.useState<ImpressionData>();
     const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
+    const [previousName, setPreviousName] = React.useState<string>("");
+    const [calPopulation, setCalPopulation] = React.useState <number>(0)
 
     const {
       register,
@@ -127,6 +129,16 @@ export default function CreateCampaign(): React.JSX.Element {
       event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
       name: string
     ) => {
+
+        let effectiveCalPopulation = calPopulation;
+        if (previousName !== null && previousName !== name) {
+          console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
+          setPreviousName(name);
+          effectiveCalPopulation = targetPopulation;
+          setCalPopulation(targetPopulation);
+        }
+        console.log("Effective Cal",effectiveCalPopulation)
+
       const selectedValue: string[] = event.target.value as string[];
       if (name === "distinct_interest") {
         try {
@@ -136,23 +148,46 @@ export default function CreateCampaign(): React.JSX.Element {
         }
       }
 
-      if((name==="age" || name==="device" || name ==="carrier" || name ==="environment")
-         && impressionData && impressionData[name]){
-        console.log(`Before ${name} Target Population`,targetPopulation,selectedValue);
-        const data = impressionData[name]
-          .filter((age) => age.label.toLowerCase() === selectedValue[selectedValue.length-1].toLowerCase())
-        if(data && data[0].percentage){
-          const percentage = data[0].percentage
-          const newTargetPopulation = targetPopulation === 0? Math.round((totalPopulation * percentage) / 100) 
-            : Math.round((targetPopulation * percentage) / 100)
+      // For age, device, carrier, environment
+      if ((name === "age" || name === "device" || name === "carrier" || name === "environment") 
+        && impressionData && impressionData[name]) {
+        
+          let totalPercentage = 0;
+          selectedValue.forEach((value) => {
+            const data = impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
+            if (data && data.percentage) {
+              totalPercentage += data.percentage;
+            }
+          });
+
+          // If no target population yet, use the total population
+          const newTargetPopulation = targetPopulation === 0 
+            ? Math.round((totalPopulation * totalPercentage) / 100)
+            : Math.round((effectiveCalPopulation * totalPercentage) / 100);
+
+          console.log(`After ${name} Target Population`, newTargetPopulation);
           setTargetPopulation(newTargetPopulation);
         }
-      }
-    };
+
+        // For location selection: calculate the sum of the population of selected locations
+        if (name === "location" && selectedValue.length > 0) {
+          let newTargetPopulation = 0;
+          selectedValue.forEach((data) => {
+            const locationData = location.find((loc) => loc.id === parseInt(data));
+            if (locationData) {
+              newTargetPopulation += Number(locationData.population);
+            }
+          });
+
+          // Update the target population after location selection
+          console.log("New Target Population after location selection:", newTargetPopulation);
+          setTargetPopulation(newTargetPopulation);
+        }
+      };
 
     React.useEffect(() => {
       fetchData();
-    }, [selectedInterest,targetPopulation]);
+    }, [selectedInterest,targetPopulation,calPopulation]);
   
     return (
       <Box
@@ -427,12 +462,12 @@ export default function CreateCampaign(): React.JSX.Element {
                 series={[
                   {
                     data: [
-                      { id: 0, value: totalPopulation , label: 'Total' },
-                      { id: 1, value: targetPopulation, label: 'Target' },
+                      { id: 0, value: totalPopulation , label: `Total ${totalPopulation}` },
+                      { id: 1, value: targetPopulation, label: `Target ${targetPopulation}` },
                     ],
                   },
                 ]}
-                width={400}
+                width={300}
                 height={200}
               />
             </Box>
