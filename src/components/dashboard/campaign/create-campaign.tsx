@@ -136,14 +136,21 @@ export default function CreateCampaign(): React.JSX.Element {
     }, [selectedInterest]);
   
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 ,marginBottom: "1rem"}}>
-          {/* Campaign Details Section */}
-          <CardSection title="Campaign Details">
-            <Grid container spacing={2} mt={2}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start", // Align sections at the top
+          gap: 2, // Space between sections
+        }}
+      >
+        <Box sx={{ flex: 2 }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 ,marginBottom: "1rem"}}>
+              {/* Campaign Details Section */}
+              <CardSection title="Campaign Details" defaultExpanded={true}>
                 {/* Name */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
+                <Box sx={{marginBottom:2}}>
                     <FormField
                         type="text"
                         placeholder="Name"
@@ -152,12 +159,10 @@ export default function CreateCampaign(): React.JSX.Element {
                         error={errors.name}
                         data={undefined}
                     />
-                    </Box>
-                </Grid>
+                </Box>
 
                 {/* Age */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
+                <Box sx={{marginBottom:2}}>
                     <FormField
                         type="text"
                         placeholder="Age Range"
@@ -166,14 +171,12 @@ export default function CreateCampaign(): React.JSX.Element {
                         error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                         data={ages.length > 0 ? ages : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
-                    </Box>
-                </Grid>
+                </Box>
 
 
                 {/* Device */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                    <FormField
+                <Box sx={{marginBottom:2}}>                        
+                  <FormField
                         type="text"
                         placeholder="Devices"
                         name="device"
@@ -181,12 +184,10 @@ export default function CreateCampaign(): React.JSX.Element {
                         error={Array.isArray(errors.device)?errors.device[0]:errors.device}
                         data={devices.length > 0 ? devices : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
-                    </Box>
-                </Grid>
+                  </Box>
 
                 {/* Environment */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
+                <Box sx={{marginBottom:2}}>
                     <FormField
                         type="text"
                         placeholder="Environments"
@@ -195,12 +196,10 @@ export default function CreateCampaign(): React.JSX.Element {
                         error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                         data={environment.length > 0 ? environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
-                    </Box>
-                </Grid>
+                </Box>
 
                 {/* Location */}
-                <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
+                <Box sx={{marginBottom:2}}>
                     <FormField
                         type="text"
                         placeholder="Locations"
@@ -209,125 +208,106 @@ export default function CreateCampaign(): React.JSX.Element {
                         error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                         data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
                     />
-                    </Box>
-                </Grid>
-            </Grid>
-          </CardSection>
-          
-          {/* Targeting Type Section */}
-          <CardSection title="Targeting Type">
-            <Grid container spacing={2} mt={2}>
-                  {/* Exchange */}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="Exchange"
-                          name="exchange"
-                          register={register}
-                          error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
-                          data={exchange.length > 0 ? exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Carrier */}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="Carrier"
-                          name="carrier"
-                          register={register}
-                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={carrier.length > 0 ? carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Langugage */}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="Language"
-                          name="language"
-                          register={register}
-                          error={Array.isArray(errors.language)?errors.language[0]:errors.language}
-                          data={language.length > 0 ? language : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* DevicePrice */}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="DevicePrice"
-                          name="device_price"
-                          register={register}
-                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={devicePrice.length > 0 ? devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-                  </Grid>
-              </Grid>
-          </CardSection>
-          
-           {/* Targeting Interest Section */}
-           <CardSection title="Interest">
-            <Grid container spacing={2} mt={2}>
-                  {/* Interest */}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="Category"
-                          name="distinct_interest"
-                          register={register}
-                          onChange={handleSelectChange}
-                          data={distinctInterest.length > 0 ? distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
-                      />
-                    </Box>
-                  </Grid>
-
-                  {/* Interest Category*/}
-                  <Grid item xs={12} md={6} mb={1}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormField
-                          type="text"
-                          placeholder="SubCategory"
-                          name="target_type"
-                          register={register}
-                          error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
-                          data={selectedInterest.length > 0 ? selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
-                          />
-                    </Box>
-                  </Grid>
-              </Grid>
-          </CardSection>
-
-          {/* Campaign File Upload Section */}
-          <CardSection title="File Upload">
-              <Grid container spacing={2} mt={2}>
-                  {/* Image Upload */}
-                  <Grid item xs={12} md={6} lg={4} mb={1}>
-                    <FileUpload
-                      name="images"
-                      register={register}
-                      setValue={setValue} // Pass setValue here
-                      placeholder="Select Campaign Image(.jpeg,.png)"
+                </Box>
+              </CardSection>
+              
+              {/* Targeting Type Section */}
+              <CardSection title="Targeting Type">
+                {/* Exchange */}
+                <Box sx={{marginBottom:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Exchange"
+                        name="exchange"
+                        register={register}
+                        error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
+                        data={exchange.length > 0 ? exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
-                    {errors.images && 
-                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                        {errors.images?.message}
-                      </Typography>
-                    }
-                  </Grid>
+                </Box>
 
-                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                {/* Carrier */}
+                  <Box sx={{marginBottom:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Carrier"
+                        name="carrier"
+                        register={register}
+                        error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
+                        data={carrier.length > 0 ? carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
+                    />
+                  </Box>
+
+                {/* Langugage */}
+                  <Box sx={{marginBottom:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Language"
+                        name="language"
+                        register={register}
+                        error={Array.isArray(errors.language)?errors.language[0]:errors.language}
+                        data={language.length > 0 ? language : [{ id: 0, value: 'No data available. Please try again later' }]}
+                    />
+                  </Box>
+
+                {/* DevicePrice */}
+                  <Box sx={{marginBottom:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="DevicePrice"
+                        name="device_price"
+                        register={register}
+                        error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
+                        data={devicePrice.length > 0 ? devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
+                    />
+                  </Box>
+              </CardSection>
+              
+              {/* Targeting Interest Section */}
+              <CardSection title="Interest">
+              {/* Interest */}
+                <Box sx={{marginBottom:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Category"
+                      name="distinct_interest"
+                      register={register}
+                      onChange={handleSelectChange}
+                      data={distinctInterest.length > 0 ? distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
+                  />
+                </Box>
+
+              {/* Interest Category*/}
+                <Box sx={{marginBottom:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="SubCategory"
+                      name="target_type"
+                      register={register}
+                      error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
+                      data={selectedInterest.length > 0 ? selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
+                      />
+                </Box>
+              </CardSection>
+
+              {/* Campaign File Upload Section */}
+              <CardSection title="File Upload">
+                  {/* Image Upload */}
+                  <Box sx={{marginBottom:2}}>
+                    <FileUpload
+                        name="images"
+                        register={register}
+                        setValue={setValue} // Pass setValue here
+                        placeholder="Select Campaign Image(.jpeg,.png)"
+                      />
+                      {errors.images && 
+                        <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                          {errors.images?.message}
+                        </Typography>
+                      }
+                  </Box>
+
+                  <Box sx={{marginBottom:2}}>
                     <FileUpload
                       name="keywords"
                       register={register}
@@ -339,54 +319,72 @@ export default function CreateCampaign(): React.JSX.Element {
                         {errors.keywords?.message}
                       </Typography>
                     }
-                  </Grid>
-                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                  </Box>
+
+                  <Box sx={{marginBottom:2}}>
                     <FileUpload
                       name="proximity_store"
                       register={register}
                       setValue={setValue}
                       placeholder="Select Proximity Store Visit(.pdf)"
                     />
-                  </Grid>
-                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                  </Box>
+                  <Box sx={{marginBottom:2}}>
                     <FileUpload
                       name="proximity"
                       register={register}
                       setValue={setValue} 
                       placeholder="Select Proximity(.pdf)"
                     />
-                  </Grid>
-                  <Grid item xs={12} md={6} lg={4} mb={1}>
+                  </Box>
+                  <Box sx={{marginBottom:2}}>
                     <FileUpload
                       name="weather"
                       register={register}
                       setValue={setValue}
                       placeholder="Select Weather(.pdf)"
                     />
-                  </Grid>
-              </Grid>
-          </CardSection>
-  
-          {/* Submit Button */}
-          {!isPending && (
-            <Box sx={{ textAlign: "center", mt: 3 }}>
-              <Button variant="contained" color="primary" type="submit">
-                Create Campaign
-              </Button>
-            </Box>
-          )}
-          
-          {isPending && (
-            <Box sx={{ textAlign: "center", mt: 3 }}>
-              <Box sx={{ marginLeft: 2 }}>
-                  <CircularProgress />
+                  </Box>
+              </CardSection>
+      
+              {/* Submit Button */}
+              {!isPending && (
+                <Box sx={{ textAlign: "center", mt: 3 }}>
+                  <Button variant="contained" color="primary" type="submit">
+                    Create Campaign
+                  </Button>
                 </Box>
-              </Box>
-          )}
+              )}
+              
+              {isPending && (
+                <Box sx={{ textAlign: "center", mt: 3 }}>
+                  <Box sx={{ marginLeft: 2 }}>
+                      <CircularProgress />
+                    </Box>
+                  </Box>
+              )}
+            </Box>
+            {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+            {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
+          </form>
         </Box>
-        {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-        {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
-      </form>
+
+        {/* Right Section (Chart) */}
+          <Box
+            sx={{
+              flex: 1, // Adjust chart section size
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "background.paper",
+              borderRadius: 1,
+              p: 2, // Add padding
+            }}
+          >
+            {/* Replace with your chart component */}
+            <Typography variant="body1">[Chart Goes Here]</Typography>
+          </Box>
+      </Box>
     );
   }
   
@@ -394,12 +392,14 @@ export default function CreateCampaign(): React.JSX.Element {
   function CardSection({
     title,
     children,
+    defaultExpanded = false,
   }: {
     title: string;
     children: React.ReactNode;
+    defaultExpanded?: boolean,
+
   }): React.JSX.Element {
-    const [expanded, setExpanded] = React.useState<boolean>(true);
-  
+    const [expanded, setExpanded] = React.useState<boolean>(defaultExpanded);
     return (
       <Card>
         <CardContent>
