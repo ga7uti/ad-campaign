@@ -72,4 +72,16 @@ export interface CampaignFormData  {
     proximity?: number[];
     weather?: number[];
 };
+
+export interface CommonImpressionDetails{
+    label:string,
+    percentage:number
+}
+export interface ImpressionData{
+    totalPopulation: number,
+    age?: CommonImpressionDetails[],
+    device?: CommonImpressionDetails[],
+    environment?: CommonImpressionDetails[],
+    carrier?:CommonImpressionDetails[],
+}
   

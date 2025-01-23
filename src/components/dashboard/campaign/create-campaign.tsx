@@ -2,7 +2,7 @@
 import { campaignClient } from '@/lib/campaign-client';
 import { utils } from '@/lib/common';
 import { paths } from '@/paths';
-import { CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';
+import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, SelectChangeEvent, Typography } from '@mui/material';
@@ -30,6 +30,9 @@ export default function CreateCampaign(): React.JSX.Element {
     const [selectedInterest, setSelectedInterest] = React.useState<Interest[]>([]);
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
+    const [impressionData,setImpressionData] = React.useState<ImpressionData>();
+    const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
+    const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
 
     const {
       register,
@@ -57,7 +60,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const fetchData = async () => {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, interestRes] = await Promise.all([
+          carrierRes,devicePriceRes, interestRes, impressionRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
@@ -67,6 +70,7 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getCarrier(),
           campaignClient.getDevicePrice(),
           campaignClient.getDistinctInterest(),
+          campaignClient.getImpressionData(),
         ]);
         setAge(ageRes);
         setDevices(deviceRes);
@@ -77,6 +81,8 @@ export default function CreateCampaign(): React.JSX.Element {
         setCarrier(carrierRes);
         setDevicePrice(devicePriceRes);
         setDistinctInterest(interestRes)
+        setImpressionData(impressionRes)
+        setTotalPopulation(impressionRes.totalPopulation)
       } catch (error) {
         setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
       }
@@ -121,20 +127,32 @@ export default function CreateCampaign(): React.JSX.Element {
       event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
       name: string
     ) => {
-      const selectedValue = event.target.value;
+      const selectedValue: string[] = event.target.value as string[];
       if (name === "distinct_interest") {
         try {
-          await fetchSelectedInterest((selectedValue as string[]).join(","));
+          await fetchSelectedInterest(selectedValue.join(","));
         } catch (error) {
           setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
+        }
+      }
+
+      if((name==="age" || name==="device" || name ==="carrier" || name ==="environment")
+         && impressionData && impressionData[name]){
+        console.log(`Before ${name} Target Population`,targetPopulation,selectedValue);
+        const data = impressionData[name]
+          .filter((age) => age.label.toLowerCase() === selectedValue[selectedValue.length-1].toLowerCase())
+        if(data && data[0].percentage){
+          const percentage = data[0].percentage
+          const newTargetPopulation = targetPopulation === 0? Math.round((totalPopulation * percentage) / 100) 
+            : Math.round((targetPopulation * percentage) / 100)
+          setTargetPopulation(newTargetPopulation);
         }
       }
     };
 
     React.useEffect(() => {
-      console.log(selectedInterest)
       fetchData();
-    }, [selectedInterest]);
+    }, [selectedInterest,targetPopulation]);
   
     return (
       <Box
@@ -175,6 +193,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Locations"
                         name="location"
                         register={register}
+                        onChange={handleSelectChange}
                         error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                         data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
                     />
@@ -185,6 +204,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         type="text"
                         placeholder="Age Range"
                         name="age"
+                        onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                         data={ages.length > 0 ? ages : [{ id: 0, value: 'No data available. Please try again later' }]}
@@ -210,6 +230,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         type="text"
                         placeholder="Environments"
                         name="environment"
+                        onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                         data={environment.length > 0 ? environment : [{ id: 0, value: 'No data available. Please try again later' }]}
@@ -237,6 +258,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         type="text"
                         placeholder="Carrier"
                         name="carrier"
+                        onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
                         data={carrier.length > 0 ? carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
@@ -405,9 +427,8 @@ export default function CreateCampaign(): React.JSX.Element {
                 series={[
                   {
                     data: [
-                      { id: 0, value: 10, label: 'series A' },
-                      { id: 1, value: 15, label: 'series B' },
-                      { id: 2, value: 20, label: 'series C' },
+                      { id: 0, value: totalPopulation , label: 'Total' },
+                      { id: 1, value: targetPopulation, label: 'Target' },
                     ],
                   },
                 ]}

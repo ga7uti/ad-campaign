@@ -1,6 +1,6 @@
 'use client';
 
-import { Campaign, CampaignFormData, CommonSelectResponse, Interest, Location } from '@/types/campaign';
+import { Campaign, CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
@@ -63,6 +63,17 @@ class CampaignClient {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         return response.data.id;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getImpressionData() :Promise<ImpressionData>{
+      try {
+        const response = await axios.get('/data/impression.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }
