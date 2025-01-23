@@ -19,9 +19,10 @@ export function ImpressionChart({
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
+                justifyContent: 'center', // Center content vertically
+                alignItems: 'center', // Center content horizontally
                 textAlign: 'center',
-                width:"100%"
+                width: "100%",
               }}
             >
               <Typography sx={{marginBottom: 3}} variant="h6">{title}</Typography>

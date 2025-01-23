@@ -18,16 +18,18 @@ import { ImpressionChart } from './impression-chart';
 export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
-    const [ages, setAge] = React.useState<CommonSelectResponse[]>([]);
-    const [devices, setDevices] = React.useState<CommonSelectResponse[]>([]);
-    const [environment, setEnvironment] = React.useState<CommonSelectResponse[]>([]);
-    const [location, setLocation] = React.useState<Location[]>([]);
-    const [exchange, setExchanges] = React.useState<CommonSelectResponse[]>([]);
-    const [language, setLanguage] = React.useState<CommonSelectResponse[]>([]);
-    const [carrier, setCarrier] = React.useState<CommonSelectResponse[]>([]);
-    const [devicePrice, setDevicePrice] = React.useState<CommonSelectResponse[]>([]);
-    const [distinctInterest, setDistinctInterest] = React.useState<CommonSelectResponse[]>([]);
-    const [selectedInterest, setSelectedInterest] = React.useState<Interest[]>([]);
+    const [dataSources, setDataSources] = React.useState({
+      ages: [],
+      devices: [],
+      environment: [],
+      location: [],
+      exchange: [],
+      language: [],
+      carrier: [],
+      devicePrice: [],
+      distinctInterest: [],
+      selectedInterest: [],
+    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>)
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [impressionData,setImpressionData] = React.useState<ImpressionData>();
@@ -69,15 +71,18 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getDistinctInterest(),
           campaignClient.getImpressionData(),
         ]);
-        setAge(ageRes);
-        setDevices(deviceRes);
-        setEnvironment(envRes);
-        setLocation(locRes);
-        setExchanges(exchangeRes);
-        setLanguage(langRes);
-        setCarrier(carrierRes);
-        setDevicePrice(devicePriceRes);
-        setDistinctInterest(interestRes)
+        setDataSources({
+          ages: ageRes,
+          devices: deviceRes,
+          environment: envRes,
+          location: locRes,
+          exchange: exchangeRes,
+          language: langRes,
+          carrier: carrierRes,
+          devicePrice: devicePriceRes,
+          distinctInterest: interestRes,
+          selectedInterest: [],
+        });
         setImpressionData(impressionRes)
         setTotalPopulation(impressionRes.totalPopulation)
       } catch (error) {
@@ -88,7 +93,10 @@ export default function CreateCampaign(): React.JSX.Element {
     const fetchSelectedInterest = async (interest: string) => {
       try {
         const result = await campaignClient.getSelectedInterest(interest);
-        setSelectedInterest(result);
+        setDataSources((prev) => ({
+          ...prev,
+          selectedInterest: result,
+        }));
       } catch (error) {
         setError('root', { type: 'server', message: "Failed to fetch selected category. Error: " + error});
       }
@@ -168,7 +176,7 @@ export default function CreateCampaign(): React.JSX.Element {
         if (name === "location" && selectedValue.length > 0) {
           let newTargetPopulation = 0;
           selectedValue.forEach((data) => {
-            const locationData = location.find((loc) => loc.id === parseInt(data));
+            const locationData = dataSources.location.find((loc) => loc.id === parseInt(data)) as Location;
             if (locationData) {
               newTargetPopulation += Number(locationData.population);
             }
@@ -182,7 +190,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
     React.useEffect(() => {
       fetchData();
-    }, [selectedInterest,targetPopulation,calPopulation]);
+    }, []);
   
     return (
       <Box
@@ -194,7 +202,7 @@ export default function CreateCampaign(): React.JSX.Element {
           
         }}
       >
-        <Box sx={{ flex: 2 }} >
+        <Box sx={{ flex: 2, overflow: "hidden" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: "flex", 
                 flexDirection: "column",
@@ -204,7 +212,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 borderColor: "grey.300",
             }}>
               {/* Campaign Details Section */}
-              <CardSection title="Campaign Details" defaultExpanded={true}>
+              <CardSection title="Campaign Details">
                 {/* Name */}
                 <Box sx={{margin:2}}>
                     <FormField
@@ -225,7 +233,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         register={register}
                         onChange={handleSelectChange}
                         error={Array.isArray(errors.location)?errors.location[0]:errors.location}
-                        data={location.length > 0 ? location : [{ id: 0, city: 'No data available. Please try again later' }]}
+                        data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
                     />
                 </Box>
                 {/* Age */}
@@ -237,7 +245,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.age)?errors.age[0]:errors.age}
-                        data={ages.length > 0 ? ages : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                 </Box>
 
@@ -250,7 +258,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="device"
                         register={register}
                         error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                        data={devices.length > 0 ? devices : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                   </Box>
 
@@ -263,7 +271,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                        data={environment.length > 0 ? environment : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                 </Box>
               </CardSection>
@@ -278,7 +286,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="exchange"
                         register={register}
                         error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
-                        data={exchange.length > 0 ? exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                 </Box>
 
@@ -291,7 +299,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         onChange={handleSelectChange}
                         register={register}
                         error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                        data={carrier.length > 0 ? carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                   </Box>
 
@@ -303,7 +311,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="language"
                         register={register}
                         error={Array.isArray(errors.language)?errors.language[0]:errors.language}
-                        data={language.length > 0 ? language : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                   </Box>
 
@@ -315,7 +323,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="device_price"
                         register={register}
                         error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                        data={devicePrice.length > 0 ? devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        data={dataSources.devicePrice.length > 0 ? dataSources.devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                   </Box>
               </CardSection>
@@ -330,7 +338,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="distinct_interest"
                       register={register}
                       onChange={handleSelectChange}
-                      data={distinctInterest.length > 0 ? distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      data={dataSources.distinctInterest.length > 0 ? dataSources.distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
                       error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
                   />
                 </Box>
@@ -343,7 +351,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       name="target_type"
                       register={register}
                       error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
-                      data={selectedInterest.length > 0 ? selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
+                      data={dataSources.selectedInterest.length > 0 ? dataSources.selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
                       />
                 </Box>
               </CardSection>
@@ -423,7 +431,7 @@ export default function CreateCampaign(): React.JSX.Element {
               )}
             </Box>
             {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-            {isCampaignCreated ? <Alert color="success">Campaign created successfully</Alert> : null}
+            {isCampaignCreated ? <Alert mt ={2} color="success">Campaign created successfully!</Alert> : null}
           </form>
         </Box>
 
@@ -453,14 +461,12 @@ export default function CreateCampaign(): React.JSX.Element {
   function CardSection({
     title,
     children,
-    defaultExpanded = false,
   }: {
     title: string;
     children: React.ReactNode;
-    defaultExpanded?: boolean,
 
   }): React.JSX.Element {
-    const [expanded, setExpanded] = React.useState<boolean>(defaultExpanded);
+    const [expanded, setExpanded] = React.useState<boolean>(true);
     return (
       <Box>
         <Box>
