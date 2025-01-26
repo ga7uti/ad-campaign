@@ -29,6 +29,7 @@ export default function CreateCampaign(): React.JSX.Element {
       devicePrice: [],
       distinctInterest: [],
       selectedInterest: [],
+      buy_type: []
     } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>)
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
@@ -59,7 +60,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const fetchData = async () => {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, interestRes, impressionRes] = await Promise.all([
+          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
@@ -70,6 +71,7 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getDevicePrice(),
           campaignClient.getDistinctInterest(),
           campaignClient.getImpressionData(),
+          campaignClient.getBuyType(),
         ]);
         setDataSources({
           ages: ageRes,
@@ -82,6 +84,7 @@ export default function CreateCampaign(): React.JSX.Element {
           devicePrice: devicePriceRes,
           distinctInterest: interestRes,
           selectedInterest: [],
+          buy_type:buyTypeRes
         });
         setImpressionData(impressionRes)
         setTotalPopulation(impressionRes.totalPopulation)
@@ -152,7 +155,7 @@ export default function CreateCampaign(): React.JSX.Element {
       }
 
       // For age, device, carrier, environment
-      if ((name === "age" || name === "device" || name === "carrier" || name === "environment")) {
+      if ((name === "age")) {
         
           let totalPercentage = 0;
           selectedValue.forEach((value) => {
@@ -227,11 +230,15 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="name"
                         register={register}
                         error={errors.name}
-                        data={undefined}
                     />
                 </Box>
-                {/* Location */}
-                <Box sx={{margin:2}}>
+              </CardSection>
+              
+              {/* Targeting Type Section */}
+              <CardSection title="Targeting Type">
+              
+              {/* Location */}
+              <Box sx={{margin:2}}>
                     <FormField
                         type="text"
                         placeholder="Locations"
@@ -280,10 +287,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                 </Box>
-              </CardSection>
-              
-              {/* Targeting Type Section */}
-              <CardSection title="Targeting Type">
+                
                 {/* Exchange */}
                 <Box sx={{margin:2}}>
                     <FormField
@@ -362,9 +366,70 @@ export default function CreateCampaign(): React.JSX.Element {
                 </Box>
               </CardSection>
 
+              {/* Budget Section */}
+              <CardSection title="Budget & Bidding">
+                {/* Total Budget */}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Total Budget"
+                      name="total_budget"
+                      register={register}
+                      error={Array.isArray(errors.total_budget)?errors.total_budget[0]:errors.total_budget}
+                  />
+                </Box>
+
+                {/* Buy Type*/}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Buy Type"
+                      name="buy_type"
+                      register={register}
+                      error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
+                      data={dataSources.buy_type.length > 0 ? dataSources.buy_type : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                </Box>
+
+                {/* Unit Rate*/}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Unit Rate"
+                      name="unit_rate"
+                      register={register}
+                      error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
+                      />
+                </Box>
+              </CardSection>
+
               {/* Campaign File Upload Section */}
-              <CardSection title="File Upload">
-                  {/* Image Upload */}
+              <CardSection title="Ad Details">
+                {/* Name */}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Landing Page"
+                      name="landing_page"
+                      register={register}
+                      error={errors.landing_page}
+                      data={undefined}
+                  />
+                </Box>
+
+                {/* Name */}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Tag & Tracker"
+                      name="tag_tracker"
+                      register={register}
+                      error={errors.tag_tracker}
+                      data={undefined}
+                  />
+                </Box>
+                
+                {/* Image Upload */}
                 <Box sx={{margin:2}}>
                     <FileUpload
                         name="images"
@@ -391,31 +456,6 @@ export default function CreateCampaign(): React.JSX.Element {
                         {errors.keywords?.message}
                       </Typography>
                     }
-                  </Box>
-
-                  <Box sx={{margin:2}}>
-                    <FileUpload
-                      name="proximity_store"
-                      register={register}
-                      setValue={setValue}
-                      placeholder="Select Proximity Store Visit(.pdf)"
-                    />
-                  </Box>
-                  <Box sx={{margin:2}}>
-                    <FileUpload
-                      name="proximity"
-                      register={register}
-                      setValue={setValue} 
-                      placeholder="Select Proximity(.pdf)"
-                    />
-                  </Box>
-                  <Box sx={{margin:2}}>
-                    <FileUpload
-                      name="weather"
-                      register={register}
-                      setValue={setValue}
-                      placeholder="Select Weather(.pdf)"
-                    />
                   </Box>
               </CardSection>
       

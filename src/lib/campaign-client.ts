@@ -79,6 +79,17 @@ class CampaignClient {
       }
     }
 
+    async getBuyType() :Promise<CommonSelectResponse[]>{
+      try {
+        const response = await axios.get('/data/buy_type.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
     async getLocations() :Promise<Location[]>{
       try {
         const response = await axiosInstance.get('/api/location', {

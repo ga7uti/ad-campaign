@@ -65,6 +65,11 @@ import { CampaignFormData } from "./campaign";
   | "old_password"
   | "new_password"
   | "confirm_new_password"
+  | "landing_page"
+  | "tag_tracker"
+  | "total_budget"
+  | "buy_type"
+  | "unit_rate"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -80,10 +85,12 @@ import { CampaignFormData } from "./campaign";
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),
-    device_price: z.array(z.string(), { message: "Device Price is required" }),
-    proximity_store: z.any(),
-    proximity: z.any(),
-    weather: z.any(),
+    device_price: z.array(z.string(), { message: "Device Price is required" }), 
+    landing_page: z.any(),
+    tag_tracker: z.any(),
+    total_budget: z.number(),
+    buy_type: z.string(),
+    unit_rate: z.number(),
   });
 
 

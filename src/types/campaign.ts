@@ -68,9 +68,12 @@ export interface CampaignFormData  {
     language: string[];
     carrier: string[];
     device_price: string[];
-    proximity_store?: number[];
-    proximity?: number[];
-    weather?: number[];
+    landing_page?: string;
+    tag_tracker?: string;
+    total_budget: number;
+    buy_type: string;
+    unit_rate: number;
+
 };
 
 export interface CommonImpressionDetails{
