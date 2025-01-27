@@ -2,7 +2,7 @@ import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
-import { CampaignFormData } from "./campaign";
+import { Campaign, CampaignFormData } from "./campaign";
 
   export interface FormFieldProps<T>  {
     type: string;
@@ -23,6 +23,7 @@ import { CampaignFormData } from "./campaign";
     rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+    onRowClick: (id: number) => void;
   }
 
   export interface SearchProps {
@@ -30,6 +31,13 @@ import { CampaignFormData } from "./campaign";
     onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
   }
   
+  export interface CampaignDetailsPopOverProps {
+    data?:Campaign;
+    anchorEl: Element | null;
+    onClose: () => void;
+    open: boolean;
+  }
+
 
   export interface FileUploadProps {
     name: ValidFieldNames;

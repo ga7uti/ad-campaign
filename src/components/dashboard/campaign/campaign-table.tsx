@@ -28,15 +28,13 @@ export function CampaignTable({
   rows = [],
   page = 1,
   rowsPerPage = 10,
-  handlePageChange
+  handlePageChange,
+  onRowClick,
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
 
-  const [selectedRowId, setSelectedRowId] = React.useState<number | null>(null);
-
   const handleRowClick = (id: number) => {
-    setSelectedRowId(id);
-    console.log('Row clicked:', id);
+    onRowClick(id);
   };
   
   return (

@@ -19,6 +19,17 @@ class CampaignClient {
       }
     }
 
+    async getCampaignsById(id:number): Promise<Campaign> {
+      try {
+        const response = await axiosInstance.get(`/api/campaigns/${id}/`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.results.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
     async postCampaign(campaign:CampaignFormData): Promise<boolean> {
       try {
         axiosInstance.post('/api/campaigns/', campaign, {
