@@ -189,6 +189,29 @@ class CampaignClient {
       }
     }
 
+    async getBrandSafety(): Promise<CommonSelectResponse[]> {
+      try {
+        const response = await axios.get('/data/brand_safety.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async getViewability(): Promise<CommonSelectResponse[]> {
+      try {
+        const response = await axios.get('/data/viewability.json', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.data.data;
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+
     async getCarrier(): Promise<CommonSelectResponse[]> {
       try {
         const response = await axios.get('/data/carrier-data.json', {

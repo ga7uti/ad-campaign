@@ -14,6 +14,7 @@ import { Campaign, CampaignFormData } from "./campaign";
     data?: T[];
     disabled?:boolean
     hidePasswordIcon?:boolean;
+    multiple?:boolean;
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
@@ -78,6 +79,8 @@ import { Campaign, CampaignFormData } from "./campaign";
   | "total_budget"
   | "buy_type"
   | "unit_rate"
+  | "viewability"
+  | "brand_safety"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -96,9 +99,11 @@ import { Campaign, CampaignFormData } from "./campaign";
     device_price: z.array(z.string(), { message: "Device Price is required" }), 
     landing_page: z.any(),
     tag_tracker: z.any(),
-    total_budget: z.number(),
-    buy_type: z.string(),
-    unit_rate: z.number(),
+    total_budget: z.number({ message: "Total Budget is required" }),
+    buy_type: z.string({ message: "Buy Type is required" }),
+    unit_rate: z.number({ message: "Unit Rate is required" }),
+    brand_safety: z.string({ message: "Brand Safety is required" }),
+    viewability: z.string({ message: "Viewability is required" }),
   });
 
 

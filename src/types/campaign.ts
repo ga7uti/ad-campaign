@@ -9,6 +9,7 @@ export interface Location {
 
 export interface CommonSelectResponse{
     id: number,
+    label?: string,
     value: string
 }
 
@@ -83,6 +84,8 @@ export interface CampaignFormData  {
     total_budget: number;
     buy_type: string;
     unit_rate: number;
+    viewability: string;
+    brand_safety: string;
 };
 
 export interface CommonImpressionDetails{

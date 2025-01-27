@@ -29,7 +29,9 @@ export default function CreateCampaign(): React.JSX.Element {
       devicePrice: [],
       distinctInterest: [],
       selectedInterest: [],
-      buy_type: []
+      buy_type: [],
+      brand_safety: [],
+      viewability: [],
     } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>)
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
@@ -49,18 +51,20 @@ export default function CreateCampaign(): React.JSX.Element {
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: CampaignFormData) => {
-      if (!data.images || data.images.length === 0) {
-        setError('images',{message:"Image is required"});
-        return;
-      }
+      // if (!data.images || data.images.length === 0) {
+      //   setError('images',{message:"Image is required"});
+      //   return;
+      // }
       clearErrors();
-      createCampaign(data);
+      console.log(data);
+      // createCampaign(data);
     };
   
     const fetchData = async () => {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes] = await Promise.all([
+          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes,
+          viewabilityRes,brandSafetyRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
@@ -72,6 +76,8 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getDistinctInterest(),
           campaignClient.getImpressionData(),
           campaignClient.getBuyType(),
+          campaignClient.getViewability(),
+          campaignClient.getBrandSafety(),
         ]);
         setDataSources({
           ages: ageRes,
@@ -84,7 +90,9 @@ export default function CreateCampaign(): React.JSX.Element {
           devicePrice: devicePriceRes,
           distinctInterest: interestRes,
           selectedInterest: [],
-          buy_type:buyTypeRes
+          buy_type:buyTypeRes,
+          viewability:viewabilityRes,
+          brand_safety:brandSafetyRes
         });
         setImpressionData(impressionRes)
         setTotalPopulation(impressionRes.totalPopulation)
@@ -336,6 +344,32 @@ export default function CreateCampaign(): React.JSX.Element {
                         data={dataSources.devicePrice.length > 0 ? dataSources.devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
                     />
                   </Box>
+
+                {/* Viewability*/}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Viewability"
+                      name="viewability"
+                      register={register}
+                      error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
+                      data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      multiple={false}
+                      />
+                </Box>
+
+                {/* Brandsafety*/}
+                <Box sx={{margin:2}}>
+                  <FormField
+                      type="text"
+                      placeholder="Brand Safety"
+                      name="brand_safety"
+                      register={register}
+                      error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
+                      data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      multiple={false}
+                      />
+                </Box>
               </CardSection>
               
               {/* Targeting Interest Section */}
@@ -371,9 +405,10 @@ export default function CreateCampaign(): React.JSX.Element {
                 {/* Total Budget */}
                 <Box sx={{margin:2}}>
                   <FormField
-                      type="text"
+                      type="number"
                       placeholder="Total Budget"
                       name="total_budget"
+                      valueAsNumber={true}
                       register={register}
                       error={Array.isArray(errors.total_budget)?errors.total_budget[0]:errors.total_budget}
                   />
@@ -386,17 +421,19 @@ export default function CreateCampaign(): React.JSX.Element {
                       placeholder="Buy Type"
                       name="buy_type"
                       register={register}
-                      error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
+                      error={Array.isArray(errors.buy_type)?errors.buy_type[0]:errors.buy_type}
                       data={dataSources.buy_type.length > 0 ? dataSources.buy_type : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      multiple={false}
                       />
                 </Box>
 
                 {/* Unit Rate*/}
                 <Box sx={{margin:2}}>
                   <FormField
-                      type="text"
+                      type="number"
                       placeholder="Unit Rate"
                       name="unit_rate"
+                      valueAsNumber={true}
                       register={register}
                       error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
                       />

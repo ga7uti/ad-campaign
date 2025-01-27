@@ -1,9 +1,9 @@
 {
     "message": "Data succcessfully fetched",
     "data": [    
-        { "id": 1, "value": "CPC" },
-        { "id": 2, "value": "CPM" },
-        { "id": 3, "value": "CVC" }
+        { "id": 1, "label": "Viewable Impression" ,"value":"CPM"},
+        { "id": 2, "label": "Video View" ,"value":"CPV"},
+        { "id": 3, "label": "Click" ,"value":"CPC"}
     ],
     "success": true
 }

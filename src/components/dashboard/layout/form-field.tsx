@@ -37,6 +37,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   data,
   disabled = false,
   hidePasswordIcon=false,
+  multiple=true,
   onChange
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -83,9 +84,9 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           <Select
             fullWidth
             {...register(name, { valueAsNumber })}
-            multiple
+            multiple = {multiple}
             MenuProps={MenuProps}
-            defaultValue={[]}
+            defaultValue={multiple?[]:""}
             label={placeholder}
             labelId={labelId}
             onChange={(e) => onChange && onChange(e, name)}
@@ -110,6 +111,13 @@ const FormField: React.FC<FormFieldProps<any>> = ({
                   return data.map((val: Interest) => (
                     <MenuItem key={val.id} value={val.id}>
                       {val.category}
+                    </MenuItem>
+                  ));
+
+                  case 'buy_type':
+                  return data.map((val: CommonSelectResponse) => (
+                    <MenuItem key={val.id} value={val.value}>
+                      {val.label}
                     </MenuItem>
                   ));
 

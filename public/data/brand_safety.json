@@ -1,0 +1,13 @@
+{
+    "message": "Data succcessfully fetched",
+    "data": [    
+        { "id": 2, "value": "70%" },
+        { "id": 3, "value": "75%" },
+        { "id": 4, "value": "80%" },
+        { "id": 5, "value": "85%" },
+        { "id": 6, "value": "90%" },
+        { "id": 7, "value": "95%" },
+        { "id": 8, "value": "99%" }
+    ],
+    "success": true
+}
