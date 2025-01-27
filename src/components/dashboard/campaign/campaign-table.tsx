@@ -3,7 +3,6 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Campaign } from '@/types/campaign';
 import { TableProps } from '@/types/form-data';
-import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -13,11 +12,9 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { minWidth } from '@mui/system';
-import dayjs from 'dayjs';
-import * as React from 'react';
+import { Eye, Upload } from '@phosphor-icons/react';
 import { Download } from '@phosphor-icons/react/dist/ssr/Download';
-import { Upload } from '@phosphor-icons/react';
+import * as React from 'react';
 
 const tableCellStyles = {
   maxWidth: '240px',
@@ -25,29 +22,6 @@ const tableCellStyles = {
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
 };
-
-const fixedTableFirstCellStyle = {
-    position: 'sticky',
-    left: 0,
-    zIndex: 2,
-    bgcolor: 'background.paper',
-    minWidth: '50px',
-    maxWidth: '50px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-}
-
-const fixedTableSecondCellStyle = {
-  position: 'sticky',
-  left: "50px",
-  zIndex: 2,
-  bgcolor: 'background.paper',
-  maxWidth: '240px',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-}
 
 export function CampaignTable({
   count = 0,
@@ -58,14 +32,21 @@ export function CampaignTable({
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
 
+  const [selectedRowId, setSelectedRowId] = React.useState<number | null>(null);
+
+  const handleRowClick = (id: number) => {
+    setSelectedRowId(id);
+    console.log('Row clicked:', id);
+  };
+  
   return (
     <Card>
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={fixedTableFirstCellStyle}>Id</TableCell>
-              <TableCell sx={fixedTableSecondCellStyle}>Name</TableCell>
+              <TableCell sx={tableCellStyles}>Id</TableCell>
+              <TableCell sx={tableCellStyles}>Name</TableCell>
               <TableCell sx={tableCellStyles}>Objective</TableCell>
               <TableCell sx={tableCellStyles}>Buy Type</TableCell>
               <TableCell sx={tableCellStyles}>Unit Rate</TableCell>
@@ -77,6 +58,7 @@ export function CampaignTable({
               <TableCell sx={tableCellStyles}>Views</TableCell>
               <TableCell sx={tableCellStyles}>VTR</TableCell>
               <TableCell sx={tableCellStyles}>Status</TableCell>
+              <TableCell sx={tableCellStyles}>View</TableCell>
               {auth?.usertype==='admin'?<TableCell sx={tableCellStyles}>Upload</TableCell>:
                  <TableCell sx={tableCellStyles}>Download</TableCell>}
             </TableRow>
@@ -84,8 +66,8 @@ export function CampaignTable({
           <TableBody>
             {rows.map((row) => (
               <TableRow hover key={row.id}>
-                <TableCell sx={fixedTableFirstCellStyle}>{row.id}</TableCell>
-                <TableCell sx={fixedTableSecondCellStyle}>{row.name}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.id}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.name}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.objective}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.buy_type}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.unit_rate}</TableCell>
@@ -97,6 +79,7 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.views}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.vtr}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.status}</TableCell>
+                <TableCell sx={tableCellStyles}><Eye onClick={() => handleRowClick(row.id)} fontSize="var(--icon-fontSize-md)" /></TableCell>
                 {auth?.usertype==='admin'?
                   <TableCell sx={tableCellStyles}><Upload fontSize="var(--icon-fontSize-md)" /></TableCell>:
                   <TableCell sx={tableCellStyles}><Download fontSize="var(--icon-fontSize-md)" /></TableCell>}
