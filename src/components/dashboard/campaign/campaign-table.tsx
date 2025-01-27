@@ -34,7 +34,9 @@ export function CampaignTable({
   const {auth} = useAuth();
 
   const handleRowClick = (id: number) => {
-    onRowClick(id);
+    if (onRowClick) {
+      onRowClick(id);
+    }
   };
   
   return (

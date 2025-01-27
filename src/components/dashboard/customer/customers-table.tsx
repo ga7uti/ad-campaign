@@ -20,7 +20,8 @@ export function CustomersTable({
   rows = [],
   page = 1,
   rowsPerPage = 10,
-  handlePageChange
+  handlePageChange,
+  onRowClick,
 }: TableProps<Customer[]>): React.JSX.Element {
   
   return (

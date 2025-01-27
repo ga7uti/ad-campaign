@@ -24,7 +24,7 @@ import { Campaign, CampaignFormData } from "./campaign";
     rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-    onRowClick: (id: number) => void;
+    onRowClick?: (id: number) => void;
   }
 
   export interface SearchProps {
