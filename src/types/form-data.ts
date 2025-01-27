@@ -7,7 +7,7 @@ import { Campaign, CampaignFormData } from "./campaign";
   export interface FormFieldProps<T>  {
     type: string;
     placeholder: string;
-    name: ValidFieldNames;
+    name: string;
     register: UseFormRegister<any>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
@@ -41,7 +41,7 @@ import { Campaign, CampaignFormData } from "./campaign";
 
 
   export interface FileUploadProps {
-    name: ValidFieldNames;
+    name: string;
     placeholder: string;
     register: UseFormRegister<any>;
     setValue: UseFormSetValue<any>; // Add setValue to update form state
@@ -54,41 +54,6 @@ import { Campaign, CampaignFormData } from "./campaign";
 }
 
 
-  export type ValidFieldNames =
-  | "name"
-  | "age"
-  | "device"
-  | "environment"
-  | "location"
-  | "images"
-  | "keywords"
-  | "exchange"
-  | "language"
-  | "distinct_interest"
-  | "target_type"
-  | "carrier"
-  | "device_price"
-  | "proximity_store"
-  | "proximity"
-  | "weather"
-  | "first_name"
-  | "last_name"
-  | "email"
-  | "phone_no"
-  | "username"
-  | "password"
-  | "terms"
-  | "old_password"
-  | "new_password"
-  | "confirm_new_password"
-  | "landing_page"
-  | "tag_tracker"
-  | "total_budget"
-  | "buy_type"
-  | "unit_rate"
-  | "viewability"
-  | "brand_safety"
-  | "video"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({

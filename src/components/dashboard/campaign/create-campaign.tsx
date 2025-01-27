@@ -54,19 +54,174 @@ export default function CreateCampaign(): React.JSX.Element {
       formState: { errors },
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
+    const handleSelectChange = async (
+      event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
+      name: string
+    ) => {
+
+        let effectiveCalPopulation = calPopulation;
+        if (previousName !== null && previousName !== name) {
+          console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
+          setPreviousName(name);
+          effectiveCalPopulation = targetPopulation;
+          setCalPopulation(targetPopulation);
+        }
+        console.log("Effective Cal",effectiveCalPopulation)
+
+      const selectedValue: string[] = event.target.value as string[];
+      if (name === "distinct_interest") {
+        try {
+          await fetchSelectedInterest(selectedValue.join(","));
+        } catch (error) {
+          setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
+        }
+      }
+
+      // For age, device, carrier, environment
+      if ((name === "age")) {
+        
+          let totalPercentage = 0;
+          selectedValue.forEach((value) => {
+            const data =impressionData && impressionData[name] && 
+              impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
+            if (data && data.percentage) {
+              totalPercentage += data.percentage;
+            }
+          });
+
+          // If no target population yet, use the total population
+          const newTargetPopulation = targetPopulation === 0 
+            ? Math.round((totalPopulation * totalPercentage) / 100)
+            : Math.round((effectiveCalPopulation * totalPercentage) / 100);
+
+          console.log(`After ${name} Target Population`, newTargetPopulation);
+          setTargetPopulation(newTargetPopulation);
+        }
+
+        // For location selection: calculate the sum of the population of selected locations
+        if (name === "location" && selectedValue.length > 0) {
+          let newTargetPopulation = 0;
+          selectedValue.forEach((data) => {
+            const locationData = dataSources.location.find((loc) => loc.id === parseInt(data)) as Location;
+            if (locationData) {
+              newTargetPopulation += Number(locationData.population);
+            }
+          });
+
+          // Update the target population after location selection
+          console.log("New Target Population after location selection:", newTargetPopulation);
+          setTargetPopulation(newTargetPopulation);
+        }
+    };
+
+
+    const fileUploadFields = [
+      {
+        name: "images",
+        placeholder: "Select Campaign Image(.jpeg,.png,.zip)",
+        condition: campaignType === "banner", // Only show for banner
+        error: errors.images,
+      },
+      {
+        name: "video",
+        placeholder: "Select Campaign Video(.mp4,.mov)",
+        condition: campaignType !== "banner", // Only show for non-banner (video)
+        error: errors.video,
+      },
+      {
+        name: "keywords",
+        placeholder: "Select Keywords(.pdf)",
+        condition: true, // Always show this field
+        error: errors.keywords,
+      },
+    ];
+
+    const targetingTypeFields = [
+      {
+        name: "location",
+        placeholder: "Locations",
+        data: dataSources.location,
+        error: errors.location,
+        onChange: handleSelectChange,
+      },
+      {
+        name: "age",
+        placeholder: "Age Range",
+        data: dataSources.ages,
+        error: errors.age,
+        onChange: handleSelectChange,
+      },
+      {
+        name: "exchange",
+        placeholder: "Exchange",
+        data: dataSources.exchange,
+        error: errors.exchange,
+      },
+      {
+        name: "language",
+        placeholder: "Language",
+        data: dataSources.language,
+        error: errors.language,
+      },
+      {
+        name: "viewability",
+        placeholder: "Viewability",
+        data: dataSources.viewability,
+        error: errors.viewability,
+        multiple: false,
+      },
+      {
+        name: "brand_safety",
+        placeholder: "Brand Safety",
+        data: dataSources.brand_safety,
+        error: errors.brand_safety,
+        multiple: false,
+      },
+    ];
+
+    const deviceFields = [
+      {
+        name: "device",
+        placeholder: "Devices",
+        data: dataSources.devices,
+        error: errors.device,
+      },
+      {
+        name: "environment",
+        placeholder: "Environments",
+        data: dataSources.environment,
+        error: errors.environment,
+        onChange: handleSelectChange,
+      },
+      {
+        name: "carrier",
+        placeholder: "Carrier",
+        data: dataSources.carrier,
+        error: errors.carrier,
+        onChange: handleSelectChange,
+      },
+      {
+        name: "device_price",
+        placeholder: "DevicePrice",
+        data: dataSources.devicePrice,
+        error: errors.device_price,
+      },
+    ];
+
     const onSubmit = async (data: CampaignFormData) => {
-      if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
-        setError('images',{message:"Image is required"});
-        return;
-      }
+      // if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
+      //   setError('images',{message:"Image is required"});
+      //   return;
+      // }
 
-      if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
-        setError('images',{message:"Video is required"});
-        return;
-      }
+      // if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
+      //   setError('video',{message:"Video is required"});
+      //   return;
+      // }
 
+      console.log("Data",data)
       clearErrors();
-      createCampaign(data);
+      //createCampaign(data);
     };
   
     const fetchData = async () => {
@@ -148,66 +303,7 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     }
 
-    const handleSelectChange = async (
-      event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
-      name: string
-    ) => {
-
-        let effectiveCalPopulation = calPopulation;
-        if (previousName !== null && previousName !== name) {
-          console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
-          setPreviousName(name);
-          effectiveCalPopulation = targetPopulation;
-          setCalPopulation(targetPopulation);
-        }
-        console.log("Effective Cal",effectiveCalPopulation)
-
-      const selectedValue: string[] = event.target.value as string[];
-      if (name === "distinct_interest") {
-        try {
-          await fetchSelectedInterest(selectedValue.join(","));
-        } catch (error) {
-          setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
-        }
-      }
-
-      // For age, device, carrier, environment
-      if ((name === "age")) {
-        
-          let totalPercentage = 0;
-          selectedValue.forEach((value) => {
-            const data =impressionData && impressionData[name] && 
-              impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
-            if (data && data.percentage) {
-              totalPercentage += data.percentage;
-            }
-          });
-
-          // If no target population yet, use the total population
-          const newTargetPopulation = targetPopulation === 0 
-            ? Math.round((totalPopulation * totalPercentage) / 100)
-            : Math.round((effectiveCalPopulation * totalPercentage) / 100);
-
-          console.log(`After ${name} Target Population`, newTargetPopulation);
-          setTargetPopulation(newTargetPopulation);
-        }
-
-        // For location selection: calculate the sum of the population of selected locations
-        if (name === "location" && selectedValue.length > 0) {
-          let newTargetPopulation = 0;
-          selectedValue.forEach((data) => {
-            const locationData = dataSources.location.find((loc) => loc.id === parseInt(data)) as Location;
-            if (locationData) {
-              newTargetPopulation += Number(locationData.population);
-            }
-          });
-
-          // Update the target population after location selection
-          console.log("New Target Population after location selection:", newTargetPopulation);
-          setTargetPopulation(newTargetPopulation);
-        }
-      };
-
+  
     const nextSection = () => {
         if (activeSection < 6) { 
             setActiveSection(activeSection + 1);
@@ -274,140 +370,42 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 2 && (
                 <CardSection title="Targeting Type">
-                
-                {/* Location */}
-                <Box sx={{margin:2}}>
-                      <FormField
+                  <>
+                    {targetingTypeFields.map((field, index) => (
+                      <Box sx={{ margin: 2 }} key={index}>
+                        <FormField
                           type="text"
-                          placeholder="Locations"
-                          name="location"
+                          placeholder={field.placeholder}
+                          name={field.name}
                           register={register}
-                          onChange={handleSelectChange}
-                          error={Array.isArray(errors.location)?errors.location[0]:errors.location}
-                          data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
-                      />
-                  </Box>
-
-                  {/* Age */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Age Range"
-                          name="age"
-                          onChange={handleSelectChange}
-                          register={register}
-                          error={Array.isArray(errors.age)?errors.age[0]:errors.age}
-                          data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                  </Box>
-
-
-                  
-                  {/* Exchange */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Exchange"
-                          name="exchange"
-                          register={register}
-                          error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
-                          data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                  </Box>
-
-                 
-
-                  {/* Langugage */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Language"
-                          name="language"
-                          register={register}
-                          error={Array.isArray(errors.language)?errors.language[0]:errors.language}
-                          data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-
-                  {/* Viewability*/}
-                  <Box sx={{margin:2}}>
-                    <FormField
-                        type="text"
-                        placeholder="Viewability"
-                        name="viewability"
-                        register={register}
-                        error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
-                        data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        multiple={false}
+                          onChange={field.onChange}
+                          error={Array.isArray(field.error) ? field.error[0] : field.error}
+                          data={field.data.length > 0 ? field.data : [{ id: 0, value: 'No data available. Please try again later' }]}
+                          multiple={field.multiple}
                         />
-                  </Box>
-
-                  {/* Brandsafety*/}
-                  <Box sx={{margin:2}}>
-                    <FormField
-                        type="text"
-                        placeholder="Brand Safety"
-                        name="brand_safety"
-                        register={register}
-                        error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
-                        data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        multiple={false}
-                        />
-                  </Box>
+                      </Box>
+                    ))}
+                  </>
                 </CardSection>
               )}
 
               {activeSection === 3 && (
                   <CardSection title="Device & Environment">
-                    {/* Device */}
-                    <Box sx={{margin:2}}>
-                      <FormField
+                    <>
+                      {deviceFields.map((field, index) => (
+                        <Box sx={{ margin: 2 }} key={index}>
+                          <FormField
                             type="text"
-                            placeholder="Devices"
-                            name="device"
+                            placeholder={field.placeholder}
+                            name={field.name}
                             register={register}
-                            error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                            data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                      </Box>
-
-                    {/* Environment */}
-                    <Box sx={{margin:2}}>
-                        <FormField
-                            type="text"
-                            placeholder="Environments"
-                            name="environment"
-                            onChange={handleSelectChange}
-                            register={register}
-                            error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                            data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                    </Box>
-
-                     {/* Carrier */}
-                    <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Carrier"
-                          name="carrier"
-                          onChange={handleSelectChange}
-                          register={register}
-                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-
-                    {/* DevicePrice */}
-                    <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="DevicePrice"
-                          name="device_price"
-                          register={register}
-                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={dataSources.devicePrice.length > 0 ? dataSources.devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
+                            onChange={field.onChange}
+                            error={Array.isArray(field.error) ? field.error[0] : field.error}
+                            data={field.data.length > 0 ? field.data : [{ id: 0, value: 'No data available. Please try again later' }]}
+                          />
+                        </Box>
+                      ))}
+                    </>
                   
                   </CardSection>
               )}
@@ -508,62 +506,37 @@ export default function CreateCampaign(): React.JSX.Element {
                     />
                   </Box>
                   
-                  {/* Image Upload */}
-                  {campaignType === 'banner' ? (
-                    <Box sx={{margin:2}}>
-                      <FileUpload
-                          name="images"
-                          register={register}
-                          setValue={setValue}
-                          placeholder="Select Campaign Image(.jpeg,.png,.zip)"
-                        />
-                        {errors.images && 
-                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                            {errors.images?.message}
-                          </Typography>
-                        }
-                    </Box>
-                  ):
-                  (
-                    <Box sx={{margin:2}}>
-                      <FileUpload
-                          name="video"
-                          register={register}
-                          setValue={setValue} 
-                          placeholder="Select Campaign Video(.mp4,.mov)"
-                        />
-                        {errors.video && 
-                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                            {errors.video?.message}
-                          </Typography>
-                        }
-                    </Box>
-                  )}
-                  <Box sx={{margin:2}}>
-                    <FileUpload
-                      name="keywords"
-                      register={register}
-                      setValue={setValue}
-                      placeholder="Select Keywords(.pdf)"
-                    />
-                    {errors.keywords && 
-                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                        {errors.keywords?.message}
-                      </Typography>
-                    }
-                  </Box>
+                  <>
+                    {fileUploadFields.map((field, index) => (
+                      field.condition && (
+                        <Box sx={{ margin: 2 }} key={index}>
+                          <FileUpload
+                            name={field.name}
+                            register={register}
+                            setValue={setValue}
+                            placeholder={field.placeholder}
+                          />
+                          {field.error && (
+                            <Typography sx={{ color: "gray", fontSize: "0.75rem" }}>
+                              {field.error?.message}
+                            </Typography>
+                          )}
+                        </Box>
+                      )
+                    ))}
+                  </>
                 </CardSection>
               )}
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-              <Button variant="outlined" onClick={prevSection} disabled={activeSection === 0}>
-                Previous
-              </Button>
-              {activeSection < 6 && (
-                <Button variant="contained" color="primary" onClick={nextSection}> Next
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                <Button variant="outlined" onClick={prevSection} disabled={activeSection === 0}>
+                  Previous
                 </Button>
-              )}
-            </Box>
+                {activeSection < 6 && (
+                  <Button variant="contained" color="primary" onClick={nextSection}> Next
+                  </Button>
+                )}
+              </Box>
 
             {activeSection === 6 && !isPending && (
                   <Box sx={{ textAlign: "center", mt: 3 }}>
