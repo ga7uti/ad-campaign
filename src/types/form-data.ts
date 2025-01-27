@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from "@mui/material";
-import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
 import { Campaign, CampaignFormData } from "./campaign";
@@ -9,6 +9,7 @@ import { Campaign, CampaignFormData } from "./campaign";
     placeholder: string;
     name: string;
     register: UseFormRegister<any>;
+    getValues?: UseFormGetValues<any>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
     data?: T[];

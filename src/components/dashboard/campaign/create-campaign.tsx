@@ -287,6 +287,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             type="text"
                             placeholder="Name"
                             name="name"
+                            getValues={getValues}
                             register={register}
                             error={errors.name}
                         />
@@ -305,6 +306,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="location"
                           register={register}
                           onChange={handleSelectChange}
+                          getValues={getValues}
                           error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                           data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
                       />
@@ -318,6 +320,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="age"
                           onChange={handleSelectChange}
                           register={register}
+                          getValues={getValues}
                           error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                           data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -332,6 +335,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Exchange"
                           name="exchange"
                           register={register}
+                          getValues={getValues}
                           error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
                           data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -346,6 +350,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Language"
                           name="language"
                           register={register}
+                          getValues={getValues}
                           error={Array.isArray(errors.language)?errors.language[0]:errors.language}
                           data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -358,6 +363,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Viewability"
                         name="viewability"
                         register={register}
+                        getValues={getValues}
                         error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
                         data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
@@ -371,6 +377,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Brand Safety"
                         name="brand_safety"
                         register={register}
+                        getValues={getValues}
                         error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
                         data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
@@ -388,6 +395,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             placeholder="Devices"
                             name="device"
                             register={register}
+                            getValues={getValues}
                             error={Array.isArray(errors.device)?errors.device[0]:errors.device}
                             data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
                         />
@@ -401,6 +409,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             name="environment"
                             onChange={handleSelectChange}
                             register={register}
+                            getValues={getValues}
                             error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                             data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                         />
@@ -414,6 +423,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="carrier"
                           onChange={handleSelectChange}
                           register={register}
+                          getValues={getValues}
                           error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
                           data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -426,6 +436,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="DevicePrice"
                           name="device_price"
                           register={register}
+                          getValues={getValues}
                           error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
                           data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -443,6 +454,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Category"
                         name="distinct_interest"
                         register={register}
+                        getValues={getValues}
                         onChange={handleSelectChange}
                         data={dataSources.distinctInterest.length > 0 ? dataSources.distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
                         error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
@@ -456,6 +468,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="SubCategory"
                         name="target_type"
                         register={register}
+                        getValues={getValues}
                         error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
                         data={dataSources.selectedInterest.length > 0 ? dataSources.selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
                         />
@@ -473,6 +486,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="total_budget"
                         valueAsNumber={true}
                         register={register}
+                        getValues={getValues}
                         error={Array.isArray(errors.total_budget)?errors.total_budget[0]:errors.total_budget}
                     />
                   </Box>
@@ -485,6 +499,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="buy_type"
                         register={register}
                         error={errors.buy_type}
+                        getValues={getValues}
                         data={dataSources.buy_type.length > 0 ? dataSources.buy_type : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
                         />
@@ -497,6 +512,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Unit Rate"
                         name="unit_rate"
                         valueAsNumber={true}
+                        getValues={getValues}
                         register={register}
                         error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
                         />
@@ -513,6 +529,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Landing Page"
                         name="landing_page"
                         register={register}
+                        getValues={getValues}
                         error={errors.landing_page}
                         data={undefined}
                     />
@@ -525,6 +542,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         placeholder="Tag & Tracker"
                         name="tag_tracker"
                         register={register}
+                        getValues={getValues}
                         error={errors.tag_tracker}
                         data={undefined}
                     />

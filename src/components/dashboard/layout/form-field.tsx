@@ -38,7 +38,8 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   disabled = false,
   hidePasswordIcon=false,
   multiple=true,
-  onChange
+  onChange,
+  getValues
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const labelId = `${name}-label`; // Unique label ID for Select
@@ -49,6 +50,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         // Handle Checkbox Type
         <FormControlLabel
           control={<Checkbox {...register(name)} />}
+          value={getValues && getValues(name)}
           label={
             <React.Fragment>
                <a href="/terms">{placeholder}</a>
@@ -62,7 +64,8 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           fullWidth
           disabled={disabled}
           {...register(name, { valueAsNumber })}
-          label={placeholder} // Label for the text field
+          label={placeholder} 
+          value={getValues && getValues(name)}
           InputProps={
             type === 'password' && !hidePasswordIcon
               ? {
@@ -86,7 +89,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
             {...register(name, { valueAsNumber })}
             multiple = {multiple}
             MenuProps={MenuProps}
-            defaultValue={multiple?[]:""}
+            defaultValue={getValues && Array.isArray(getValues(name))? getValues(name): multiple? []: ''}
             label={placeholder}
             labelId={labelId}
             onChange={(e) => onChange && onChange(e, name)}
