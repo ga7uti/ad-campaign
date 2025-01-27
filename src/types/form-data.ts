@@ -47,6 +47,13 @@ import { Campaign, CampaignFormData } from "./campaign";
     setValue: UseFormSetValue<any>; // Add setValue to update form state
   }
 
+  export interface ImpressionProps{
+    title: string
+    targetPopulation: number;
+    totalPopulation: number;
+}
+
+
   export type ValidFieldNames =
   | "name"
   | "age"
