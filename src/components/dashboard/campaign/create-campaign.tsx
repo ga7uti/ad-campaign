@@ -14,6 +14,7 @@ import FormField from '../layout/form-field';
 import { CampaignTypeSelector } from './campaign-select';
 import CardSection from './card-section';
 import { ImpressionComponent } from './impression-panel';
+import { ProgressIndicator } from '../layout/progress-indicator';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
@@ -81,7 +82,7 @@ export default function CreateCampaign(): React.JSX.Element {
       }
 
       if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
-        setError('images',{message:"Video is required"});
+        setError('video',{message:"Video is required"});
         return;
       }
 
@@ -270,6 +271,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 borderColor: "grey.300",
             }}>
 
+              <ProgressIndicator activeSection={activeSection} totalSections={8} />
 
               {activeSection === 0 && (
                  <CardSection title="Campaign Type">
