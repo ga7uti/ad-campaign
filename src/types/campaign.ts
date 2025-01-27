@@ -71,7 +71,7 @@ export interface CampaignFormData  {
     device: string[];
     environment: string[];
     location: number[];
-    images: number[];
+    images?: number[];
     keywords?: number[];
     distinct_interest: string[];
     target_type: number[];
@@ -86,6 +86,7 @@ export interface CampaignFormData  {
     unit_rate: number;
     viewability: string;
     brand_safety: string;
+    video?:number[]
 };
 
 export interface CommonImpressionDetails{

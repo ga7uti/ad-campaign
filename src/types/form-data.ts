@@ -88,6 +88,7 @@ import { Campaign, CampaignFormData } from "./campaign";
   | "unit_rate"
   | "viewability"
   | "brand_safety"
+  | "video"
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
@@ -96,21 +97,22 @@ import { Campaign, CampaignFormData } from "./campaign";
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
-    images: z.array(z.number(), { message: "Image is required" }),
-    keywords: z.any(),
     distinct_interest: z.array(z.string(), { message: "Interest is required" }),
     target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),
     device_price: z.array(z.string(), { message: "Device Price is required" }), 
-    landing_page: z.any(),
-    tag_tracker: z.any(),
     total_budget: z.number({ message: "Total Budget is required" }),
     buy_type: z.string({ message: "Buy Type is required" }),
     unit_rate: z.number({ message: "Unit Rate is required" }),
     brand_safety: z.string({ message: "Brand Safety is required" }),
     viewability: z.string({ message: "Viewability is required" }),
+    images: z.any(),
+    video: z.any(),
+    keywords: z.any(),
+    landing_page: z.any(),
+    tag_tracker: z.any(),
   });
 
 

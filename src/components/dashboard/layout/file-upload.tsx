@@ -19,13 +19,26 @@ export default function FileUpload({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      if (e.target.files) {
       const selectedFile = e.target.files[0];
-      const allowedTypesForImages = ['image/png', 'image/jpeg']; // Only allow images (PNG, JPEG)
-      const allowedTypesForPdf = ['application/pdf']; // Only allow PDFs
+      const allowedTypesForImages = ['image/png', 'image/jpeg', '.zip','application/zip', 'application/octet-stream']; 
+      const allowedTypesForVideos = ['video','/mp4','video/x-m4v','video/*']; 
+      const allowedTypesForKeywords = ['application/pdf'];
+      
+      if(selectedFile.size > 10000000) {
+        setError("File size cannot be more than 10MB.");
+        return;
+      }
+
       if (name === 'images' && !allowedTypesForImages.includes(selectedFile.type)) {
           setError("Invalid file type. Only PNG and JPEG images are allowed.");
           return;
       }
-      if (['proximity', 'proximity_store', 'weather', 'keywords'].includes(name) && !allowedTypesForPdf.includes(selectedFile.type)) {
+
+      if (name === 'video' && !allowedTypesForVideos.includes(selectedFile.type)) {
+        setError("Invalid file type. Only Videos are allowed.");
+        return;
+    }
+
+      if (['keywords'].includes(name) && !allowedTypesForKeywords.includes(selectedFile.type)) {
           setError("Invalid file type. Only PDF files are allowed.");
           return;
       }

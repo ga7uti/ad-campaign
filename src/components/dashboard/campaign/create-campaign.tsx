@@ -55,6 +55,16 @@ export default function CreateCampaign(): React.JSX.Element {
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: CampaignFormData) => {
+      if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
+        setError('images',{message:"Image is required"});
+        return;
+      }
+
+      if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
+        setError('images',{message:"Video is required"});
+        return;
+      }
+
       clearErrors();
       createCampaign(data);
     };
@@ -474,7 +484,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 6 && (
                 <CardSection title="Ad Details">
-                  {/* Name */}
+                  {/* Landing Page */}
                   <Box sx={{margin:2}}>
                     <FormField
                         type="text"
@@ -486,7 +496,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     />
                   </Box>
 
-                  {/* Name */}
+                  {/* Tag & Tracker */}
                   <Box sx={{margin:2}}>
                     <FormField
                         type="text"
@@ -499,12 +509,13 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
                   
                   {/* Image Upload */}
-                  <Box sx={{margin:2}}>
+                  {campaignType === 'banner' ? (
+                    <Box sx={{margin:2}}>
                       <FileUpload
                           name="images"
                           register={register}
-                          setValue={setValue} // Pass setValue here
-                          placeholder="Select Campaign Image(.jpeg,.png)"
+                          setValue={setValue}
+                          placeholder="Select Campaign Image(.jpeg,.png,.zip)"
                         />
                         {errors.images && 
                           <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
@@ -512,20 +523,35 @@ export default function CreateCampaign(): React.JSX.Element {
                           </Typography>
                         }
                     </Box>
-
+                  ):
+                  (
                     <Box sx={{margin:2}}>
                       <FileUpload
-                        name="keywords"
-                        register={register}
-                        setValue={setValue}
-                        placeholder="Select Keywords(.pdf)"
-                      />
-                      {errors.keywords && 
-                        <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                          {errors.keywords?.message}
-                        </Typography>
-                      }
+                          name="video"
+                          register={register}
+                          setValue={setValue} 
+                          placeholder="Select Campaign Video(.mp4,.mov)"
+                        />
+                        {errors.video && 
+                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                            {errors.video?.message}
+                          </Typography>
+                        }
                     </Box>
+                  )}
+                  <Box sx={{margin:2}}>
+                    <FileUpload
+                      name="keywords"
+                      register={register}
+                      setValue={setValue}
+                      placeholder="Select Keywords(.pdf)"
+                    />
+                    {errors.keywords && 
+                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                        {errors.keywords?.message}
+                      </Typography>
+                    }
+                  </Box>
                 </CardSection>
               )}
 
@@ -554,7 +580,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
                 </Box>
             )}
-            
+
             </Box>
             {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
             {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
