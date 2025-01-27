@@ -14,6 +14,7 @@ import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
 import { ImpressionComponent } from './impression-panel';
 import { CampaignTypeSelector } from './campaign-select';
+import CardSection from './card-section';
 
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -198,7 +199,7 @@ export default function CreateCampaign(): React.JSX.Element {
       };
 
     const nextSection = () => {
-        if (activeSection < 5) { 
+        if (activeSection < 6) { 
             setActiveSection(activeSection + 1);
         }
     };
@@ -276,6 +277,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
                       />
                   </Box>
+
                   {/* Age */}
                   <Box sx={{margin:2}}>
                       <FormField
@@ -290,30 +292,6 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
 
 
-                  {/* Device */}
-                  <Box sx={{margin:2}}>
-                    <FormField
-                          type="text"
-                          placeholder="Devices"
-                          name="device"
-                          register={register}
-                          error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                          data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-
-                  {/* Environment */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Environments"
-                          name="environment"
-                          onChange={handleSelectChange}
-                          register={register}
-                          error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                          data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                  </Box>
                   
                   {/* Exchange */}
                   <Box sx={{margin:2}}>
@@ -327,18 +305,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       />
                   </Box>
 
-                  {/* Carrier */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="Carrier"
-                          name="carrier"
-                          onChange={handleSelectChange}
-                          register={register}
-                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
+                 
 
                   {/* Langugage */}
                   <Box sx={{margin:2}}>
@@ -349,18 +316,6 @@ export default function CreateCampaign(): React.JSX.Element {
                           register={register}
                           error={Array.isArray(errors.language)?errors.language[0]:errors.language}
                           data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Box>
-
-                  {/* DevicePrice */}
-                  <Box sx={{margin:2}}>
-                      <FormField
-                          type="text"
-                          placeholder="DevicePrice"
-                          name="device_price"
-                          register={register}
-                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={dataSources.devicePrice.length > 0 ? dataSources.devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
                     </Box>
 
@@ -393,6 +348,61 @@ export default function CreateCampaign(): React.JSX.Element {
               )}
 
               {activeSection === 3 && (
+                  <CardSection title="Device & Environment">
+                    {/* Device */}
+                    <Box sx={{margin:2}}>
+                      <FormField
+                            type="text"
+                            placeholder="Devices"
+                            name="device"
+                            register={register}
+                            error={Array.isArray(errors.device)?errors.device[0]:errors.device}
+                            data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        />
+                      </Box>
+
+                    {/* Environment */}
+                    <Box sx={{margin:2}}>
+                        <FormField
+                            type="text"
+                            placeholder="Environments"
+                            name="environment"
+                            onChange={handleSelectChange}
+                            register={register}
+                            error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
+                            data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        />
+                    </Box>
+
+                     {/* Carrier */}
+                    <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="Carrier"
+                          name="carrier"
+                          onChange={handleSelectChange}
+                          register={register}
+                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
+                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                    </Box>
+
+                    {/* DevicePrice */}
+                    <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="DevicePrice"
+                          name="device_price"
+                          register={register}
+                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
+                          data={dataSources.devicePrice.length > 0 ? dataSources.devicePrice : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                    </Box>
+                  
+                  </CardSection>
+              )}
+
+              {activeSection === 4 && (
                 <CardSection title="Interest">
                 {/* Interest */}
                   <Box sx={{margin:2}}>
@@ -421,7 +431,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 </CardSection>
               )}
 
-              {activeSection === 4 && (
+              {activeSection === 5 && (
                 <CardSection title="Budget & Bidding">
                   {/* Total Budget */}
                   <Box sx={{margin:2}}>
@@ -462,7 +472,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 </CardSection>
               )}
 
-              {activeSection === 5 && (
+              {activeSection === 6 && (
                 <CardSection title="Ad Details">
                   {/* Name */}
                   <Box sx={{margin:2}}>
@@ -523,13 +533,13 @@ export default function CreateCampaign(): React.JSX.Element {
               <Button variant="outlined" onClick={prevSection} disabled={activeSection === 0}>
                 Previous
               </Button>
-              {activeSection < 5 && (
+              {activeSection < 6 && (
                 <Button variant="contained" color="primary" onClick={nextSection}> Next
                 </Button>
               )}
             </Box>
 
-            {activeSection === 5 && !isPending && (
+            {activeSection === 6 && !isPending && (
                   <Box sx={{ textAlign: "center", mt: 3 }}>
                     <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
                       Create Campaign
@@ -572,44 +582,5 @@ export default function CreateCampaign(): React.JSX.Element {
       </Box>
     );
   }
-  
-  // CardSection Component
-  function CardSection({
-    title,
-    children,
-  }: {
-    title: string;
-    children: React.ReactNode;
 
-  }): React.JSX.Element {
-    const [expanded, setExpanded] = React.useState<boolean>(true);
-    return (
-      <Box>
-        <Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              bgcolor: "primary.main",
-              color: "primary.contrastText",
-              p: 2,
-            }}
-          >
-            <Typography variant="h6">{title}</Typography>
-            <Button
-              variant="text"
-              onClick={() => setExpanded((prev) => !prev)}
-              startIcon={expanded ? <CaretUp /> : <CaretDown />}
-              sx={{
-                color: "primary.contrastText", // Ensure button icon matches title text color
-              }}
-            />
-          </Box>
-          {expanded && <Box sx={{ mt: 2 }}>{children}</Box>}
-        </Box>
-
-      </Box>
-    );
-  }
   
