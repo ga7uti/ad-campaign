@@ -554,6 +554,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
                 </Box>
             )}
+            
             </Box>
             {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
             {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
