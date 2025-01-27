@@ -1,4 +1,3 @@
-
 import { Box, Typography } from '@mui/material';
 import { Image, Video } from '@phosphor-icons/react';
 
