@@ -49,9 +49,19 @@ export interface Campaign {
     proximity: FileUpload[];
     weather: FileUpload[]; 
     location: Location[];
-    click?:string;
-    pay_rate?:string;
-    impression?:string;
+    click:string;
+    pay_rate:string;
+    impression:string;
+    objective:string;
+    landing_page: string;
+    tag_tracker: string;
+    total_budget: number;
+    buy_type: string;
+    unit_rate: number;
+    ctr:string;
+    vtr:string;
+    views:string;
+    status:string;
 }
 
 export interface CampaignFormData  {
@@ -73,7 +83,6 @@ export interface CampaignFormData  {
     total_budget: number;
     buy_type: string;
     unit_rate: number;
-
 };
 
 export interface CommonImpressionDetails{

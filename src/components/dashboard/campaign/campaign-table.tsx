@@ -1,7 +1,9 @@
 'use client';
 
+import { useAuth } from '@/hooks/use-auth';
 import { Campaign } from '@/types/campaign';
 import { TableProps } from '@/types/form-data';
+import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -14,6 +16,8 @@ import TableRow from '@mui/material/TableRow';
 import { minWidth } from '@mui/system';
 import dayjs from 'dayjs';
 import * as React from 'react';
+import { Download } from '@phosphor-icons/react/dist/ssr/Download';
+import { Upload } from '@phosphor-icons/react';
 
 const tableCellStyles = {
   maxWidth: '240px',
@@ -52,7 +56,8 @@ export function CampaignTable({
   rowsPerPage = 10,
   handlePageChange
 }: TableProps<Campaign[]>): React.JSX.Element {
-  
+  const {auth} = useAuth();
+
   return (
     <Card>
       <Box sx={{ overflowX: 'auto' }}>
@@ -61,19 +66,19 @@ export function CampaignTable({
             <TableRow>
               <TableCell sx={fixedTableFirstCellStyle}>Id</TableCell>
               <TableCell sx={fixedTableSecondCellStyle}>Name</TableCell>
-              <TableCell sx={tableCellStyles}>AgeRange</TableCell>
-              <TableCell sx={tableCellStyles}>Device</TableCell>
-              <TableCell sx={tableCellStyles}>Location</TableCell>
-              <TableCell sx={tableCellStyles}>Exchange</TableCell>
-              <TableCell sx={tableCellStyles}>Environment</TableCell>
-              <TableCell sx={tableCellStyles}>Language</TableCell>
-              <TableCell sx={tableCellStyles}>Carrier</TableCell>
-              <TableCell sx={tableCellStyles}>Device Price</TableCell>
-              <TableCell sx={tableCellStyles}>Interest</TableCell>
+              <TableCell sx={tableCellStyles}>Objective</TableCell>
+              <TableCell sx={tableCellStyles}>Buy Type</TableCell>
+              <TableCell sx={tableCellStyles}>Unit Rate</TableCell>
+              <TableCell sx={tableCellStyles}>Budget</TableCell>
               <TableCell sx={tableCellStyles}>Impression</TableCell>
               <TableCell sx={tableCellStyles}>Click</TableCell>
               <TableCell sx={tableCellStyles}>PayRate</TableCell>
-              <TableCell sx={tableCellStyles}>UpdatedAt</TableCell>
+              <TableCell sx={tableCellStyles}>CTR</TableCell>
+              <TableCell sx={tableCellStyles}>Views</TableCell>
+              <TableCell sx={tableCellStyles}>VTR</TableCell>
+              <TableCell sx={tableCellStyles}>Status</TableCell>
+              {auth?.usertype==='admin'?<TableCell sx={tableCellStyles}>Upload</TableCell>:
+                 <TableCell sx={tableCellStyles}>Download</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -81,19 +86,20 @@ export function CampaignTable({
               <TableRow hover key={row.id}>
                 <TableCell sx={fixedTableFirstCellStyle}>{row.id}</TableCell>
                 <TableCell sx={fixedTableSecondCellStyle}>{row.name}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.age.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.device.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.location.map((location) => location.city).join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.exchange.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.environment.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.language.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.carrier.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.device_price.join(',')}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.target_type.map((data) => data.category).join(',')}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.objective}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.buy_type}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.unit_rate}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.total_budget}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.impression}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.click}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.pay_rate}</TableCell>
-                <TableCell sx={tableCellStyles}>{dayjs(row.updated_at).format('MMM D, YYYY')}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.ctr}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.views}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.vtr}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.status}</TableCell>
+                {auth?.usertype==='admin'?
+                  <TableCell sx={tableCellStyles}><Upload fontSize="var(--icon-fontSize-md)" /></TableCell>:
+                  <TableCell sx={tableCellStyles}><Download fontSize="var(--icon-fontSize-md)" /></TableCell>}
               </TableRow>
             ))}
           </TableBody>

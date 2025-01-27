@@ -61,7 +61,6 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Campaigns</Typography>
-          <ExportForm/>
         </Stack>
         <div>
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
