@@ -6,16 +6,35 @@ import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Locat
 import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, CircularProgress, SelectChangeEvent, Typography } from '@mui/material';
-import { CaretDown, CaretUp, Image, Video } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
-import { ImpressionComponent } from './impression-panel';
 import { CampaignTypeSelector } from './campaign-select';
 import CardSection from './card-section';
+import { ImpressionComponent } from './impression-panel';
 
+const reviewFields = [
+  { label: "CampaignName", name: "name" },
+  { label: "CampaignType", name: "campaignType" },
+  { label: "Locations", name: "location" },
+  { label: "AgeRange", name: "age" },
+  { label: "Exchange", name: "exchange" },
+  { label: "Language", name: "language" },
+  { label: "Viewability", name: "viewability" },
+  { label: "BrandSafety", name: "brand_safety" },
+  { label: "Devices", name: "devices" },
+  { label: "Environments", name: "environment" },
+  { label: "Carrier", name: "carrier" },
+  { label: "DevicePrice", name: "device_price" },
+  { label: "Interest", name: "target_type" },
+  { label: "TotalBudget", name: "total_budget" },
+  { label: "BuyType", name: "buy_type" },
+  { label: "UnitRate", name: "unit_rate" },
+  { label: "LandingPage", name: "landing_page" },
+  { label: "Tag&Tracker", name: "tag_tracker" },
+];
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -28,7 +47,7 @@ export default function CreateCampaign(): React.JSX.Element {
       exchange: [],
       language: [],
       carrier: [],
-      devicePrice: [],
+      device_price: [],
       distinctInterest: [],
       selectedInterest: [],
       buy_type: [],
@@ -51,9 +70,104 @@ export default function CreateCampaign(): React.JSX.Element {
       setError,
       clearErrors,
       handleSubmit,
+      getValues,
       formState: { errors },
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
+    const onSubmit = async (data: CampaignFormData) => {
+      if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
+        setError('images',{message:"Image is required"});
+        return;
+      }
+
+      if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
+        setError('images',{message:"Video is required"});
+        return;
+      }
+
+      clearErrors();
+      createCampaign(data);
+    };
+  
+    const fetchData = async () => {
+      try {
+        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
+          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes,
+          viewabilityRes,brandSafetyRes] = await Promise.all([
+          campaignClient.getAge(),
+          campaignClient.getDevice(),
+          campaignClient.getEnv(),
+          campaignClient.getLocations(),
+          campaignClient.getExchange(),
+          campaignClient.getLanguage(),
+          campaignClient.getCarrier(),
+          campaignClient.getDevicePrice(),
+          campaignClient.getDistinctInterest(),
+          campaignClient.getImpressionData(),
+          campaignClient.getBuyType(),
+          campaignClient.getViewability(),
+          campaignClient.getBrandSafety(),
+        ]);
+        setDataSources({
+          ages: ageRes,
+          devices: deviceRes,
+          environment: envRes,
+          location: locRes,
+          exchange: exchangeRes,
+          language: langRes,
+          carrier: carrierRes,
+          device_price: devicePriceRes,
+          distinctInterest: interestRes,
+          selectedInterest: [],
+          buy_type:buyTypeRes,
+          viewability:viewabilityRes,
+          brand_safety:brandSafetyRes
+        });
+        setImpressionData(impressionRes)
+        setTotalPopulation(impressionRes.totalPopulation)
+      } catch (error) {
+        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
+      }
+    };
+  
+    const fetchSelectedInterest = async (interest: string) => {
+      try {
+        const result = await campaignClient.getSelectedInterest(interest);
+        setDataSources((prev) => ({
+          ...prev,
+          selectedInterest: result,
+        }));
+      } catch (error) {
+        setError('root', { type: 'server', message: "Failed to fetch selected category. Error: " + error});
+      }
+    };
+
+    const createCampaign = async(data:CampaignFormData) => {
+      if(!data) 
+        return;
+
+      const errors = utils.validateMandatoryFields(data);
+      if(errors && Object.keys(errors).length > 0){
+        setError('root',{message:Object.values(errors)[0]});
+        return
+      }
+      
+      setIsPending(true);
+      try {
+        const result = await campaignClient.postCampaign(data);
+        if (result) {
+          setIsCampaignCreated(true);
+          setTimeout(()=>{
+            router.push(paths.dashboard.overview);
+          },1000)
+        }
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
+      } finally {
+        setIsPending(false);
+      }
+    }
+
     const handleSelectChange = async (
       event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
       name: string
@@ -112,200 +226,10 @@ export default function CreateCampaign(): React.JSX.Element {
           console.log("New Target Population after location selection:", newTargetPopulation);
           setTargetPopulation(newTargetPopulation);
         }
-    };
+      };
 
-
-    const fileUploadFields = [
-      {
-        name: "images",
-        placeholder: "Select Campaign Image(.jpeg,.png,.zip)",
-        condition: campaignType === "banner", // Only show for banner
-        error: errors.images,
-      },
-      {
-        name: "video",
-        placeholder: "Select Campaign Video(.mp4,.mov)",
-        condition: campaignType !== "banner", // Only show for non-banner (video)
-        error: errors.video,
-      },
-      {
-        name: "keywords",
-        placeholder: "Select Keywords(.pdf)",
-        condition: true, // Always show this field
-        error: errors.keywords,
-      },
-    ];
-
-    const targetingTypeFields = [
-      {
-        name: "location",
-        placeholder: "Locations",
-        data: dataSources.location,
-        error: errors.location,
-        onChange: handleSelectChange,
-      },
-      {
-        name: "age",
-        placeholder: "Age Range",
-        data: dataSources.ages,
-        error: errors.age,
-        onChange: handleSelectChange,
-      },
-      {
-        name: "exchange",
-        placeholder: "Exchange",
-        data: dataSources.exchange,
-        error: errors.exchange,
-      },
-      {
-        name: "language",
-        placeholder: "Language",
-        data: dataSources.language,
-        error: errors.language,
-      },
-      {
-        name: "viewability",
-        placeholder: "Viewability",
-        data: dataSources.viewability,
-        error: errors.viewability,
-        multiple: false,
-      },
-      {
-        name: "brand_safety",
-        placeholder: "Brand Safety",
-        data: dataSources.brand_safety,
-        error: errors.brand_safety,
-        multiple: false,
-      },
-    ];
-
-    const deviceFields = [
-      {
-        name: "device",
-        placeholder: "Devices",
-        data: dataSources.devices,
-        error: errors.device,
-      },
-      {
-        name: "environment",
-        placeholder: "Environments",
-        data: dataSources.environment,
-        error: errors.environment,
-        onChange: handleSelectChange,
-      },
-      {
-        name: "carrier",
-        placeholder: "Carrier",
-        data: dataSources.carrier,
-        error: errors.carrier,
-        onChange: handleSelectChange,
-      },
-      {
-        name: "device_price",
-        placeholder: "DevicePrice",
-        data: dataSources.devicePrice,
-        error: errors.device_price,
-      },
-    ];
-
-    const onSubmit = async (data: CampaignFormData) => {
-      // if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
-      //   setError('images',{message:"Image is required"});
-      //   return;
-      // }
-
-      // if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
-      //   setError('video',{message:"Video is required"});
-      //   return;
-      // }
-
-      console.log("Data",data)
-      clearErrors();
-      //createCampaign(data);
-    };
-  
-    const fetchData = async () => {
-      try {
-        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes,
-          viewabilityRes,brandSafetyRes] = await Promise.all([
-          campaignClient.getAge(),
-          campaignClient.getDevice(),
-          campaignClient.getEnv(),
-          campaignClient.getLocations(),
-          campaignClient.getExchange(),
-          campaignClient.getLanguage(),
-          campaignClient.getCarrier(),
-          campaignClient.getDevicePrice(),
-          campaignClient.getDistinctInterest(),
-          campaignClient.getImpressionData(),
-          campaignClient.getBuyType(),
-          campaignClient.getViewability(),
-          campaignClient.getBrandSafety(),
-        ]);
-        setDataSources({
-          ages: ageRes,
-          devices: deviceRes,
-          environment: envRes,
-          location: locRes,
-          exchange: exchangeRes,
-          language: langRes,
-          carrier: carrierRes,
-          devicePrice: devicePriceRes,
-          distinctInterest: interestRes,
-          selectedInterest: [],
-          buy_type:buyTypeRes,
-          viewability:viewabilityRes,
-          brand_safety:brandSafetyRes
-        });
-        setImpressionData(impressionRes)
-        setTotalPopulation(impressionRes.totalPopulation)
-      } catch (error) {
-        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
-      }
-    };
-  
-    const fetchSelectedInterest = async (interest: string) => {
-      try {
-        const result = await campaignClient.getSelectedInterest(interest);
-        setDataSources((prev) => ({
-          ...prev,
-          selectedInterest: result,
-        }));
-      } catch (error) {
-        setError('root', { type: 'server', message: "Failed to fetch selected category. Error: " + error});
-      }
-    };
-
-    const createCampaign = async(data:CampaignFormData) => {
-      if(!data) 
-        return;
-
-      const errors = utils.validateMandatoryFields(data);
-      if(errors && Object.keys(errors).length > 0){
-        setError('root',{message:Object.values(errors)[0]});
-        return
-      }
-      
-      setIsPending(true);
-      try {
-        const result = await campaignClient.postCampaign(data);
-        if (result) {
-          setIsCampaignCreated(true);
-          setTimeout(()=>{
-            router.push(paths.dashboard.overview);
-          },1000)
-        }
-      } catch (error:any) {
-        setError('root', { type: 'server', message: error.message});
-      } finally {
-        setIsPending(false);
-      }
-    }
-
-  
     const nextSection = () => {
-        if (activeSection < 6) { 
+        if (activeSection < 7) { 
             setActiveSection(activeSection + 1);
         }
     };
@@ -370,42 +294,140 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 2 && (
                 <CardSection title="Targeting Type">
-                  <>
-                    {targetingTypeFields.map((field, index) => (
-                      <Box sx={{ margin: 2 }} key={index}>
-                        <FormField
+                
+                {/* Location */}
+                <Box sx={{margin:2}}>
+                      <FormField
                           type="text"
-                          placeholder={field.placeholder}
-                          name={field.name}
+                          placeholder="Locations"
+                          name="location"
                           register={register}
-                          onChange={field.onChange}
-                          error={Array.isArray(field.error) ? field.error[0] : field.error}
-                          data={field.data.length > 0 ? field.data : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          multiple={field.multiple}
+                          onChange={handleSelectChange}
+                          error={Array.isArray(errors.location)?errors.location[0]:errors.location}
+                          data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
+                      />
+                  </Box>
+
+                  {/* Age */}
+                  <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="Age Range"
+                          name="age"
+                          onChange={handleSelectChange}
+                          register={register}
+                          error={Array.isArray(errors.age)?errors.age[0]:errors.age}
+                          data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                  </Box>
+
+
+                  
+                  {/* Exchange */}
+                  <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="Exchange"
+                          name="exchange"
+                          register={register}
+                          error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
+                          data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                  </Box>
+
+                 
+
+                  {/* Langugage */}
+                  <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="Language"
+                          name="language"
+                          register={register}
+                          error={Array.isArray(errors.language)?errors.language[0]:errors.language}
+                          data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                    </Box>
+
+                  {/* Viewability*/}
+                  <Box sx={{margin:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Viewability"
+                        name="viewability"
+                        register={register}
+                        error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
+                        data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        multiple={false}
                         />
-                      </Box>
-                    ))}
-                  </>
+                  </Box>
+
+                  {/* Brandsafety*/}
+                  <Box sx={{margin:2}}>
+                    <FormField
+                        type="text"
+                        placeholder="Brand Safety"
+                        name="brand_safety"
+                        register={register}
+                        error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
+                        data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        multiple={false}
+                        />
+                  </Box>
                 </CardSection>
               )}
 
               {activeSection === 3 && (
                   <CardSection title="Device & Environment">
-                    <>
-                      {deviceFields.map((field, index) => (
-                        <Box sx={{ margin: 2 }} key={index}>
-                          <FormField
+                    {/* Device */}
+                    <Box sx={{margin:2}}>
+                      <FormField
                             type="text"
-                            placeholder={field.placeholder}
-                            name={field.name}
+                            placeholder="Devices"
+                            name="device"
                             register={register}
-                            onChange={field.onChange}
-                            error={Array.isArray(field.error) ? field.error[0] : field.error}
-                            data={field.data.length > 0 ? field.data : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          />
-                        </Box>
-                      ))}
-                    </>
+                            error={Array.isArray(errors.device)?errors.device[0]:errors.device}
+                            data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        />
+                      </Box>
+
+                    {/* Environment */}
+                    <Box sx={{margin:2}}>
+                        <FormField
+                            type="text"
+                            placeholder="Environments"
+                            name="environment"
+                            onChange={handleSelectChange}
+                            register={register}
+                            error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
+                            data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        />
+                    </Box>
+
+                     {/* Carrier */}
+                    <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="Carrier"
+                          name="carrier"
+                          onChange={handleSelectChange}
+                          register={register}
+                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
+                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                    </Box>
+
+                    {/* DevicePrice */}
+                    <Box sx={{margin:2}}>
+                      <FormField
+                          type="text"
+                          placeholder="DevicePrice"
+                          name="device_price"
+                          register={register}
+                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
+                          data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
+                      />
+                    </Box>
                   
                   </CardSection>
               )}
@@ -506,57 +528,100 @@ export default function CreateCampaign(): React.JSX.Element {
                     />
                   </Box>
                   
-                  <>
-                    {fileUploadFields.map((field, index) => (
-                      field.condition && (
-                        <Box sx={{ margin: 2 }} key={index}>
-                          <FileUpload
-                            name={field.name}
-                            register={register}
-                            setValue={setValue}
-                            placeholder={field.placeholder}
-                          />
-                          {field.error && (
-                            <Typography sx={{ color: "gray", fontSize: "0.75rem" }}>
-                              {field.error?.message}
-                            </Typography>
-                          )}
-                        </Box>
-                      )
-                    ))}
-                  </>
+                  {/* Image Upload */}
+                  {campaignType === 'banner' ? (
+                    <Box sx={{margin:2}}>
+                      <FileUpload
+                          name="images"
+                          register={register}
+                          setValue={setValue}
+                          placeholder="Select Campaign Image(.jpeg,.png,.zip)"
+                        />
+                        {errors.images && 
+                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                            {errors.images?.message}
+                          </Typography>
+                        }
+                    </Box>
+                  ):
+                  (
+                    <Box sx={{margin:2}}>
+                      <FileUpload
+                          name="video"
+                          register={register}
+                          setValue={setValue} 
+                          placeholder="Select Campaign Video(.mp4,"
+                        />
+                        {errors.video && 
+                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                            {errors.video?.message}
+                          </Typography>
+                        }
+                    </Box>
+                  )}
+                  <Box sx={{margin:2}}>
+                    <FileUpload
+                      name="keywords"
+                      register={register}
+                      setValue={setValue}
+                      placeholder="Select Keywords(.pdf)"
+                    />
+                    {errors.keywords && 
+                      <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                        {errors.keywords?.message}
+                      </Typography>
+                    }
+                  </Box>
                 </CardSection>
               )}
 
+              
+              {activeSection === 7 && (
+                <>
+                  <Box sx={{ padding: 2 }}>
+                    {reviewFields.map((field, index) => (
+                      <Box key={index} sx={{ mb: 2, display:"flex", flex: 1 }}>
+                        <Typography variant="body1" fontWeight="bold" mr={3}>
+                          {field.label}:
+                        </Typography>
+                        <Typography variant="body2">
+                          {getValues(field.name as keyof CampaignFormData) || "Not provided"}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                  <Box sx={{ textAlign: "center", mt: 3 }}>
+                  {!isPending ? (
+                        <Box sx={{ textAlign: "center", mt: 3 }}>
+                          <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
+                            Create Campaign
+                          </Button>
+                        </Box>
+                  ):(
+                    <Box sx={{ textAlign: "center", mt: 3 }}>
+                      <Box sx={{ marginLeft: 2 }}>
+                          <CircularProgress />
+                        </Box>
+                      </Box>
+                  )}
+                  {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+                  {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
+                  </Box>
+                </>
+              )}
+            
+            
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
                 <Button variant="outlined" onClick={prevSection} disabled={activeSection === 0}>
                   Previous
                 </Button>
-                {activeSection < 6 && (
-                  <Button variant="contained" color="primary" onClick={nextSection}> Next
+                {activeSection < 7 && (
+                  <Button variant="contained" color="primary" onClick={nextSection}>
+                    {activeSection === 6 ? "Review" : "Next"}
                   </Button>
                 )}
               </Box>
-
-            {activeSection === 6 && !isPending && (
-                  <Box sx={{ textAlign: "center", mt: 3 }}>
-                    <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
-                      Create Campaign
-                    </Button>
-                  </Box>
-            )}
-            
-            {isPending && (
-              <Box sx={{ textAlign: "center", mt: 3 }}>
-                <Box sx={{ marginLeft: 2 }}>
-                    <CircularProgress />
-                  </Box>
-                </Box>
-            )}
-
             </Box>
-            {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-            {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
           </form>
         </Box>
 
