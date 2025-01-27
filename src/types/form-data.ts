@@ -59,6 +59,7 @@ import { Campaign, CampaignFormData } from "./campaign";
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     name: z.string().min(4, { message: "Name is required" }),
+    objective: z.string({ message: "Objective is required" }),
     age: z.array(z.string(), { message: "Age is required" }),
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),

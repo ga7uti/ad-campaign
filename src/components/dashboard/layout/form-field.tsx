@@ -89,7 +89,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
             {...register(name, { valueAsNumber })}
             multiple = {multiple}
             MenuProps={MenuProps}
-            defaultValue={getValues && Array.isArray(getValues(name))? getValues(name): multiple? []: ''}
+            defaultValue={getValues && getValues(name)? getValues(name): multiple? []: ''}
             label={placeholder}
             labelId={labelId}
             onChange={(e) => onChange && onChange(e, name)}

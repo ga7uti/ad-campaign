@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Image, Video } from '@phosphor-icons/react';
 
-export const CampaignTypeSelector = ({ campaignType, setCampaignType }: any) => {
+export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }: any) => {
   return (
     <Box sx={{ display: 'flex', gap: 2 , justifyContent: 'center',alignItems: 'center'}}>
         {/* Banner Button */}
@@ -16,14 +16,15 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType }: any) => 
             cursor: 'pointer',
             width: '240px',
             height: '120px',
-            backgroundColor: campaignType === 'banner' ? 'primary.main' : 'transparent',
-            color: campaignType === 'banner' ? 'white' : 'text.primary', 
+            backgroundColor: campaignType === 'Banner' ? 'primary.main' : 'transparent',
+            color: campaignType === 'Banner' ? 'white' : 'text.primary', 
             '&:hover': {
-            backgroundColor: campaignType === 'banner' ? 'primary.dark' : 'grey.100', 
+            backgroundColor: campaignType === 'Banner' ? 'primary.dark' : 'grey.100', 
             },
             justifyContent: 'center',alignSelf: 'center'
         }}
-        onClick={() => setCampaignType('banner')} // Click behavior
+        onClick={() => {setCampaignType('Banner');
+          setValue && setValue('objective', 'Banner');}}
         >
         <Image size={32} /> {/* Icon */}
         <Typography variant="h6">Banner</Typography> {/* Text */}
@@ -41,14 +42,15 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType }: any) => 
             cursor: 'pointer',
             width: '240px',
             height: '120px',
-            backgroundColor: campaignType === 'video' ? 'primary.main' : 'transparent', 
-            color: campaignType === 'video' ? 'white' : 'text.primary', 
+            backgroundColor: campaignType === 'Video' ? 'primary.main' : 'transparent', 
+            color: campaignType === 'Video' ? 'white' : 'text.primary', 
             '&:hover': {
-            backgroundColor: campaignType === 'video' ? 'primary.dark' : 'grey.100',
+            backgroundColor: campaignType === 'Video' ? 'primary.dark' : 'grey.100',
             },
             justifyContent: 'center',alignSelf: 'center'
         }}
-        onClick={() => setCampaignType('video')} // Click behavior
+        onClick={() => {setCampaignType('Video');
+          setValue && setValue('objective', 'Video');}}
         >
         <Video size={32} /> {/* Icon */}
         <Typography variant="h6">Video</Typography> {/* Text */}

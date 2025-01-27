@@ -67,6 +67,7 @@ export interface Campaign {
 
 export interface CampaignFormData  {
     name: string;
+    objective: string;
     age: string[];
     device: string[];
     environment: string[];

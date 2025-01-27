@@ -18,14 +18,14 @@ import { ProgressIndicator } from '../layout/progress-indicator';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
-  { label: "CampaignType", name: "campaignType" },
+  { label: "CampaignType", name: "objective" },
   { label: "Locations", name: "location" },
   { label: "AgeRange", name: "age" },
   { label: "Exchange", name: "exchange" },
   { label: "Language", name: "language" },
   { label: "Viewability", name: "viewability" },
   { label: "BrandSafety", name: "brand_safety" },
-  { label: "Devices", name: "devices" },
+  { label: "Devices", name: "device" },
   { label: "Environments", name: "environment" },
   { label: "Carrier", name: "carrier" },
   { label: "DevicePrice", name: "device_price" },
@@ -63,7 +63,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const [previousName, setPreviousName] = React.useState<string>("");
     const [calPopulation, setCalPopulation] = React.useState <number>(0)
     const [activeSection, setActiveSection] = React.useState<number>(0); 
-    const [campaignType, setCampaignType] = React.useState<'banner' | 'video'>('banner');
+    const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
 
     const {
       register,
@@ -76,12 +76,12 @@ export default function CreateCampaign(): React.JSX.Element {
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: CampaignFormData) => {
-      if (campaignType ==='banner'! && (!data.images || data.images.length === 0)) {
+      if (campaignType ==='Banner'! && (!data.images || data.images.length === 0)) {
         setError('images',{message:"Image is required"});
         return;
       }
 
-      if (campaignType ==='video'! && (!data.video || data.video.length === 0)) {
+      if (campaignType ==='Video'! && (!data.video || data.video.length === 0)) {
         setError('video',{message:"Video is required"});
         return;
       }
@@ -243,7 +243,8 @@ export default function CreateCampaign(): React.JSX.Element {
   
     React.useEffect(() => {
       fetchData();
-    }, []);
+      setValue('objective', 'Banner');
+    }, [campaignType]);
   
     return (
       <Box
@@ -275,7 +276,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 0 && (
                  <CardSection title="Campaign Type">
-                    <CampaignTypeSelector campaignType={campaignType} setCampaignType={setCampaignType} />
+                    <CampaignTypeSelector campaignType={campaignType} setCampaignType={setCampaignType} setValue={setValue} />
                   </CardSection>
                )}
 
@@ -549,7 +550,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
                   
                   {/* Image Upload */}
-                  {campaignType === 'banner' ? (
+                  {campaignType === 'Banner' ? (
                     <Box sx={{margin:2}}>
                       <FileUpload
                           name="images"
@@ -595,7 +596,6 @@ export default function CreateCampaign(): React.JSX.Element {
                 </CardSection>
               )}
 
-              
               {activeSection === 7 && (
                 <>
                   <Box sx={{ padding: 2 }}>
@@ -629,7 +629,6 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Box>
                 </>
               )}
-            
             
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
                 <Button variant="outlined" onClick={prevSection} disabled={activeSection === 0}>
