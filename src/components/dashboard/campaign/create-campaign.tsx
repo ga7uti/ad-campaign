@@ -5,7 +5,7 @@ import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/form-data';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, SelectChangeEvent, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -601,12 +601,13 @@ export default function CreateCampaign(): React.JSX.Element {
                   <Box sx={{ padding: 2 }}>
                     {reviewFields.map((field, index) => (
                       <Box key={index} sx={{ mb: 2, display:"flex", flex: 1 }}>
-                        <Typography variant="body1" fontWeight="bold" mr={3}>
-                          {field.label}:
-                        </Typography>
-                        <Typography variant="body2">
-                          {getValues(field.name as keyof CampaignFormData) || "Not provided"}
-                        </Typography>
+                          <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{field.label}:</Typography>
+                          <TextField
+                            value={getValues(field.name as keyof CampaignFormData) || "Not provided"}
+                            variant="outlined"
+                            size="small"
+                            sx={{ flex: 2 }}
+                          />
                       </Box>
                     ))}
                   </Box>
