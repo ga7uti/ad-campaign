@@ -621,29 +621,30 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Button>
                 )}
               </Box>
+
             </Box>
           </form>
         </Box>
 
         {/* Right Section (Chart) */}
-          <Box
-            sx={{
-              flex: { xs: "1", md: "1", lg:"1" },
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              bgcolor: "background.paper",
-              p: 2,
-              border:1,
-              borderColor: "grey.200",
-              position: "sticky",
-              top: '72px',
-              alignSelf: 'flex-start',
-            }}
-          >
-            <ImpressionComponent title= " Campaign Population Breakdown" targetPopulation={targetPopulation} totalPopulation={totalPopulation} />
-          </Box>
+        <Box
+          sx={{
+            flex: { xs: "1", md: "1", lg:"1" },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "background.paper",
+            p: 2,
+            border:1,
+            borderColor: "grey.200",
+            position: "sticky",
+            top: '72px',
+            alignSelf: 'flex-start',
+          }}
+        >
+          <ImpressionComponent title= " Campaign Population Breakdown" targetPopulation={targetPopulation} totalPopulation={totalPopulation} />
+        </Box>
       </Box>
     );
   }
