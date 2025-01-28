@@ -137,18 +137,6 @@ export default function CreateCampaign(): React.JSX.Element {
         setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
       }
     };
-  
-    const fetchSelectedInterest = async (interest: string) => {
-      try {
-        const result = await campaignClient.getSelectedInterest(interest);
-        setDataSources((prev) => ({
-          ...prev,
-          selectedInterest: result,
-        }));
-      } catch (error) {
-        setError('root', { type: 'server', message: "Failed to fetch selected category. Error: " + error});
-      }
-    };
 
     const createCampaign = async(data:CampaignFormData) => {
       if(!data) 
@@ -170,66 +158,21 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     }
 
-    const handleSelectChange = async (
-      event: SelectChangeEvent<unknown>, // Use SelectChangeEvent here
+    const handleSelectChange = async (event: SelectChangeEvent<unknown>,
       name: string
     ) => {
-
       const selectedValue: string[] = event.target.value as string[];
       if (name === "interest_category") {
         try {
-          await fetchSelectedInterest(selectedValue.join(","));
+            const result = await campaignClient.getSelectedInterest(selectedValue.join(","));
+            setDataSources((prev) => ({
+              ...prev,
+              selectedInterest: result,
+            }));
         } catch (error) {
           setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
         }
       }
-
-      let effectiveCalPopulation = calPopulation;
-      if (previousName !== null && previousName !== name) {
-        console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
-        setPreviousName(name);
-        effectiveCalPopulation = targetPopulation;
-        setCalPopulation(targetPopulation);
-      }
-      console.log("Effective Cal",effectiveCalPopulation)
-
-      
-
-      // For age, device, carrier, environment
-      if ((name === "age")) {
-        
-          let totalPercentage = 0;
-          selectedValue.forEach((value) => {
-            const data =impressionData && impressionData[name] && 
-              impressionData[name].find((item) => item.label.toLowerCase() === value.toLowerCase());
-            if (data && data.percentage) {
-              totalPercentage += data.percentage;
-            }
-          });
-
-          // If no target population yet, use the total population
-          const newTargetPopulation = targetPopulation === 0 
-            ? Math.round((totalPopulation * totalPercentage) / 100)
-            : Math.round((effectiveCalPopulation * totalPercentage) / 100);
-
-          console.log(`After ${name} Target Population`, newTargetPopulation);
-          setTargetPopulation(newTargetPopulation);
-        }
-
-        // For location selection: calculate the sum of the population of selected locations
-        if (name === "location" && selectedValue.length > 0) {
-          let newTargetPopulation = 0;
-          selectedValue.forEach((data) => {
-            const locationData = dataSources.location.find((loc) => loc.id === parseInt(data)) as Location;
-            if (locationData) {
-              newTargetPopulation += Number(locationData.population);
-            }
-          });
-
-          // Update the target population after location selection
-          console.log("New Target Population after location selection:", newTargetPopulation);
-          setTargetPopulation(newTargetPopulation);
-        }
     };
 
     const nextSection = () => {
@@ -330,7 +273,6 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Locations"
                           name="location"
                           register={register}
-                          onChange={handleSelectChange}
                           getValues={getValues}
                           error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                           data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
@@ -343,7 +285,6 @@ export default function CreateCampaign(): React.JSX.Element {
                           type="text"
                           placeholder="Age Range"
                           name="age"
-                          onChange={handleSelectChange}
                           register={register}
                           getValues={getValues}
                           error={Array.isArray(errors.age)?errors.age[0]:errors.age}
@@ -432,7 +373,6 @@ export default function CreateCampaign(): React.JSX.Element {
                             type="text"
                             placeholder="Environments"
                             name="environment"
-                            onChange={handleSelectChange}
                             register={register}
                             getValues={getValues}
                             error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
@@ -446,7 +386,6 @@ export default function CreateCampaign(): React.JSX.Element {
                           type="text"
                           placeholder="Carrier"
                           name="carrier"
-                          onChange={handleSelectChange}
                           register={register}
                           getValues={getValues}
                           error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
