@@ -64,7 +64,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const mandatoryFieldsBySection: Record<number, string[]> = {
-      0: [], 
+      0: ["objective"], 
       1: ["name"],
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
       3: ["device", "environment", "carrier", "device_price"],
@@ -83,18 +83,24 @@ export default function CreateCampaign(): React.JSX.Element {
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
     const onSubmit = async (data: CampaignFormData) => {
-      if (campaignType ==='Banner'! && (!data.images || data.images.length === 0)) {
-        setError('images',{message:"Image is required"});
-        return;
-      }
-
-      if (campaignType ==='Video'! && (!data.video || data.video.length === 0)) {
-        setError('video',{message:"Video is required"});
-        return;
-      }
-
       clearErrors();
-      createCampaign(data);
+      if(!data) 
+        return;
+
+      setIsPending(true);
+      try {
+        const result = await campaignClient.postCampaign(data);
+        if (result) {
+          setIsCampaignCreated(true);
+          setTimeout(()=>{
+            router.push(paths.dashboard.overview);
+          },1000)
+        }
+      } catch (error:any) {
+        setError('root', { type: 'server', message: error.message});
+      } finally {
+        setIsPending(false);
+      }
     };
   
     const fetchData = async () => {
@@ -138,26 +144,6 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     };
 
-    const createCampaign = async(data:CampaignFormData) => {
-      if(!data) 
-        return;
-
-      setIsPending(true);
-      try {
-        const result = await campaignClient.postCampaign(data);
-        if (result) {
-          setIsCampaignCreated(true);
-          setTimeout(()=>{
-            router.push(paths.dashboard.overview);
-          },1000)
-        }
-      } catch (error:any) {
-        setError('root', { type: 'server', message: error.message});
-      } finally {
-        setIsPending(false);
-      }
-    }
-
     const handleSelectChange = async (event: SelectChangeEvent<unknown>,
       name: string
     ) => {
@@ -180,17 +166,32 @@ export default function CreateCampaign(): React.JSX.Element {
     
       const isSectionValid = mandatoryFields.every((field) => {
         const value = getValues(field as  keyof CampaignFormData);
+        if(field === "total_budget" || field === "unit_rate") {
+          return !isNaN(Number(value)) && Number(value) > 0;
+        }
+        
+        if(field === "images" || field === "video") {
+          return (value as unknown as FileList).length > 0;
+        }
+        
         return value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);
       });
           
       if (!isSectionValid) {
         mandatoryFields.find((field) => {
           const value = getValues(field as  keyof CampaignFormData);
-          const isFieldMissing  =  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
+          let isFieldMissing = false
+          if(field === "total_budget" || field === "unit_rate"){
+             isFieldMissing = isNaN(Number(value)) || Number(value) <= 0;
+          }else if(field === "images" || field === "video"){
+            isFieldMissing= (value as unknown as FileList).length === 0;
+          }else{
+             isFieldMissing = value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
+          }
+          
           if (isFieldMissing) {
             const capitalizeFirstLetter = field.charAt(0).toUpperCase() + field.slice(1);
-            setError(field as  keyof CampaignFormData, {type: "required",message: `${capitalizeFirstLetter.replace("_"," ")} field is required`,
-            });
+            setError(field as  keyof CampaignFormData, {type: "required",message: `${capitalizeFirstLetter.replace("_"," ")} field is required`});
           }
         });
         return;
@@ -522,7 +523,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Select Campaign Image(.jpeg,.png,.zip)"
                         />
                         {errors.images && 
-                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                          <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
                             {errors.images?.message}
                           </Typography>
                         }
@@ -537,7 +538,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           placeholder="Select Campaign Video(.mp4,"
                         />
                         {errors.video && 
-                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
+                          <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
                             {errors.video?.message}
                           </Typography>
                         }
