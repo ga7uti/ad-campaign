@@ -74,7 +74,7 @@ export interface CampaignFormData  {
     location: number[];
     images?: number[];
     keywords?: number[];
-    distinct_interest: string[];
+    interest_category: string[];
     target_type: number[];
     exchange: string[];
     language: string[];

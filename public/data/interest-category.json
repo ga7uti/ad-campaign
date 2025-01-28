@@ -2,8 +2,7 @@
     "message": "Data succcessfully fetched",
     "data": [    
         { "id": 1, "value": "Affinity Audiences" },
-        { "id": 2, "value": "Topics" },
-        { "id": 3, "value": "App Categories" }
+        { "id": 2, "value": "In-Market Audiences" }
     ],
     "success": true
 }

@@ -125,7 +125,7 @@ class CampaignClient {
 
     async getDistinctInterest(): Promise<CommonSelectResponse[]> {
       try {
-        const response = await axios.get('/data/distinct-interest.json', {
+        const response = await axios.get('/data/interest-category.json', {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;

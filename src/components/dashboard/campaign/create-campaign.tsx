@@ -48,7 +48,7 @@ export default function CreateCampaign(): React.JSX.Element {
       language: [],
       carrier: [],
       device_price: [],
-      distinctInterest: [],
+      interest_category: [],
       selectedInterest: [],
       buy_type: [],
       brand_safety: [],
@@ -68,7 +68,7 @@ export default function CreateCampaign(): React.JSX.Element {
       1: ["name"],
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
       3: ["device", "environment", "carrier", "device_price"],
-      4: ["distinct_interest", "target_type"],
+      4: ["interest_category", "target_type"],
       5: ["total_budget", "buy_type", "unit_rate"], 
       6: campaignType === "Banner" ? ["images"] : ["video"],
     };
@@ -125,7 +125,7 @@ export default function CreateCampaign(): React.JSX.Element {
           language: langRes,
           carrier: carrierRes,
           device_price: devicePriceRes,
-          distinctInterest: interestRes,
+          interest_category: interestRes,
           selectedInterest: [],
           buy_type:buyTypeRes,
           viewability:viewabilityRes,
@@ -175,23 +175,25 @@ export default function CreateCampaign(): React.JSX.Element {
       name: string
     ) => {
 
-        let effectiveCalPopulation = calPopulation;
-        if (previousName !== null && previousName !== name) {
-          console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
-          setPreviousName(name);
-          effectiveCalPopulation = targetPopulation;
-          setCalPopulation(targetPopulation);
-        }
-        console.log("Effective Cal",effectiveCalPopulation)
-
       const selectedValue: string[] = event.target.value as string[];
-      if (name === "distinct_interest") {
+      if (name === "interest_category") {
         try {
           await fetchSelectedInterest(selectedValue.join(","));
         } catch (error) {
           setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
         }
       }
+
+      let effectiveCalPopulation = calPopulation;
+      if (previousName !== null && previousName !== name) {
+        console.log("Previous Name "+ previousName+ "  Cal Population: " + calPopulation + " Target Population: "+ targetPopulation)
+        setPreviousName(name);
+        effectiveCalPopulation = targetPopulation;
+        setCalPopulation(targetPopulation);
+      }
+      console.log("Effective Cal",effectiveCalPopulation)
+
+      
 
       // For age, device, carrier, environment
       if ((name === "age")) {
@@ -475,12 +477,12 @@ export default function CreateCampaign(): React.JSX.Element {
                     <FormField
                         type="text"
                         placeholder="Category"
-                        name="distinct_interest"
+                        name="interest_category"
                         register={register}
                         getValues={getValues}
                         onChange={handleSelectChange}
-                        data={dataSources.distinctInterest.length > 0 ? dataSources.distinctInterest : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        error={Array.isArray(errors.distinct_interest)?errors.distinct_interest[0]:errors.distinct_interest}
+                        data={dataSources.interest_category.length > 0 ? dataSources.interest_category : [{ id: 0, value: 'No data available. Please try again later' }]}
+                        error={Array.isArray(errors.interest_category)?errors.interest_category[0]:errors.interest_category}
                     />
                   </Box>
 
