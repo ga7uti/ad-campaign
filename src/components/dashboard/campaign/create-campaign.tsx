@@ -209,6 +209,18 @@ export default function CreateCampaign(): React.JSX.Element {
         }
     };
   
+    const getData = (name: string): string => {
+      const value = getValues(name as keyof CampaignFormData);
+      if (name === "location") {
+        return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
+      }
+
+      if(name === "target_type"){
+        return (value as number[]).map((interest) => (dataSources.selectedInterest.find((i) => i.id === interest) as Interest)?.category).join(", ");
+      }
+      return value ? value.toString() : "Not provided";
+    }
+    
     React.useEffect(() => {
       fetchData();
       setValue('objective', 'Banner');
@@ -567,7 +579,7 @@ export default function CreateCampaign(): React.JSX.Element {
                       <Box key={index} sx={{ mb: 2, display:"flex", flex: 1 }}>
                           <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{field.label}:</Typography>
                           <TextField
-                            value={getValues(field.name as keyof CampaignFormData) || "Not provided"}
+                            value={getData(field.name)}
                             variant="outlined"
                             size="small"
                             sx={{ flex: 2 }}
