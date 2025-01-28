@@ -50,7 +50,6 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         // Handle Checkbox Type
         <FormControlLabel
           control={<Checkbox {...register(name)} />}
-          value={getValues && getValues(name)}
           label={
             <React.Fragment>
                <a href="/terms">{placeholder}</a>
@@ -65,7 +64,6 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           disabled={disabled}
           {...register(name, { valueAsNumber })}
           label={placeholder} 
-          value={getValues && getValues(name)}
           InputProps={
             type === 'password' && !hidePasswordIcon
               ? {

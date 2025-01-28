@@ -1,6 +1,5 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
-import { utils } from '@/lib/common';
 import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/form-data';
@@ -11,10 +10,10 @@ import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
+import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
 import CardSection from './card-section';
 import { ImpressionComponent } from './impression-panel';
-import { ProgressIndicator } from '../layout/progress-indicator';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
@@ -64,7 +63,15 @@ export default function CreateCampaign(): React.JSX.Element {
     const [calPopulation, setCalPopulation] = React.useState <number>(0)
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
-
+    const mandatoryFieldsBySection: Record<number, string[]> = {
+      0: [], 
+      1: ["name"],
+      2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
+      3: ["device", "environment", "carrier", "device_price"],
+      4: ["distinct_interest", "target_type"],
+      5: ["total_budget", "buy_type", "unit_rate"], 
+      6: campaignType === "Banner" ? ["images"] : ["video"],
+    };
     const {
       register,
       setValue,
@@ -147,12 +154,6 @@ export default function CreateCampaign(): React.JSX.Element {
       if(!data) 
         return;
 
-      const errors = utils.validateMandatoryFields(data);
-      if(errors && Object.keys(errors).length > 0){
-        setError('root',{message:Object.values(errors)[0]});
-        return
-      }
-      
       setIsPending(true);
       try {
         const result = await campaignClient.postCampaign(data);
@@ -227,12 +228,33 @@ export default function CreateCampaign(): React.JSX.Element {
           console.log("New Target Population after location selection:", newTargetPopulation);
           setTargetPopulation(newTargetPopulation);
         }
-      };
+    };
 
     const nextSection = () => {
-        if (activeSection < 7) { 
-            setActiveSection(activeSection + 1);
-        }
+      const mandatoryFields = mandatoryFieldsBySection[activeSection];
+    
+      const isSectionValid = mandatoryFields.every((field) => {
+        const value = getValues(field as  keyof CampaignFormData);
+        return value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);
+      });
+          
+      if (!isSectionValid) {
+        mandatoryFields.find((field) => {
+          const value = getValues(field as  keyof CampaignFormData);
+          const isFieldMissing  =  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
+          if (isFieldMissing) {
+            const capitalizeFirstLetter = field.charAt(0).toUpperCase() + field.slice(1);
+            setError(field as  keyof CampaignFormData, {type: "required",message: `${capitalizeFirstLetter.replace("_"," ")} field is required`,
+            });
+          }
+        });
+        return;
+      } 
+
+      clearErrors();
+      if (activeSection < 7) {
+        setActiveSection(activeSection + 1);
+      }
     };
 
     const prevSection = () => {
@@ -625,8 +647,6 @@ export default function CreateCampaign(): React.JSX.Element {
                         </Box>
                       </Box>
                   )}
-                  {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-                  {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
                   </Box>
                 </>
               )}
@@ -641,8 +661,12 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Button>
                 )}
               </Box>
-
             </Box>
+
+            <>
+                {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+                {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
+            </>
           </form>
         </Box>
 
