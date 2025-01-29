@@ -38,6 +38,8 @@ const reviewFields = [
   { label: "UnitRate", name: "unit_rate" },
   { label: "LandingPage", name: "landing_page" },
   { label: "Tag&Tracker", name: "tag_tracker" },
+  { label: "Image", name: "images" },
+  { label: "Video", name: "video" },
 ];
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -226,18 +228,25 @@ export default function CreateCampaign(): React.JSX.Element {
   
     const getData = (name: string): string => {
       const value = getValues(name as keyof CampaignFormData);
-      if (name === "location") {
-        return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
-      }
+      if(value){
+        if (name === "location") {
+          return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
+        }
 
-      if(name === "target_type"){
-        return (value as number[]).map((interest) => (dataSources.selectedInterest.find((i) => i.id === interest) as Interest)?.category).join(", ");
-      }
+        if(name === "target_type"){
+          return (value as number[]).map((interest) => (dataSources.selectedInterest.find((i) => i.id === interest) as Interest)?.category).join(", ");
+        }
 
-      if(name === "start_time" || name === "end_time"){
-        return dayjs(value as number).format("YYYY-MM-DD");
-      }
-      return value ? value.toString() : "Not provided";
+        if(name === "start_time" || name === "end_time"){
+          return dayjs(value as number).format("YYYY-MM-DD");
+        }
+
+        if(name === "images" || name === "video"){
+          return "File uploaded";
+        }
+      } 
+
+      return "Not provided";
     }
     
     React.useEffect(() => {
@@ -573,6 +582,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="images"
                           register={register}
                           setValue={setValue}
+                          getValue={getValues}
                           placeholder="Select Campaign Image(.jpeg,.png,.zip)"
                         />
                         {errors.images && 
@@ -587,7 +597,8 @@ export default function CreateCampaign(): React.JSX.Element {
                       <FileUpload
                           name="video"
                           register={register}
-                          setValue={setValue} 
+                          setValue={setValue}
+                          getValue={getValues} 
                           placeholder="Select Campaign Video(.mp4,"
                         />
                         {errors.video && 
@@ -601,6 +612,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     <FileUpload
                       name="keywords"
                       register={register}
+                      getValue={getValues} 
                       setValue={setValue}
                       placeholder="Select Keywords(.pdf)"
                     />

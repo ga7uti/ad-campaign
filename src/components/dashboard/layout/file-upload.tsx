@@ -1,4 +1,4 @@
-
+"use client";
 import { campaignClient } from "@/lib/campaign-client";
 import { FileUploadProps } from "@/types/form-data";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
@@ -9,12 +9,14 @@ export default function FileUpload({
   placeholder,
   register,
   setValue,
+  getValue
 }: FileUploadProps): React.JSX.Element {
 
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [isFileUploaded,setIsFileUploaded] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      if (e.target.files) {
@@ -54,6 +56,7 @@ export default function FileUpload({
     try {
       const id = await campaignClient.uploadFile(selectedFile, name.toString()); // Upload the file
       setUploadSuccess(true);
+      setIsFileUploaded(true);
       setValue(name, [id]); // Update form state with the uploaded file's ID
     } catch (e: any) {
       setError(e.message);
@@ -62,9 +65,12 @@ export default function FileUpload({
     }
   };
 
+  React.useEffect(() => {
+    setIsFileUploaded(getValue(name)?.length > 0);
+  });
   return (
     <Box>
-      {!uploadSuccess && !uploading && (
+      {!isFileUploaded && !uploadSuccess && !uploading && (
           <Box
             sx={{
               display: "flex",
@@ -114,7 +120,7 @@ export default function FileUpload({
       )}
 
       {/* Display success message after upload */}
-      {uploadSuccess && (
+      {(uploadSuccess || isFileUploaded) && (
         <Box sx={{ marginTop: 2 }}>
           <Alert color="success">Uploaded {file?.name}</Alert>
         </Box>

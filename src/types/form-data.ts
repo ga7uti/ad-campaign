@@ -46,7 +46,8 @@ import { Campaign, CampaignFormData } from "./campaign";
     name: string;
     placeholder: string;
     register: UseFormRegister<any>;
-    setValue: UseFormSetValue<any>; // Add setValue to update form state
+    getValue: UseFormGetValues<any>;
+    setValue: UseFormSetValue<any>;
   }
 
   export interface ImpressionProps{
