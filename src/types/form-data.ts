@@ -10,6 +10,7 @@ import { Campaign, CampaignFormData } from "./campaign";
     name: string;
     register: UseFormRegister<any>;
     getValues?: UseFormGetValues<any>;
+    setValue?: UseFormSetValue<any>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
     data?: T[];
@@ -75,6 +76,8 @@ import { Campaign, CampaignFormData } from "./campaign";
     unit_rate: z.number({ message: "Unit Rate is required" }),
     brand_safety: z.string({ message: "Brand Safety is required" }),
     viewability: z.string({ message: "Viewability is required" }),
+    start_time: z.string({ message: "Start time is required" }),
+    end_time: z.string({ message: "End time is required" }),
     images: z.any(),
     video: z.any(),
     keywords: z.any(),

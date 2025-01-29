@@ -87,7 +87,9 @@ export interface CampaignFormData  {
     unit_rate: number;
     viewability: string;
     brand_safety: string;
-    video?:number[]
+    video?:number[];
+    start_time: string;
+    end_time: string;
 };
 
 export interface CommonImpressionDetails{

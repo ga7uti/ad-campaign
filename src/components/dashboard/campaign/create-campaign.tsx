@@ -14,9 +14,13 @@ import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
 import CardSection from './card-section';
 import { ImpressionComponent } from './impression-panel';
+import dayjs from 'dayjs';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
+  { label: "CampaignType", name: "objective" },
+  { label: "Start Time", name: "start_time" },
+  { label: "End Time", name: "end_time" },
   { label: "CampaignType", name: "objective" },
   { label: "Locations", name: "location" },
   { label: "AgeRange", name: "age" },
@@ -65,7 +69,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: ["name"],
+      1: ["name","start_time","end_time"],
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
       3: ["device", "environment", "carrier", "device_price"],
       4: ["interest_category", "target_type"],
@@ -218,6 +222,10 @@ export default function CreateCampaign(): React.JSX.Element {
       if(name === "target_type"){
         return (value as number[]).map((interest) => (dataSources.selectedInterest.find((i) => i.id === interest) as Interest)?.category).join(", ");
       }
+
+      if(name === "start_time" || name === "end_time"){
+        return dayjs(value as number).format("YYYY-MM-DD");
+      }
       return value ? value.toString() : "Not provided";
     }
     
@@ -264,14 +272,36 @@ export default function CreateCampaign(): React.JSX.Element {
                   <CardSection title="Campaign Details">
                     {/* Name */}
                     <Box sx={{margin:2}}>
-                        <FormField
-                            type="text"
-                            placeholder="Name"
-                            name="name"
-                            getValues={getValues}
-                            register={register}
-                            error={errors.name}
-                        />
+                      <FormField
+                          type="text"
+                          placeholder="Name"
+                          name="name"
+                          getValues={getValues}
+                          register={register}
+                          error={errors.name}
+                      />
+                    </Box>
+                    <Box sx={{ margin: 2 }}>
+                      <FormField
+                        type="datepicker"
+                        placeholder="Start Date"
+                        name="start_time"
+                        register={register}
+                        getValues={getValues}
+                        setValue={setValue}
+                        error={errors.start_time}
+                      />
+                    </Box>
+                    <Box sx={{ margin: 2 }}>
+                      <FormField
+                        type="datepicker"
+                        placeholder="End Date"
+                        name="end_time"
+                        register={register}
+                        getValues={getValues}
+                        setValue={setValue}
+                        error={errors.end_time}
+                      />
                     </Box>
                   </CardSection>
               )}
@@ -282,7 +312,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 {/* Location */}
                 <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="Locations"
                           name="location"
                           register={register}
@@ -295,7 +325,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Age */}
                   <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="Age Range"
                           name="age"
                           register={register}
@@ -310,7 +340,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Exchange */}
                   <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="Exchange"
                           name="exchange"
                           register={register}
@@ -325,7 +355,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Langugage */}
                   <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="Language"
                           name="language"
                           register={register}
@@ -338,7 +368,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Viewability*/}
                   <Box sx={{margin:2}}>
                     <FormField
-                        type="text"
+                        type="select"
                         placeholder="Viewability"
                         name="viewability"
                         register={register}
@@ -352,7 +382,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Brandsafety*/}
                   <Box sx={{margin:2}}>
                     <FormField
-                        type="text"
+                        type="select"
                         placeholder="Brand Safety"
                         name="brand_safety"
                         register={register}
@@ -370,7 +400,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     {/* Device */}
                     <Box sx={{margin:2}}>
                       <FormField
-                            type="text"
+                            type="select"
                             placeholder="Devices"
                             name="device"
                             register={register}
@@ -383,7 +413,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     {/* Environment */}
                     <Box sx={{margin:2}}>
                         <FormField
-                            type="text"
+                            type="select"
                             placeholder="Environments"
                             name="environment"
                             register={register}
@@ -396,7 +426,7 @@ export default function CreateCampaign(): React.JSX.Element {
                      {/* Carrier */}
                     <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="Carrier"
                           name="carrier"
                           register={register}
@@ -409,7 +439,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     {/* DevicePrice */}
                     <Box sx={{margin:2}}>
                       <FormField
-                          type="text"
+                          type="select"
                           placeholder="DevicePrice"
                           name="device_price"
                           register={register}
@@ -427,7 +457,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 {/* Interest */}
                   <Box sx={{margin:2}}>
                     <FormField
-                        type="text"
+                        type="select"
                         placeholder="Category"
                         name="interest_category"
                         register={register}
@@ -441,7 +471,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 {/* Interest Category*/}
                   <Box sx={{margin:2}}>
                     <FormField
-                        type="text"
+                        type="select"
                         placeholder="SubCategory"
                         name="target_type"
                         register={register}
@@ -471,7 +501,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {/* Buy Type*/}
                   <Box sx={{margin:2}}>
                     <FormField
-                        type="text"
+                        type="select"
                         placeholder="Buy Type"
                         name="buy_type"
                         register={register}
