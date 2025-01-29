@@ -51,6 +51,10 @@ class CampaignClient {
             formData.append('image', file);
             uri="campaign-images"
             break;
+          case 'video':
+            formData.append('video', file);
+            uri="campaign-videos"
+            break;
           case 'proximity_store':
             formData.append('file', file);
             uri="proximityStore"
