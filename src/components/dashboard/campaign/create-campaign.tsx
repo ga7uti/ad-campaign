@@ -60,14 +60,12 @@ export default function CreateCampaign(): React.JSX.Element {
       buy_type: [],
       brand_safety: [],
       viewability: [],
-    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>)
+    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>);
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [impressionData,setImpressionData] = React.useState<ImpressionData>();
     const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
-    const [previousName, setPreviousName] = React.useState<string>("");
-    const [calPopulation, setCalPopulation] = React.useState <number>(0)
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const mandatoryFieldsBySection: Record<number, string[]> = {
@@ -142,7 +140,7 @@ export default function CreateCampaign(): React.JSX.Element {
           selectedInterest: [],
           buy_type:buyTypeRes,
           viewability:viewabilityRes,
-          brand_safety:brandSafetyRes
+          brand_safety:brandSafetyRes,
         });
         setImpressionData(impressionRes)
         setTotalPopulation(impressionRes.totalPopulation)
@@ -166,6 +164,31 @@ export default function CreateCampaign(): React.JSX.Element {
           setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
         }
       }
+      
+      if(name === "location" || name === "age"){
+        const selectedLocs = name==="age"? getValues("location"): Array.from(
+          new Set([...selectedValue, ...getValues("location") as Number[]])
+        ) as string[];
+        
+        const selectedAges = name==="location"? getValues("age"): Array.from(
+          new Set([...selectedValue, ...getValues("age") as string[]])
+        ) as string[];
+        
+        // Calculate effective values
+        const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
+          const location = dataSources.location?.find(loc => loc.id === locationId) as Location;
+          return total + (Number(location?.population) || 0);
+        }, 0):0;
+      
+        const effectivePercentage = selectedAges ? selectedAges.reduce((total, label) => {
+          const ageGroup = impressionData?.age?.find(age => age.label === label);
+          return total + (ageGroup?.percentage || 0);
+        }, 0):0;
+
+        effectivePercentage > 0 ? setTargetPopulation(Math.round((effectivePopulation * effectivePercentage) / 100)) 
+          : setTargetPopulation(effectivePopulation);
+      }
+
     };
 
     const nextSection = () => {
@@ -254,7 +277,7 @@ export default function CreateCampaign(): React.JSX.Element {
     React.useEffect(() => {
       fetchData();
       setValue('objective', 'Banner');
-    }, [campaignType]);
+    }, [campaignType,targetPopulation]);
   
     return (
       <Box
@@ -339,6 +362,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="location"
                           register={register}
                           getValues={getValues}
+                          onChange={handleSelectChange}
                           error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                           data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
                       />
@@ -352,6 +376,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           name="age"
                           register={register}
                           getValues={getValues}
+                          onChange={handleSelectChange}
                           error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                           data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
