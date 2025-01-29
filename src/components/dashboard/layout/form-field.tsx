@@ -109,17 +109,10 @@ const FormField: React.FC<FormFieldProps<any>> = ({
             </MenuItem>
           ));
 
-        case 'buy_type':
-          return data?.map((val: CommonSelectResponse) => (
-            <MenuItem key={val.id} value={val.value}>
-              {val.label}
-            </MenuItem>
-          ));
-
         default:
           return data?.map((val: CommonSelectResponse) => (
             <MenuItem key={val.id} value={val.value}>
-              {val.value}
+              {val.label}
             </MenuItem>
           ));
       }
@@ -155,7 +148,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           value={value}
           minDate={minDate}
           {...register(name, { valueAsNumber })}
-          onChange={(date) => setValue && setValue(name, date)}
+          onChange={(date) => setValue && setValue(name, dayjs(date).format('YYYY-MM-DD'))}
         />
       </LocalizationProvider>
     );

@@ -84,12 +84,12 @@ export interface CampaignFormData  {
     tag_tracker?: string;
     total_budget: number;
     buy_type: string;
-    unit_rate: number;
-    viewability: string;
-    brand_safety: string;
+    unit_rate: number;  
+    viewability: number;
+    brand_safety: number;
     video?:number[];
-    start_time: string;
-    end_time: string;
+    start_time?: string;
+    end_time?: string;
 };
 
 export interface CommonImpressionDetails{

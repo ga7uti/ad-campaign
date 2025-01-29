@@ -32,10 +32,10 @@ class CampaignClient {
 
     async postCampaign(campaign:CampaignFormData): Promise<boolean> {
       try {
-        axiosInstance.post('/api/campaigns/', campaign, {
-          headers: { 'Content-Type': 'application/json' },
-        });
-        return true
+          await axiosInstance.post('/api/campaigns/', campaign, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          return true
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }
