@@ -266,7 +266,7 @@ export default function CreateCampaign(): React.JSX.Element {
         }
 
         if(name === "images" || name === "video" || name === "keywords"){
-          return "File uploaded";
+          return (value as unknown as FileList).length !== 0 ? "File uploaded" : "Not Provided";
         }
         return value as string
       } 
