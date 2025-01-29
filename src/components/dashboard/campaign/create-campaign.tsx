@@ -170,32 +170,43 @@ export default function CreateCampaign(): React.JSX.Element {
     
       const isSectionValid = mandatoryFields.every((field) => {
         const value = getValues(field as  keyof CampaignFormData);
+        const isValidField = value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);;
         if(field === "total_budget" || field === "unit_rate") {
-          return !isNaN(Number(value)) && Number(value) > 0;
+          return isValidField && !isNaN(Number(value)) && Number(value) > 0;
         }
         
         if(field === "images" || field === "video") {
-          return (value as unknown as FileList).length > 0;
+          return isValidField &&  (value as unknown as FileList).length > 0;
         }
         
-        return value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);
+        if(field === "end_time"){
+          const startDate = getValues("start_time") as unknown as number;
+          return isValidField && dayjs(value as number).isAfter(dayjs(startDate));
+        }
+        return isValidField;
       });
           
       if (!isSectionValid) {
         mandatoryFields.find((field) => {
           const value = getValues(field as  keyof CampaignFormData);
-          let isFieldMissing = false
+          let isFieldMissing =  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
+          let startDateError = false;
           if(field === "total_budget" || field === "unit_rate"){
-             isFieldMissing = isNaN(Number(value)) || Number(value) <= 0;
+             isFieldMissing = isFieldMissing || isNaN(Number(value)) || Number(value) <= 0;
           }else if(field === "images" || field === "video"){
-            isFieldMissing= (value as unknown as FileList).length === 0;
-          }else{
-             isFieldMissing = value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
+            isFieldMissing= isFieldMissing || (value as unknown as FileList).length === 0;
+          }else if(field === "end_time"){
+            const startDate = getValues("start_time") as unknown as number;
+            startDateError = isFieldMissing || !dayjs(value as number).isAfter(dayjs(startDate));
           }
           
           if (isFieldMissing) {
             const capitalizeFirstLetter = field.charAt(0).toUpperCase() + field.slice(1);
             setError(field as  keyof CampaignFormData, {type: "required",message: `${capitalizeFirstLetter.replace("_"," ")} field is required`});
+          }
+
+          if(startDateError){
+            setError(field as  keyof CampaignFormData, {type: "invalid",message: "End date should be after start date"});
           }
         });
         return;

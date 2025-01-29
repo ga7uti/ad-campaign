@@ -16,6 +16,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
+import dayjs from 'dayjs';
 import React from 'react';
 
 const ITEM_HEIGHT = 48;
@@ -146,12 +147,13 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   // Handle DatePicker Type
   const renderDatePicker = () => {
     const value = getValues ? getValues(name) : new Date();
-    
+    const minDate = new Date();
     return (
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label={placeholder}
           value={value}
+          minDate={minDate}
           {...register(name, { valueAsNumber })}
           onChange={(date) => setValue && setValue(name, date)}
         />
