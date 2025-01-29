@@ -65,6 +65,8 @@ const FormField: React.FC<FormFieldProps<any>> = ({
     <TextField
       type={type === 'password' && showPassword ? 'text' : type}
       fullWidth
+      multiline = {type === 'textarea' ? true : false}
+      maxRows={4}
       disabled={disabled}
       {...register(name, { valueAsNumber })}
       label={placeholder}
@@ -163,6 +165,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
       case 'password':
       case 'number':
       case 'email':
+      case 'textarea':
         return renderTextField();
       case 'select':
         return renderSelect();
