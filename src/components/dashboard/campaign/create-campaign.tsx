@@ -40,6 +40,7 @@ const reviewFields = [
   { label: "Tag&Tracker", name: "tag_tracker" },
   { label: "Image", name: "images" },
   { label: "Video", name: "video" },
+  { label: "Keywords", name: "keywords" },
 ];
 
 export default function CreateCampaign(): React.JSX.Element {
@@ -241,9 +242,10 @@ export default function CreateCampaign(): React.JSX.Element {
           return dayjs(value as number).format("YYYY-MM-DD");
         }
 
-        if(name === "images" || name === "video"){
+        if(name === "images" || name === "video" || name === "keywords"){
           return "File uploaded";
         }
+        return value as string
       } 
 
       return "Not provided";
@@ -671,8 +673,8 @@ export default function CreateCampaign(): React.JSX.Element {
             </Box>
 
             <>
-                {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-                {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
+              {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+              {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
             </>
           </form>
         </Box>
