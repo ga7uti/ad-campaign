@@ -18,31 +18,67 @@ export default function FileUpload({
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [isFileUploaded,setIsFileUploaded] = useState<boolean>(false);
 
+  const validateFile = (selectedFile: File, name: string) => {
+    // File type validation
+    const isImageType = selectedFile.type.startsWith('image/');
+    const isZipType = [
+      'application/zip',
+      'application/x-zip-compressed',
+      'application/octet-stream'
+    ].includes(selectedFile.type);
+    const isVideoType = selectedFile.type.startsWith('video/');
+    const isPDFType = selectedFile.type === 'application/pdf';
+  
+    // Size limits in bytes
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500MB
+  
+    // Validation based on upload type
+    switch (name) {
+      case 'images':
+        if (!(isImageType || isZipType)) {
+          setError("Invalid file type. Only images (PNG, JPEG, etc.) and ZIP files are allowed.");
+          return false;
+        }
+        if (selectedFile.size > MAX_IMAGE_SIZE) {
+          setError("Image/ZIP file size cannot exceed 10MB.");
+          return false;
+        }
+        break;
+  
+      case 'video':
+        if (!(isVideoType|| isZipType)) {
+          setError("Invalid file type. Only video files are allowed.");
+          return false;
+        }
+        if (selectedFile.size > MAX_VIDEO_SIZE) {
+          setError("Video file size cannot exceed 500MB.");
+          return false;
+        }
+        break;
+  
+      case 'keywords':
+        if (!isPDFType) {
+          setError("Invalid file type. Only PDF files are allowed.");
+          return false;
+        }
+        break;
+  
+      default:
+        setError("Invalid upload category.");
+        return false;
+    }
+  
+    return true;
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      if (e.target.files) {
       const selectedFile = e.target.files[0];
-      const allowedTypesForImages = ['image/png', 'image/jpeg', '.zip','application/zip', 'application/octet-stream']; 
-      const allowedTypesForVideos = ['video/mp4','video/x-m4v','video/*']; 
-      const allowedTypesForKeywords = ['application/pdf'];
-      
-      if(selectedFile && name !=='video' && selectedFile.size > 10000000) {
-        setError("File size cannot be more than 10MB.");
-        return;
-      }
-
-      if (name === 'images' && !allowedTypesForImages.includes(selectedFile.type)) {
-          setError("Invalid file type. Only PNG and JPEG images are allowed.");
-          return;
-      }
-
-      if (name === 'video' && !allowedTypesForVideos.includes(selectedFile.type)) {
-        setError("Invalid file type. Only Videos are allowed.");
-        return;
-    }
-
-      if (['keywords'].includes(name) && !allowedTypesForKeywords.includes(selectedFile.type)) {
-          setError("Invalid file type. Only PDF files are allowed.");
-          return;
+       // Usage
+      if (selectedFile) {
+        const isValid = validateFile(selectedFile, name);
+        if (!isValid) return;
       }
       setFile(selectedFile);
       handleUpload(selectedFile);
