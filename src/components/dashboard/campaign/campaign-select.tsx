@@ -52,7 +52,7 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }
         onClick={() => {setCampaignType('Video');
           setValue && setValue('objective', 'Video');}}
         >
-        <Video size={32} /> {/* Icon */}
+        <Video size={32} />
         <Typography variant="h6">Video</Typography> {/* Text */}
         </Box>
     </Box>

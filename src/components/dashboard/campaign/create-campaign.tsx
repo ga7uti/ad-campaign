@@ -293,7 +293,8 @@ export default function CreateCampaign(): React.JSX.Element {
     
     React.useEffect(() => {
       fetchData();
-      setValue('objective', 'Banner');
+      if(!getValues("objective"))
+        setValue('objective', 'Banner');
     }, [campaignType,targetPopulation]);
   
     return (
