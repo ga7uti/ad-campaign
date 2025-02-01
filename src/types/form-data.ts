@@ -26,7 +26,7 @@ import { Campaign, CampaignFormData } from "./campaign";
     rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-    onRowClick?: (id: number) => void;
+    onRowClick?: (id: number,operation:string) => void;
   }
 
   export interface SearchProps {
@@ -36,7 +36,6 @@ import { Campaign, CampaignFormData } from "./campaign";
   
   export interface CampaignDetailsPopOverProps {
     data?:Campaign;
-    anchorEl: Element | null;
     onClose: () => void;
     open: boolean;
   }

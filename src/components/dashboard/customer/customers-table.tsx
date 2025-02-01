@@ -25,7 +25,7 @@ export function CustomersTable({
 }: TableProps<Customer[]>): React.JSX.Element {
   
   return (
-    <Card>
+    <Card sx={{ borderRadius: 0 }}>
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>

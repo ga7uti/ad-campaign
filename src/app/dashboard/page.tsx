@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
 import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
-import { CampaignDetailsPopOver } from '@/components/dashboard/layout/campaign-details';
+import { CampaignDetailsPopOver } from '@/components/dashboard/campaign/campaign-details';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { Search } from '@/components/dashboard/layout/search';
 import { usePopover } from '@/hooks/use-popover';
@@ -25,29 +25,42 @@ export default function Page(): React.JSX.Element {
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = React.useState(1);
   const exportPopOver = usePopover<HTMLDivElement>();
+  const [searchQuery,setSearchQuery] = React.useState<string>("")
 
-  const handleCampaignClick = (id: number) => {
-    const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
-    if (selectedCampaign) {
-      setCampaign(selectedCampaign);
-      exportPopOver.handleOpen();
+  const handleCampaignClick = (id: number,operation:string) => {
+
+    if(operation ==="view"){
+      const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
+      if (selectedCampaign) {
+        setCampaign(selectedCampaign);
+        exportPopOver.handleOpen();
+      }
+    }
+
+    if(operation === "upload"){
+      console.log("Upload was clicked: ",operation);
+    }
+
+    if(operation === "download"){
+      console.log("Download was clicked: ",operation);
     }
   };
   
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage+1)
-    fetchCampaigns(newPage+1);
+    fetchCampaigns(newPage+1,searchQuery);
   };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.value)
+    setSearchQuery(event.target.value);
   };
 
 
-  async function fetchCampaigns(pageNo:number) {
+  async function fetchCampaigns(pageNo:number,query:string) {
     setLoading(true)
     try {
-      const {count,data} = await campaignClient.getCampaigns(pageNo);
+      const {count,data} = await campaignClient.getCampaigns(pageNo,query);
       setCount(count);
       if (Array.isArray(data)) {
         setCampaigns(data);
@@ -63,8 +76,14 @@ export default function Page(): React.JSX.Element {
   }
 
   React.useEffect(() => {
-    fetchCampaigns(1);
-  }, []);
+    if(searchQuery!==""){
+      const getData = setTimeout(() => {
+        fetchCampaigns(1,searchQuery);
+      },2000);
+      return () => clearTimeout(getData)
+    }
+    fetchCampaigns(1,searchQuery);
+  }, [searchQuery]);
 
 
   return (
@@ -90,7 +109,7 @@ export default function Page(): React.JSX.Element {
         :
         <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
         }
-        <CampaignDetailsPopOver anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
+        <CampaignDetailsPopOver onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
     </Stack>
   );
 }

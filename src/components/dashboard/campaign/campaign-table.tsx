@@ -20,7 +20,7 @@ const tableCellStyles = {
   maxWidth: '240px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
+  whiteSpace: 'nowrap',   
 };
 
 export function CampaignTable({
@@ -33,14 +33,14 @@ export function CampaignTable({
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
 
-  const handleRowClick = (id: number) => {
+  const handleRowClick = (id: number,operation:string) => {
     if (onRowClick) {
-      onRowClick(id);
+      onRowClick(id,operation);
     }
   };
   
   return (
-    <Card>
+    <Card sx={{ borderRadius: 0 }}>
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>
@@ -79,10 +79,10 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.views}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.vtr}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.status}</TableCell>
-                <TableCell sx={tableCellStyles}><Eye onClick={() => handleRowClick(row.id)} fontSize="var(--icon-fontSize-md)" /></TableCell>
+                <TableCell sx={tableCellStyles}><Eye onClick={() => handleRowClick(row.id,"view")} fontSize="var(--icon-fontSize-md)" /></TableCell>
                 {auth?.usertype==='admin'?
-                  <TableCell sx={tableCellStyles}><Upload fontSize="var(--icon-fontSize-md)" /></TableCell>:
-                  <TableCell sx={tableCellStyles}><Download fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                  <TableCell sx={tableCellStyles}><Upload onClick={() => handleRowClick(row.id,"upload")}fontSize="var(--icon-fontSize-md)" /></TableCell>:
+                  <TableCell sx={tableCellStyles}><Download onClick={() => handleRowClick(row.id,"download")}fontSize="var(--icon-fontSize-md)" /></TableCell>}
               </TableRow>
             ))}
           </TableBody>

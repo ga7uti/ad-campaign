@@ -8,9 +8,11 @@ import { utils } from './common';
 
 class CampaignClient {
    
-    async getCampaigns(pageNo:number): Promise<{count:number,data: Campaign[]}> {
+    async getCampaigns(pageNo:number,query:string): Promise<{count:number,data: Campaign[]}> {
       try {
-        const response = await axiosInstance.get(`/api/fetch_user_campgain/?page=${pageNo}`, {
+        const uri = query && query!==""? `/api/fetch_user_campgain/?page=${pageNo}&query=${query}`
+          :`/api/fetch_user_campgain/?page=${pageNo}`;
+        const response = await axiosInstance.get(uri, {
           headers: { 'Content-Type': 'application/json' },
         });
         return {count: response.data.count,data:response.data.results.data};

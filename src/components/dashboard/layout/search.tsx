@@ -10,7 +10,7 @@ export function Search({
     onSearch
 }:SearchProps): React.JSX.Element {
   return (
-    <Card sx={{ p: 2 }}>
+    <Card sx={{ p: 2, borderRadius: 0 }}>
       <OutlinedInput
         defaultValue=""
         fullWidth

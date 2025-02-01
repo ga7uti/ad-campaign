@@ -25,6 +25,12 @@ export interface Images {
     created_at: string;
 }
 
+export interface Video {
+    id: number;
+    video: string;
+    created_at: string;
+}
+
 export interface FileUpload{
     id: number;
     file: string;
@@ -63,6 +69,9 @@ export interface Campaign {
     vtr:string;
     views:string;
     status:string;
+    start_time:string;
+    end_time:string;
+    video: Video[];
 }
 
 export interface CampaignFormData  {
