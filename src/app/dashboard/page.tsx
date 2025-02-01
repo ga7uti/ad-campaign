@@ -26,11 +26,22 @@ export default function Page(): React.JSX.Element {
   const [page, setPage] = React.useState(1);
   const exportPopOver = usePopover<HTMLDivElement>();
 
-  const handleCampaignClick = (id: number) => {
-    const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
-    if (selectedCampaign) {
-      setCampaign(selectedCampaign);
-      exportPopOver.handleOpen();
+  const handleCampaignClick = (id: number,operation:string) => {
+
+    if(operation ==="view"){
+      const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
+      if (selectedCampaign) {
+        setCampaign(selectedCampaign);
+        exportPopOver.handleOpen();
+      }
+    }
+
+    if(operation === "upload"){
+      console.log("Upload was clicked: ",operation);
+    }
+
+    if(operation === "download"){
+      console.log("Download was clicked: ",operation);
     }
   };
   
@@ -90,7 +101,7 @@ export default function Page(): React.JSX.Element {
         :
         <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
         }
-        <CampaignDetailsPopOver anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
+        <CampaignDetailsPopOver onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
     </Stack>
   );
 }
