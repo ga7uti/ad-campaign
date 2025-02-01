@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
 import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
-import { CampaignDetailsPopOver } from '@/components/dashboard/layout/campaign-details';
+import { CampaignDetailsPopOver } from '@/components/dashboard/campaign/campaign-details';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { Search } from '@/components/dashboard/layout/search';
 import { usePopover } from '@/hooks/use-popover';

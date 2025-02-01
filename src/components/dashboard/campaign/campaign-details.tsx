@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { Copy, Download, X } from '@phosphor-icons/react';
 import * as React from 'react';
  
-  export function CampaignDetailsPopOver({ anchorEl, onClose, open, data }: CampaignDetailsPopOverProps): React.JSX.Element {
+  export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPopOverProps): React.JSX.Element {
   
     const copyToClipboard = (text: string) => {
       navigator.clipboard.writeText(text);
@@ -28,7 +28,8 @@ import * as React from 'react';
     };
 
     const getValueOrNA = (value: any): string => {
-      return value !== undefined && value !== null ? value : "N/A";
+      return value !== undefined && value !== null && value !== "" && value !== 0 
+        && value !== "0" && value !== 0.0 && value !== "0.00" ? value : "Not Available";
     };
 
     return (
@@ -72,17 +73,17 @@ import * as React from 'react';
                 {data && (
                   <>
                     {Object.entries({
-                      Name: data.name,
-                      Objective: data.objective,
-                      Status: data.status,
+                        Objective: data.objective,
+                        Status: data.status,
+                      'Total Budget': `${data.total_budget}`,
+                      'Unit Rate': `${data.unit_rate}`,
+                      'Start Time': `${data.start_time}`,
+                      'End Time': `${data.end_time}`,
                       Clicks: data.click,
-                      'Total Budget': `$${data.total_budget}`,
-                      'Landing Page': data.landing_page,
-                      CTR: `${data.ctr}%`,
-                      VTR: `${data.vtr}%`,
+                      CTR: `${data.ctr}`,
+                      VTR: `${data.vtr}`,
                       Views: data.views,
                       'Pay Rate': data.pay_rate,
-                      'Unit Rate': `$${data.unit_rate}`,
                     }).map(([label, value]) => (
                       <Box key={label} sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
                         <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{label}:</Typography>
@@ -130,6 +131,8 @@ import * as React from 'react';
                     'Interest Categories': data.target_type
                       .map((type) => type.category+" > "+ type.subcategory)
                       .join(', '),
+                    'Landing Page': data.landing_page,
+                    'Tag & Tracker': data.tag_tracker,
                   }).map(([label, value]) => (
                     <Box key={label} sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
                       <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{label}:</Typography>
@@ -187,6 +190,7 @@ import * as React from 'react';
                       ))}
                     </Box>
                   )}
+
                   {[
                   { label: 'Keywords', files: data.keywords },
                   ].map(({ label, files }) =>

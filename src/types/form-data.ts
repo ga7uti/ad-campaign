@@ -36,7 +36,6 @@ import { Campaign, CampaignFormData } from "./campaign";
   
   export interface CampaignDetailsPopOverProps {
     data?:Campaign;
-    anchorEl: Element | null;
     onClose: () => void;
     open: boolean;
   }

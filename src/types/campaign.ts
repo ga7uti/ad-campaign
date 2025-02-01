@@ -63,6 +63,8 @@ export interface Campaign {
     vtr:string;
     views:string;
     status:string;
+    start_time:string,
+    end_time:string,
 }
 
 export interface CampaignFormData  {
