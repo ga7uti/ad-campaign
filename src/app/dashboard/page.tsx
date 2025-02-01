@@ -7,22 +7,33 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
 import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
-import ExportForm from '@/components/dashboard/campaign/export-form';
+import { CampaignDetailsPopOver } from '@/components/dashboard/layout/campaign-details';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
+import { Search } from '@/components/dashboard/layout/search';
+import { usePopover } from '@/hooks/use-popover';
 import { campaignClient } from '@/lib/campaign-client';
 import { Campaign } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import { Search } from '@/components/dashboard/layout/search';
 
 
 
 export default function Page(): React.JSX.Element {
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
+  const [campaign, setCampaign] = React.useState<Campaign>();
   const [count, setCount] = React.useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = React.useState(1);
+  const exportPopOver = usePopover<HTMLDivElement>();
 
+  const handleCampaignClick = (id: number) => {
+    const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
+    if (selectedCampaign) {
+      setCampaign(selectedCampaign);
+      exportPopOver.handleOpen();
+    }
+  };
+  
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage+1)
     fetchCampaigns(newPage+1);
@@ -61,7 +72,6 @@ export default function Page(): React.JSX.Element {
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
           <Typography variant="h4">Campaigns</Typography>
-          <ExportForm/>
         </Stack>
         <div>
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
@@ -78,8 +88,9 @@ export default function Page(): React.JSX.Element {
             <CircularProgress />
           </Box>
         :
-        <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange}/>
+        <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
         }
+        <CampaignDetailsPopOver anchorEl={exportPopOver.anchorRef.current} onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
     </Stack>
   );
 }

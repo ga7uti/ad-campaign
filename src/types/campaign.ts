@@ -9,12 +9,13 @@ export interface Location {
 
 export interface CommonSelectResponse{
     id: number,
+    label?: string,
     value: string
 }
 
 export interface Interest{
     id: number,
-    targeting_type: string
+    subcategory: string
     category: string
 }
 
@@ -49,28 +50,46 @@ export interface Campaign {
     proximity: FileUpload[];
     weather: FileUpload[]; 
     location: Location[];
-    click?:string;
-    pay_rate?:string;
-    impression?:string;
+    click:string;
+    pay_rate:string;
+    impression:string;
+    objective:string;
+    landing_page: string;
+    tag_tracker: string;
+    total_budget: number;
+    buy_type: string;
+    unit_rate: number;
+    ctr:string;
+    vtr:string;
+    views:string;
+    status:string;
 }
 
 export interface CampaignFormData  {
     name: string;
+    objective: string;
     age: string[];
     device: string[];
     environment: string[];
     location: number[];
-    images: number[];
+    images?: number[];
     keywords?: number[];
-    distinct_interest: string[];
+    interest_category: string;
     target_type: number[];
     exchange: string[];
     language: string[];
     carrier: string[];
     device_price: string[];
-    proximity_store?: number[];
-    proximity?: number[];
-    weather?: number[];
+    landing_page?: string;
+    tag_tracker?: string;
+    total_budget: number;
+    buy_type: string;
+    unit_rate: number;  
+    viewability: number;
+    brand_safety: number;
+    video?:number[];
+    start_time?: string;
+    end_time?: string;
 };
 
 export interface CommonImpressionDetails{

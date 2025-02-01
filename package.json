@@ -33,6 +33,7 @@
     "@phosphor-icons/react": "2.1.6",
     "apexcharts": "3.49.2",
     "axios": "^1.7.9",
+    "date-fns": "^3.6.0",
     "dayjs": "1.11.11",
     "material-kit-react": "file:",
     "next": "14.2.4",

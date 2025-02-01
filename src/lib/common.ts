@@ -38,33 +38,6 @@ class Utils {
         }
         return "An unexpected error occurred. Please try again later." ;
       }
-
-      validateMandatoryFields(data: CampaignFormData): Record<string, string> {
-        const mandatoryFields: (keyof CampaignFormData)[] = [
-          "name",
-          "age",
-          "device",
-          "environment",
-          "location",
-          "images",
-          "keywords",
-          "exchange",
-          "language",
-          "carrier",
-          "device_price",
-        ];
-      
-        const errors: Record<string, string> = {};
-        
-        mandatoryFields.forEach((field) => {
-          if (!data[field] || (Array.isArray(data[field]) && data[field].length === 0)) {
-            const capitalizeFirstLetter = field.charAt(0).toUpperCase() + field.slice(1);
-            errors[field] = `${capitalizeFirstLetter} is a mandatory field and cannot be empty.`;
-          }
-        });
-      
-        return errors;
-      }
 }
 
 export const utils = new Utils();

@@ -1,19 +1,22 @@
 import { SelectChangeEvent } from "@mui/material";
-import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
-import { CampaignFormData } from "./campaign";
+import { Campaign, CampaignFormData } from "./campaign";
 
   export interface FormFieldProps<T>  {
     type: string;
     placeholder: string;
-    name: ValidFieldNames;
+    name: string;
     register: UseFormRegister<any>;
+    getValues?: UseFormGetValues<any>;
+    setValue?: UseFormSetValue<any>;
     error: FieldError | undefined;
     valueAsNumber?: boolean;
     data?: T[];
     disabled?:boolean
     hidePasswordIcon?:boolean;
+    multiple?:boolean;
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 
@@ -23,6 +26,7 @@ import { CampaignFormData } from "./campaign";
     rows?: T;
     rowsPerPage?: number;
     handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+    onRowClick?: (id: number) => void;
   }
 
   export interface SearchProps {
@@ -30,60 +34,56 @@ import { CampaignFormData } from "./campaign";
     onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
   }
   
-
-  export interface FileUploadProps {
-    name: ValidFieldNames;
-    placeholder: string;
-    register: UseFormRegister<any>;
-    setValue: UseFormSetValue<any>; // Add setValue to update form state
+  export interface CampaignDetailsPopOverProps {
+    data?:Campaign;
+    anchorEl: Element | null;
+    onClose: () => void;
+    open: boolean;
   }
 
-  export type ValidFieldNames =
-  | "name"
-  | "age"
-  | "device"
-  | "environment"
-  | "location"
-  | "images"
-  | "keywords"
-  | "exchange"
-  | "language"
-  | "distinct_interest"
-  | "target_type"
-  | "carrier"
-  | "device_price"
-  | "proximity_store"
-  | "proximity"
-  | "weather"
-  | "first_name"
-  | "last_name"
-  | "email"
-  | "phone_no"
-  | "username"
-  | "password"
-  | "terms"
-  | "old_password"
-  | "new_password"
-  | "confirm_new_password"
+
+  export interface FileUploadProps {
+    name: string;
+    placeholder: string;
+    register: UseFormRegister<any>;
+    getValue: UseFormGetValues<any>;
+    setValue: UseFormSetValue<any>;
+  }
+
+  export interface ImpressionProps{
+    title: string
+    targetPopulation: number;
+    totalPopulation: number;
+}
+
+
 
 
   export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     name: z.string().min(4, { message: "Name is required" }),
+    objective: z.string({ message: "Objective is required" }),
     age: z.array(z.string(), { message: "Age is required" }),
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
-    images: z.array(z.number(), { message: "Image is required" }),
-    keywords: z.any(),
-    distinct_interest: z.array(z.string(), { message: "Interest is required" }),
+    interest_category: z.string({ message: "Interest Category is required" }),
     target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),
     carrier: z.array(z.string(), { message: "Carrier is required" }),
-    device_price: z.array(z.string(), { message: "Device Price is required" }),
-    proximity_store: z.any(),
-    proximity: z.any(),
-    weather: z.any(),
+    device_price: z.array(z.string(), { message: "Device Price is required" }), 
+    total_budget: z.number({ message: "Total Budget is required" }),
+    buy_type: z.string({ message: "Buy Type is required" }),
+    unit_rate: z.number({ message: "Unit Rate is required" }),
+    brand_safety: z.number({ message: "Brand Safety is required" }),
+    viewability: z.number({ message: "Viewability is required" }),
+    start_time: z.any(),
+    end_time: z.any(),
+    images: z.any(),
+    video: z.any(),
+    keywords: z.any(),
+    landing_page: z.any(),
+    tag_tracker: z.any(),
   });
 
 
