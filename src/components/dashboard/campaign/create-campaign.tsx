@@ -55,6 +55,7 @@ export default function CreateCampaign(): React.JSX.Element {
       carrier: [],
       device_price: [],
       interest_category: [],
+      interest: [],
       selectedInterest: [],
       buy_type: [],
       brand_safety: [],
@@ -67,11 +68,12 @@ export default function CreateCampaign(): React.JSX.Element {
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
+    const [targetType, setTargetType] = React.useState<string>('');
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: ["name","start_time","end_time"],
-      2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
-      3: ["device", "environment", "carrier", "device_price"],
+      1: [],
+      2: [], 
+      3: [],
       4: ["interest_category", "target_type"],
       5: ["total_budget", "buy_type", "unit_rate"], 
       6: campaignType === "Banner" ? ["images"] : ["video"],
@@ -110,7 +112,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const fetchData = async () => {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, interestRes, impressionRes,buyTypeRes,
+          carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
           viewabilityRes,brandSafetyRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
@@ -121,6 +123,7 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getCarrier(),
           campaignClient.getDevicePrice(),
           campaignClient.getDistinctInterest(),
+          campaignClient.getInterest(""),
           campaignClient.getImpressionData(),
           campaignClient.getBuyType(),
           campaignClient.getViewability(),
@@ -135,7 +138,8 @@ export default function CreateCampaign(): React.JSX.Element {
           language: langRes,
           carrier: carrierRes,
           device_price: devicePriceRes,
-          interest_category: interestRes,
+          interest_category: categoryInterestRes,
+          interest: interestRes,
           selectedInterest: [],
           buy_type:buyTypeRes,
           viewability:viewabilityRes,
@@ -151,10 +155,20 @@ export default function CreateCampaign(): React.JSX.Element {
     const handleSelectChange = async (event: SelectChangeEvent<unknown>,
       name: string
     ) => {
-      const selectedValue: string[] = event.target.value as string[];
+      
+      if(name === 'target_type'){
+        const selectedValue: number[] = event.target.value as number[];
+        const tempData = selectedValue.map((interest) => { 
+          const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
+          return tempData.category+">"+tempData.subcategory;
+        }).join(", ");
+        setTargetType(tempData);
+      }
+      
       if (name === "interest_category") {
+        const selectedValue: string = event.target.value as string;
         try {
-            const result = await campaignClient.getSelectedInterest(selectedValue.join(","));
+            const result = await campaignClient.getInterest(selectedValue);
             setDataSources((prev) => ({
               ...prev,
               selectedInterest: result,
@@ -165,6 +179,7 @@ export default function CreateCampaign(): React.JSX.Element {
       }
       
       if(name === "location" || name === "age"){
+        const selectedValue: string[] = event.target.value as string[];
         const selectedLocs = name==="age"? getValues("location"): Array.from(
           new Set([...selectedValue, ...getValues("location") as Number[]])
         ) as string[];
@@ -258,7 +273,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
         if(name === "target_type"){
           return (value as number[]).map((interest) => { 
-            const tempData= dataSources.selectedInterest.find((i) => i.id === interest) as Interest
+            const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
             return tempData.category+">"+tempData.subcategory;
           }).join(", ");
         }
@@ -512,6 +527,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         register={register}
                         getValues={getValues}
                         onChange={handleSelectChange}
+                        multiple ={false}
                         data={dataSources.interest_category.length > 0 ? dataSources.interest_category : [{ id: 0, value: 'No data available. Please try again later' }]}
                         error={Array.isArray(errors.interest_category)?errors.interest_category[0]:errors.interest_category}
                     />
@@ -525,10 +541,34 @@ export default function CreateCampaign(): React.JSX.Element {
                         name="target_type"
                         register={register}
                         getValues={getValues}
+                        onChange={handleSelectChange}
                         error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
                         data={dataSources.selectedInterest.length > 0 ? dataSources.selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
                         />
                   </Box>
+                  <Box sx={{ 
+                    margin: 2,
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap' 
+                  }}>
+                    {targetType.split(',').map((value, index) => (
+                      <Typography 
+                        key={index}
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{ 
+                          padding: 1,
+                          backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                          borderRadius: 1,
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {value.trim()}
+                      </Typography>
+                    ))}
+                  </Box>
+
                 </CardSection>
               )}
 

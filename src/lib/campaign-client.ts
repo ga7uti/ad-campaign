@@ -138,9 +138,10 @@ class CampaignClient {
       }
     }
 
-    async getSelectedInterest(query:string): Promise<Interest[]> {
+    async getInterest(query:string): Promise<Interest[]> {
       try {
-        const response = await axiosInstance.get(`api/target_type?query=${encodeURIComponent(query)}`, {
+        const uri = query && query!="" ? `api/target_type?query=${encodeURIComponent(query)}`:"api/target_type";
+        const response = await axiosInstance.get(uri, {
           headers: { 'Content-Type': 'application/json' },
         });
         return response.data.data;
@@ -238,14 +239,6 @@ class CampaignClient {
       }
     }
     
-    // async getTargetPopulation(selectedLocations:number[],locations:Location[]):number{
-    //   let targetLocation = 0;
-    //   selectedLocations.forEach(selectedLocation =>{
-    //     const location = locations.filter(val=> val.id === selectedLocation);
-    //     targetLocation = targetLocation+location[0].population;
-    //   })
-    //   return targetLocation;
-    // }
 }
 
 export const campaignClient = new CampaignClient();
