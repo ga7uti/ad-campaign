@@ -191,6 +191,31 @@ import * as React from 'react';
                     </Box>
                   )}
 
+                  {/* Video */}
+                  {data.video && data.video.length > 0 && (
+                    <Box sx={{ marginBottom: 2 }}>
+                      {data.video.map((video, index) => (
+                        <Box
+                          key={`video-${index}`}
+                          sx={{
+                            marginBottom: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Typography sx={{ flex: 1 }}>{`Video`}</Typography>
+                          <Button
+                            variant="outlined"
+                            startIcon={<Download size={16} />}
+                            onClick={() => downloadFile(video.video)}
+                          >
+                            Download
+                          </Button>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+
                   {[
                   { label: 'Keywords', files: data.keywords },
                   ].map(({ label, files }) =>
