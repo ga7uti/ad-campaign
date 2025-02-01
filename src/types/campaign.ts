@@ -15,7 +15,7 @@ export interface CommonSelectResponse{
 
 export interface Interest{
     id: number,
-    targeting_type: string
+    subcategory: string
     category: string
 }
 

@@ -53,7 +53,7 @@ class CampaignClient {
             break;
           case 'video':
             formData.append('video', file);
-            uri="campaign-videos"
+            uri="campaign-video"
             break;
           case 'proximity_store':
             formData.append('file', file);

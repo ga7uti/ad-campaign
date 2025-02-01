@@ -128,7 +128,7 @@ import * as React from 'react';
                     'Device Prices': data.device_price.join(', '),
                     Exchanges: data.exchange.join(', '),
                     'Interest Categories': data.target_type
-                      .map((type) => type.category)
+                      .map((type) => type.category+" > "+ type.subcategory)
                       .join(', '),
                   }).map(([label, value]) => (
                     <Box key={label} sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>

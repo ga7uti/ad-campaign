@@ -107,7 +107,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         case 'target_type':
           return data?.map((val: Interest) => (
             <MenuItem key={val.id} value={val.id}>
-              {val.category}
+              {val.subcategory}
             </MenuItem>
           ));
 

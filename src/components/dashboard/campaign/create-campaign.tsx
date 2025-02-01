@@ -21,7 +21,6 @@ const reviewFields = [
   { label: "CampaignType", name: "objective" },
   { label: "Start Time", name: "start_time" },
   { label: "End Time", name: "end_time" },
-  { label: "CampaignType", name: "objective" },
   { label: "Locations", name: "location" },
   { label: "AgeRange", name: "age" },
   { label: "Exchange", name: "exchange" },
@@ -258,7 +257,10 @@ export default function CreateCampaign(): React.JSX.Element {
         }
 
         if(name === "target_type"){
-          return (value as number[]).map((interest) => (dataSources.selectedInterest.find((i) => i.id === interest) as Interest)?.category).join(", ");
+          return (value as number[]).map((interest) => { 
+            const tempData= dataSources.selectedInterest.find((i) => i.id === interest) as Interest
+            return tempData.category+">"+tempData.subcategory;
+          }).join(", ");
         }
 
         if(name === "start_time" || name === "end_time"){
