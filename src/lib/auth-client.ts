@@ -3,6 +3,7 @@
 import { Auth, Customer, ResetPasswordParams, SignInParams, User } from '@/types/auth';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
+import { accountClient } from './account-client';
 
 class AuthClient {
   async signUp(user: User): Promise<boolean> {
@@ -27,7 +28,6 @@ class AuthClient {
       }
       localStorage.setItem('accessToken', access);
       localStorage.setItem('refreshToken', refresh);
-      localStorage.setItem('usertype', user_type ? 'admin' : 'user');
       return true
     } catch (error: any) {
       throw new Error(utils.handleErrorMessage(error));
@@ -62,8 +62,12 @@ class AuthClient {
 
   async getAuth(): Promise<{ success: boolean; data?: Auth | null; error?: string }> {
     const token = localStorage.getItem('accessToken');
-    const usertype = localStorage.getItem('usertype');
-    if (!token || !usertype) {
+    if(!token){
+      return { success: true, data: null };
+    }
+    const result = await accountClient.getUser()
+    const usertype = result.user_type ? 'admin' : 'user';
+    if (!usertype) {
       return { success: true, data: null };
     }
     return { success: true, data: { token:token, usertype:usertype } };
@@ -72,7 +76,6 @@ class AuthClient {
   clearLocalStorage = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userType');
   };
 
      

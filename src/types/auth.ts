@@ -25,6 +25,7 @@ export interface User {
     phone_no?: string;
     password?:string;
     terms?:boolean
+    user_type?: boolean
 }
   
 
