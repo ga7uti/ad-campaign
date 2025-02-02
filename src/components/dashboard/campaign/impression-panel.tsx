@@ -1,4 +1,4 @@
-import { ImpressionProps } from "@/types/form-data";
+import { ImpressionProps } from "@/types/props";
 import { Box, Divider, Typography } from "@mui/material";
 
 export function ImpressionComponent({

@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { authClient } from '@/lib/auth-client';
 import { paths } from '@/paths';
 import { SignInParams } from '@/types/auth';
-import { signInSchema } from '@/types/form-data';
+import { signInSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import Alert from '@mui/material/Alert';

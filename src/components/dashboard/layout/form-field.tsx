@@ -1,5 +1,5 @@
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/form-data';
+import { FormFieldProps } from '@/types/props';
 import {
   Checkbox,
   FormControl,

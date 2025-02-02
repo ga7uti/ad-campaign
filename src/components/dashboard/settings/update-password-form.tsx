@@ -2,7 +2,7 @@
 
 import { accountClient } from '@/lib/account-client';
 import { UpdatePasswordParams } from '@/types/auth';
-import { updatePaswordSchema } from '@/types/form-data';
+import { updatePaswordSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, CircularProgress, Grid } from '@mui/material';
 import Button from '@mui/material/Button';

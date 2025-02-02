@@ -1,4 +1,4 @@
-import { CampaignDetailsPopOverProps } from '@/types/form-data';
+import { CampaignDetailsPopOverProps } from '@/types/props';
 import {
   Button,
   Dialog,

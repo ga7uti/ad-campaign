@@ -1,7 +1,7 @@
 'use client';
 
 import { accountClient } from '@/lib/account-client';
-import { profileSchema } from '@/types/form-data';
+import { profileSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';

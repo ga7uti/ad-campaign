@@ -2,7 +2,7 @@
 import { campaignClient } from '@/lib/campaign-client';
 import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
-import { CampaignFormSchema } from '@/types/form-data';
+import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, CircularProgress, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,7 @@ import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
-import CardSection from './card-section';
+import CardSection from '../layout/card-section';
 import { ImpressionComponent } from './impression-panel';
 import dayjs from 'dayjs';
 

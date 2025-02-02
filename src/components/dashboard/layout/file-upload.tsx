@@ -1,6 +1,6 @@
 "use client";
 import { campaignClient } from "@/lib/campaign-client";
-import { FileUploadProps } from "@/types/form-data";
+import { FileUploadProps } from "@/types/props";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 
