@@ -1,8 +1,7 @@
 "use client"
 import React from 'react';
-
 import BackBtn from '@/components/dashboard/layout/back-btn';
-import { Alert, Typography } from '@mui/material';
+import { Alert, CircularProgress, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import CreateCampaign from '@/components/dashboard/campaign/create-campaign';
 import { campaignClient } from '@/lib/campaign-client';
@@ -34,6 +33,7 @@ export default function CreateCampaignPage(): React.JSX.Element {
 
   const fetchData = async () => {
       try {
+        setIsPending(true)
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
           carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
           viewabilityRes,brandSafetyRes] = await Promise.all([
@@ -72,6 +72,8 @@ export default function CreateCampaignPage(): React.JSX.Element {
         setTotalPopulation(impressionRes.totalPopulation)
       } catch (error) {
         setError("Failed to load campaign data. Error: " + error);
+      }finally{
+        setIsPending(false)
       }
     };
 
@@ -82,20 +84,31 @@ export default function CreateCampaignPage(): React.JSX.Element {
     <Box>
       <BackBtn/>
       <Box mb={2}>
-        <Typography mb={5} variant="h4">Create Campaign</Typography>
-        {dataSources && impressionData 
-          ? 
-            <CreateCampaign 
-              dataSources={dataSources} 
-              impressionData={impressionData} 
-              totalPopulation={totalPopulation}
-              setDataSources={setDataSources}
-            />
-          : 
-            <>
-              {error ? <Alert color="error">{error}</Alert> : null}
-            </>
+      <Typography mb={5} variant="h4">Create Campaign</Typography>
+        {!isPending?
+          <>
+            {dataSources && impressionData 
+              ? 
+                <CreateCampaign 
+                  dataSources={dataSources} 
+                  impressionData={impressionData} 
+                  totalPopulation={totalPopulation}
+                  setDataSources={setDataSources}
+                />
+              : 
+                <>
+                  {error ? <Alert color="error">{error}</Alert> : null}
+                </>
+            }          
+          </>
+          :
+          <Box sx={{ textAlign: "center", mt: 3 }}>
+            <Box sx={{ marginLeft: 2 }}>
+              <CircularProgress />
+            </Box>
+          </Box>
         }
+        
       </Box>
     </Box>
   );
