@@ -28,7 +28,10 @@ export default function FileUpload({
     ].includes(selectedFile.type);
     const isVideoType = selectedFile.type.startsWith('video/');
     const isPDFType = selectedFile.type === 'application/pdf';
-  
+    const isExcelType = [
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ].includes(selectedFile.type);
     // Size limits in bytes
     const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
     const MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500MB
@@ -60,6 +63,13 @@ export default function FileUpload({
       case 'keywords':
         if (!isPDFType) {
           setError("Invalid file type. Only PDF files are allowed.");
+          return false;
+        }
+        break;
+      
+      case 'tag_tracker':
+        if (!isExcelType) {
+          setError("Invalid file type. Only Excel file is allowed.");
           return false;
         }
         break;

@@ -61,7 +61,7 @@ export interface Campaign {
     impression:string;
     objective:string;
     landing_page: string;
-    tag_tracker: string;
+    tag_tracker: FileUpload[];
     total_budget: number;
     buy_type: string;
     unit_rate: number;

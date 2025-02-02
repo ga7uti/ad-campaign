@@ -1,7 +1,6 @@
 'use client';
 
 import { Campaign, CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
-import axios from 'axios';
 import axiosInstance from './axios-instance';
 import { utils } from './common';
 
@@ -57,9 +56,9 @@ class CampaignClient {
             formData.append('video', file);
             uri="campaign-video"
             break;
-          case 'proximity_store':
+          case 'tag_tracker':
             formData.append('file', file);
-            uri="proximityStore"
+            uri="tag_tacker"
             break;
           case 'proximity':
             formData.append('file', file);

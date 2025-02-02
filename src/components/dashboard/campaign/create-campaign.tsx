@@ -215,7 +215,7 @@ export default function CreateCampaign(): React.JSX.Element {
           return isValidField && !isNaN(Number(value)) && Number(value) > 0;
         }
         
-        if(field === "images" || field === "video") {
+        if(field === "images" || field === "video" || field === "tag_tracker") {
           return isValidField &&  (value as unknown as FileList).length > 0;
         }
         
@@ -233,7 +233,7 @@ export default function CreateCampaign(): React.JSX.Element {
           let startDateError = false;
           if(field === "total_budget" || field === "unit_rate"){
              isFieldMissing = isFieldMissing || isNaN(Number(value)) || Number(value) <= 0;
-          }else if(field === "images" || field === "video"){
+          }else if(field === "images" || field === "video" || field === "tag_tracker"){
             isFieldMissing= isFieldMissing || (value as unknown as FileList).length === 0;
           }else if(field === "end_time"){
             const startDate = getValues("start_time") as unknown as number;
@@ -282,7 +282,7 @@ export default function CreateCampaign(): React.JSX.Element {
           return dayjs(value as number).format("YYYY-MM-DD");
         }
 
-        if(name === "images" || name === "video" || name === "keywords"){
+        if(name === "images" || name === "video" || name === "keywords" || name === "target_type"){
           return (value as unknown as FileList).length !== 0 ? "File uploaded" : "Not Provided";
         }
         return value as string
@@ -634,15 +634,18 @@ export default function CreateCampaign(): React.JSX.Element {
 
                   {/* Tag & Tracker */}
                   <Box sx={{margin:2}}>
-                    <FormField
-                        type="text"
-                        placeholder="Tag & Tracker"
+                    <FileUpload
                         name="tag_tracker"
                         register={register}
-                        getValues={getValues}
-                        error={errors.tag_tracker}
-                        data={undefined}
-                    />
+                        setValue={setValue}
+                        getValue={getValues}
+                        placeholder="Select Tag & Tracker(.xlsx)"
+                      />
+                      {errors.tag_tracker && 
+                        <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
+                          {errors.tag_tracker?.message}
+                        </Typography>
+                      }
                   </Box>
                   
                   {/* Image Upload */}

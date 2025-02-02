@@ -132,7 +132,6 @@ import * as React from 'react';
                       .map((type) => type.category+" > "+ type.subcategory)
                       .join(', '),
                     'Landing Page': data.landing_page,
-                    'Tag & Tracker': data.tag_tracker,
                   }).map(([label, value]) => (
                     <Box key={label} sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
                       <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{label}:</Typography>
@@ -218,6 +217,7 @@ import * as React from 'react';
 
                   {[
                   { label: 'Keywords', files: data.keywords },
+                  { label: 'Tag&Tracker', files: data.tag_tracker },
                   ].map(({ label, files }) =>
                     files.map((file, index) => (
                       <Box
