@@ -31,16 +31,16 @@ const MenuProps = {
 };
 
 const FormField: React.FC<FormFieldProps<any>> = ({
+  name,
   type,
   placeholder,
-  name,
-  register,
   error,
   valueAsNumber,
   data,
   disabled = false,
   hidePasswordIcon = false,
   multiple = true,
+  register,
   onChange,
   getValues,
   setValue
@@ -128,7 +128,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           {...register(name, { valueAsNumber })}
           multiple={multiple}
           MenuProps={MenuProps}
-          defaultValue={getValues && getValues(name) ? getValues(name) : multiple ? [] : ''}
+          defaultValue={getValues(name) ? getValues(name) : multiple ? [] : ''}
           label={placeholder}
           labelId={labelId}
           onChange={(e) => onChange && onChange(e, name)}

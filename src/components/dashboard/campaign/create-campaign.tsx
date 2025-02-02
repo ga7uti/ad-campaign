@@ -284,6 +284,7 @@ export default function CreateCampaign({
                           placeholder="Name"
                           name="name"
                           getValues={getValues}
+                          setValue={setValue}
                           register={register}
                           error={errors.name}
                       />
@@ -324,6 +325,7 @@ export default function CreateCampaign({
                           name="location"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           onChange={handleSelectChange}
                           error={Array.isArray(errors.location)?errors.location[0]:errors.location}
                           data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
@@ -338,6 +340,7 @@ export default function CreateCampaign({
                           name="age"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           onChange={handleSelectChange}
                           error={Array.isArray(errors.age)?errors.age[0]:errors.age}
                           data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
@@ -354,6 +357,7 @@ export default function CreateCampaign({
                           name="exchange"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
                           data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -369,6 +373,7 @@ export default function CreateCampaign({
                           name="language"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           error={Array.isArray(errors.language)?errors.language[0]:errors.language}
                           data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -382,6 +387,7 @@ export default function CreateCampaign({
                         name="viewability"
                         register={register}
                         getValues={getValues}
+                        setValue={setValue}
                         error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
                         data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
@@ -396,6 +402,7 @@ export default function CreateCampaign({
                         name="brand_safety"
                         register={register}
                         getValues={getValues}
+                        setValue={setValue}
                         error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
                         data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
@@ -414,6 +421,7 @@ export default function CreateCampaign({
                             name="device"
                             register={register}
                             getValues={getValues}
+                            setValue={setValue}
                             error={Array.isArray(errors.device)?errors.device[0]:errors.device}
                             data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
                         />
@@ -427,6 +435,7 @@ export default function CreateCampaign({
                             name="environment"
                             register={register}
                             getValues={getValues}
+                            setValue={setValue}
                             error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
                             data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
                         />
@@ -440,6 +449,7 @@ export default function CreateCampaign({
                           name="carrier"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
                           data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -453,6 +463,7 @@ export default function CreateCampaign({
                           name="device_price"
                           register={register}
                           getValues={getValues}
+                          setValue={setValue}
                           error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
                           data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
                       />
@@ -471,6 +482,7 @@ export default function CreateCampaign({
                         name="interest_category"
                         register={register}
                         getValues={getValues}
+                        setValue={setValue}
                         onChange={handleSelectChange}
                         multiple ={false}
                         data={dataSources.interest_category.length > 0 ? dataSources.interest_category : [{ id: 0, value: 'No data available. Please try again later' }]}
@@ -486,6 +498,7 @@ export default function CreateCampaign({
                         name="target_type"
                         register={register}
                         getValues={getValues}
+                        setValue={setValue}
                         onChange={handleSelectChange}
                         error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
                         data={dataSources.selectedInterest.length > 0 ? dataSources.selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
@@ -527,6 +540,7 @@ export default function CreateCampaign({
                         name="total_budget"
                         valueAsNumber={true}
                         register={register}
+                        setValue={setValue}
                         getValues={getValues}
                         error={Array.isArray(errors.total_budget)?errors.total_budget[0]:errors.total_budget}
                     />
@@ -539,8 +553,9 @@ export default function CreateCampaign({
                         placeholder="Buy Type"
                         name="buy_type"
                         register={register}
-                        error={errors.buy_type}
                         getValues={getValues}
+                        setValue={setValue}
+                        error={errors.buy_type}
                         data={dataSources.buy_type.length > 0 ? dataSources.buy_type : [{ id: 0, value: 'No data available. Please try again later' }]}
                         multiple={false}
                         />
@@ -554,6 +569,7 @@ export default function CreateCampaign({
                         name="unit_rate"
                         valueAsNumber={true}
                         getValues={getValues}
+                        setValue={setValue}
                         register={register}
                         error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
                         />
@@ -571,6 +587,7 @@ export default function CreateCampaign({
                         name="landing_page"
                         register={register}
                         getValues={getValues}
+                        setValue={setValue}
                         error={errors.landing_page}
                         data={undefined}
                     />
