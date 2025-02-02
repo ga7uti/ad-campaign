@@ -15,6 +15,7 @@ import { CampaignTypeSelector } from './campaign-select';
 import CardSection from '../layout/card-section';
 import { ImpressionComponent } from './impression-panel';
 import dayjs from 'dayjs';
+import { CreateCampaignProps } from '@/types/props';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
@@ -42,29 +43,16 @@ const reviewFields = [
   { label: "Keywords", name: "keywords" },
 ];
 
-export default function CreateCampaign(): React.JSX.Element {
+export default function CreateCampaign({
+  dataSources,
+  impressionData,
+  totalPopulation,
+  setDataSources
+}:CreateCampaignProps): React.JSX.Element {
 
     const router = useRouter();
-    const [dataSources, setDataSources] = React.useState({
-      ages: [],
-      devices: [],
-      environment: [],
-      location: [],
-      exchange: [],
-      language: [],
-      carrier: [],
-      device_price: [],
-      interest_category: [],
-      interest: [],
-      selectedInterest: [],
-      buy_type: [],
-      brand_safety: [],
-      viewability: [],
-    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>);
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
-    const [impressionData,setImpressionData] = React.useState<ImpressionData>();
-    const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
@@ -109,49 +97,6 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     };
   
-    const fetchData = async () => {
-      try {
-        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
-          viewabilityRes,brandSafetyRes] = await Promise.all([
-          campaignClient.getAge(),
-          campaignClient.getDevice(),
-          campaignClient.getEnv(),
-          campaignClient.getLocations(),
-          campaignClient.getExchange(),
-          campaignClient.getLanguage(),
-          campaignClient.getCarrier(),
-          campaignClient.getDevicePrice(),
-          campaignClient.getDistinctInterest(),
-          campaignClient.getInterest(""),
-          campaignClient.getImpressionData(),
-          campaignClient.getBuyType(),
-          campaignClient.getViewability(),
-          campaignClient.getBrandSafety(),
-        ]);
-        setDataSources({
-          ages: ageRes,
-          devices: deviceRes,
-          environment: envRes,
-          location: locRes,
-          exchange: exchangeRes,
-          language: langRes,
-          carrier: carrierRes,
-          device_price: devicePriceRes,
-          interest_category: categoryInterestRes,
-          interest: interestRes,
-          selectedInterest: [],
-          buy_type:buyTypeRes,
-          viewability:viewabilityRes,
-          brand_safety:brandSafetyRes,
-        });
-        setImpressionData(impressionRes)
-        setTotalPopulation(impressionRes.totalPopulation)
-      } catch (error) {
-        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error});
-      }
-    };
-
     const handleSelectChange = async (event: SelectChangeEvent<unknown>,
       name: string
     ) => {
@@ -159,7 +104,7 @@ export default function CreateCampaign(): React.JSX.Element {
       if(name === 'target_type'){
         const selectedValue: number[] = event.target.value as number[];
         const tempData = selectedValue.map((interest) => { 
-          const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
+          const tempData= dataSources.interest.find((i:Interest) => i.id === interest) as Interest
           return tempData.category+">"+tempData.subcategory;
         }).join(", ");
         setTargetType(tempData);
@@ -169,7 +114,7 @@ export default function CreateCampaign(): React.JSX.Element {
         const selectedValue: string = event.target.value as string;
         try {
             const result = await campaignClient.getInterest(selectedValue);
-            setDataSources((prev) => ({
+            setDataSources((prev: any) => ({
               ...prev,
               selectedInterest: result,
             }));
@@ -190,7 +135,7 @@ export default function CreateCampaign(): React.JSX.Element {
         
         // Calculate effective values
         const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
-          const location = dataSources.location?.find(loc => loc.id === locationId) as Location;
+          const location = dataSources.location?.find((loc:Location) => loc.id === locationId) as Location;
           return total + (Number(location?.population) || 0);
         }, 0):0;
       
@@ -268,12 +213,12 @@ export default function CreateCampaign(): React.JSX.Element {
       const value = getValues(name as keyof CampaignFormData);
       if(value){
         if (name === "location") {
-          return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
+          return (value as number[]).map((loc) => (dataSources.location.find((l:Location) => l.id === loc) as Location)?.city).join(", ");
         }
 
         if(name === "target_type"){
           return (value as number[]).map((interest) => { 
-            const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
+            const tempData= dataSources.interest.find((i:Interest) => i.id === interest) as Interest
             return tempData.category+">"+tempData.subcategory;
           }).join(", ");
         }
@@ -292,7 +237,6 @@ export default function CreateCampaign(): React.JSX.Element {
     }
     
     React.useEffect(() => {
-      fetchData();
       if(!getValues("objective"))
         setValue('objective', 'Banner');
     }, [campaignType,targetPopulation]);

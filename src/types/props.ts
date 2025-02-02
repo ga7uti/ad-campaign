@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from "@mui/material";
 import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { Campaign } from "./campaign";
+import { Campaign, ImpressionData } from "./campaign";
 
 
 
@@ -53,4 +53,11 @@ export interface FormFieldProps<T>  {
     title: string
     targetPopulation: number;
     totalPopulation: number;
-}
+  }
+
+  export interface CreateCampaignProps{
+    dataSources: any
+    impressionData: ImpressionData;
+    totalPopulation: number;
+    setDataSources:any
+  }
