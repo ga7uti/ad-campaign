@@ -122,9 +122,7 @@ export default function CreateCampaign(): React.JSX.Element {
         const result = await campaignClient.postCampaign(data);
         if (result) {
           setIsCampaignCreated(true);
-          setTimeout(()=>{
-            router.push(paths.dashboard.overview);
-          },1000)
+          router.push(paths.dashboard.overview);
         }
       } catch (error:any) {
         setError('root', { type: 'server', message: error.message});
