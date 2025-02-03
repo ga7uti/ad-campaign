@@ -6,16 +6,15 @@ import Typography from '@mui/material/Typography';
 
 import * as React from 'react';
 
-import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
 import { CampaignDetailsPopOver } from '@/components/dashboard/campaign/campaign-details';
+import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { Search } from '@/components/dashboard/layout/search';
 import { usePopover } from '@/hooks/use-popover';
 import { campaignClient } from '@/lib/campaign-client';
-import { Campaign, CampaignFormData } from '@/types/campaign';
+import { Campaign } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import { utils } from '@/lib/common';
 
 
 

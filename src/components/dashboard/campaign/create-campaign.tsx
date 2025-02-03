@@ -4,18 +4,17 @@ import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
+import CardSection from '../layout/card-section';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
-import CardSection from '../layout/card-section';
 import { ImpressionComponent } from './impression-panel';
-import dayjs from 'dayjs';
-import { CreateCampaignProps } from '@/types/props';
 
 const reviewFields = [
   { label: "CampaignName", name: "name" },
@@ -43,14 +42,27 @@ const reviewFields = [
   { label: "Keywords", name: "keywords" },
 ];
 
-export default function CreateCampaign({
-  dataSources,
-  impressionData,
-  totalPopulation,
-  setDataSources
-}:CreateCampaignProps): React.JSX.Element {
+export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
+    const [dataSources, setDataSources] = React.useState({
+      ages: [],
+      devices: [],
+      environment: [],
+      location: [],
+      exchange: [],
+      language: [],
+      carrier: [],
+      device_price: [],
+      interest_category: [],
+      interest: [],
+      selectedInterest: [],
+      buy_type: [],
+      brand_safety: [],
+      viewability: [],
+    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>);
+    const [impressionData,setImpressionData] = React.useState<ImpressionData>();
+    const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
     const [isPending, setIsPending] = React.useState<boolean>(false);
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
@@ -76,6 +88,51 @@ export default function CreateCampaign({
       formState: { errors },
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
+    const fetchData = async () => {
+      try {
+        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
+          carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
+          viewabilityRes,brandSafetyRes] = await Promise.all([
+          campaignClient.getAge(),
+          campaignClient.getDevice(),
+          campaignClient.getEnv(),
+          campaignClient.getLocations(),
+          campaignClient.getExchange(),
+          campaignClient.getLanguage(),
+          campaignClient.getCarrier(),
+          campaignClient.getDevicePrice(),
+          campaignClient.getDistinctInterest(),
+          campaignClient.getInterest(""),
+          campaignClient.getImpressionData(),
+          campaignClient.getBuyType(),
+          campaignClient.getViewability(),
+          campaignClient.getBrandSafety(),
+        ]);
+        setDataSources({
+          ages: ageRes,
+          devices: deviceRes,
+          environment: envRes,
+          location: locRes,
+          exchange: exchangeRes,
+          language: langRes,
+          carrier: carrierRes,
+          device_price: devicePriceRes,
+          interest_category: categoryInterestRes,
+          interest: interestRes,
+          selectedInterest: [],
+          buy_type:buyTypeRes,
+          viewability:viewabilityRes,
+          brand_safety:brandSafetyRes,
+        });
+        setImpressionData(impressionRes)
+        setTotalPopulation(impressionRes.totalPopulation)
+      } catch (error) {
+        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error });
+      }finally{
+        setIsPending(false)
+      }
+    };
+
     const onSubmit = async (data: CampaignFormData) => {
       clearErrors();
       if(!data) 
@@ -97,14 +154,12 @@ export default function CreateCampaign({
       }
     };
   
-    const handleSelectChange = async (event: SelectChangeEvent<unknown>,
-      name: string
-    ) => {
+    const handleSelectChange = async (event: SelectChangeEvent<unknown>,name: string) => {
       
       if(name === 'target_type'){
         const selectedValue: number[] = event.target.value as number[];
         const tempData = selectedValue.map((interest) => { 
-          const tempData= dataSources.interest.find((i:Interest) => i.id === interest) as Interest
+          const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
           return tempData.category+">"+tempData.subcategory;
         }).join(", ");
         setTargetType(tempData);
@@ -135,7 +190,7 @@ export default function CreateCampaign({
         
         // Calculate effective values
         const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
-          const location = dataSources.location?.find((loc:Location) => loc.id === locationId) as Location;
+          const location = dataSources.location?.find((loc) => loc.id === locationId) as Location;
           return total + (Number(location?.population) || 0);
         }, 0):0;
       
@@ -213,12 +268,12 @@ export default function CreateCampaign({
       const value = getValues(name as keyof CampaignFormData);
       if(value){
         if (name === "location") {
-          return (value as number[]).map((loc) => (dataSources.location.find((l:Location) => l.id === loc) as Location)?.city).join(", ");
+          return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
         }
 
         if(name === "target_type"){
           return (value as number[]).map((interest) => { 
-            const tempData= dataSources.interest.find((i:Interest) => i.id === interest) as Interest
+            const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
             return tempData.category+">"+tempData.subcategory;
           }).join(", ");
         }
@@ -234,9 +289,10 @@ export default function CreateCampaign({
       } 
 
       return "Not provided";
-    }
+    };
     
     React.useEffect(() => {
+      fetchData();
       if(!getValues("objective"))
         setValue('objective', 'Banner');
       const storedCampaign = sessionStorage.getItem("campaign");
@@ -245,6 +301,9 @@ export default function CreateCampaign({
         console.log(parsedCampaign)
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
+          if(key === "objective"){
+            setCampaignType(parsedCampaign[key])
+          }
           setValue(key as keyof CampaignFormData, parsedCampaign[key]);
         });
       }
@@ -483,36 +542,42 @@ export default function CreateCampaign({
 
               {activeSection === 4 && (
                 <CardSection title="Interest">
-                {/* Interest */}
-                  <Box sx={{margin:2}}>
-                    <FormField
-                        type="select"
-                        placeholder="Category"
-                        name="interest_category"
-                        register={register}
-                        getValues={getValues}
-                        setValue={setValue}
-                        onChange={handleSelectChange}
-                        multiple ={false}
-                        data={dataSources.interest_category.length > 0 ? dataSources.interest_category : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        error={Array.isArray(errors.interest_category)?errors.interest_category[0]:errors.interest_category}
-                    />
-                  </Box>
-
-                {/* Interest Category*/}
-                  <Box sx={{margin:2}}>
-                    <FormField
-                        type="select"
-                        placeholder="SubCategory"
-                        name="target_type"
-                        register={register}
-                        getValues={getValues}
-                        setValue={setValue}
-                        onChange={handleSelectChange}
-                        error={Array.isArray(errors.target_type)?errors.target_type[0]:errors.target_type}
-                        data={dataSources.selectedInterest.length > 0 ? dataSources.selectedInterest.slice(0,150) : [{ id: 0, category: 'No data available. Please select Interest' }]}
-                        />
-                  </Box>
+                  {dataSources.interest_category.map((interestCategory)=>{
+                    return(
+                      <Grid container spacing={2} alignItems="center" sx={{ marginBottom: 2, marginTop:2}} key={interestCategory.id} >
+                        {/* Interest Category TextField */}
+                        <Grid item xs={6}>
+                          <TextField
+                            fullWidth
+                            label="Interest Category"
+                            variant="outlined"
+                            value={(interestCategory as CommonSelectResponse).label}
+                            InputProps={{ readOnly: true }}
+                          />
+                        </Grid>
+                    
+                        {/* SubCategory Select Field */}
+                        <Grid item xs={6}>
+                          <FormField
+                            type="select"
+                            placeholder="SubCategory"
+                            name="target_type"
+                            register={register}
+                            getValues={getValues}
+                            setValue={setValue}
+                            onChange={handleSelectChange}
+                            error={Array.isArray(errors.target_type) ? errors.target_type[0] : errors.target_type}
+                            data={
+                              dataSources.interest.length > 0
+                                  ? dataSources.interest.filter((interest) => (interest as Interest).category === (interestCategory as CommonSelectResponse).label)
+                                : [{ id: 0, category: "No data available. Please select Interest" }]
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+                    )
+                  })}
+                  
                   <Box sx={{ 
                     margin: 2,
                     display: 'flex',
