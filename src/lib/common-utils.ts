@@ -21,7 +21,6 @@ class Utils {
         { label: "Environments", name: "environment" },
         { label: "Carrier", name: "carrier" },
         { label: "DevicePrice", name: "device_price" },
-        { label: "Interest", name: "target_type" },
         { label: "TotalBudget", name: "total_budget" },
         { label: "BuyType", name: "buy_type" },
         { label: "UnitRate", name: "unit_rate" },

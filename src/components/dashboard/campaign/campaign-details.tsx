@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  Grid,
   IconButton,
   TextField
 } from '@mui/material';
@@ -12,6 +13,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Copy, Download, X } from '@phosphor-icons/react';
 import * as React from 'react';
+import TargetType from '../layout/target-type';
  
   export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPopOverProps): React.JSX.Element {
   
@@ -39,8 +41,8 @@ import * as React from 'react';
         onClose={onClose}
         PaperProps={{
           sx: {
-            width: '50%',
-            height: '50%',
+            width: '60%',
+            height: '90%',
             maxWidth: 'none',
             padding: 2,
           },
@@ -128,9 +130,6 @@ import * as React from 'react';
                     Carrier: data.carrier.join(', '),
                     'Device Prices': data.device_price.join(', '),
                     Exchanges: data.exchange.join(', '),
-                    'Interest Categories': data.target_type
-                      .map((type) => type.category+" > "+ type.subcategory)
-                      .join(', '),
                     'Landing Page': data.landing_page,
                   }).map(([label, value]) => (
                     <Box key={label} sx={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
@@ -157,6 +156,19 @@ import * as React from 'react';
                 </>
               )}
             </Box>
+            <Divider/>
+            {data && 
+              <Grid container sx={{ mb: 2 }}>
+                <Grid item xs={3}>
+                  <Typography sx={{ fontWeight: 'bold' }}>Interest:</Typography>
+                </Grid>
+                <Grid item xs={9}>
+                  <TargetType 
+                    targetType={data.target_type.map((type) => type.category+" > "+ type.subcategory).join(', ')} 
+                    isRemovable={false} />
+                </Grid>
+              </Grid>
+            }
             <Divider/>
             {/* Attachments Section */}
             <Box>

@@ -4,7 +4,7 @@ import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, IconButton, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -16,6 +16,8 @@ import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
 import { utils } from '@/lib/common-utils';
+import { X, XCircle } from '@phosphor-icons/react';
+import TargetType from '../layout/target-type';
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -522,29 +524,14 @@ export default function CreateCampaign(): React.JSX.Element {
                     )
                   })}
                   
-                  <Box sx={{ 
-                    margin: 2,
-                    display: 'flex',
-                    gap: 2,
-                    flexWrap: 'wrap' 
-                  }}>
-                    {targetType.split(',').map((value, index) => (
-                      <Typography 
-                        key={index}
-                        variant="body2" 
-                        color="textSecondary"
-                        sx={{ 
-                          padding: 1,
-                          backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                          borderRadius: 1,
-                          whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {value.trim()}
-                      </Typography>
-                    ))}
-                  </Box>
-
+                 {targetType &&
+                  <TargetType 
+                    targetType={targetType} 
+                    setValue={setValue}
+                    getValues={getValues}
+                    setTargetType={setTargetType}
+                    isRemovable={isEditable} />
+                }
                 </CardSection>
               )}
 
@@ -679,19 +666,32 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 7 && (
                 <>
-                  <Box sx={{ padding: 2 }}>
+                    <Box sx={{ padding: 2 }}>
                     {utils.reviewFields.map((field, index) => (
-                      <Box key={index} sx={{ mb: 2, display:"flex", flex: 1 }}>
-                          <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{field.label}:</Typography>
+                      <Grid container key={index} sx={{ mb: 2 }}>
+                        <Grid item xs={3}>
+                          <Typography sx={{ fontWeight: 'bold' }}>{field.label}:</Typography>
+                        </Grid>
+                        <Grid item xs={9}>
                           <TextField
-                            value={utils.formatAndGetReviewData(field.name,dataSources,getValues)}
-                            variant="outlined"
-                            size="small"
-                            sx={{ flex: 2 }}
+                          value={utils.formatAndGetReviewData(field.name, dataSources, getValues)}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
                           />
-                      </Box>
+                        </Grid>
+                      </Grid>
                     ))}
-                  </Box>
+                    
+                    <Grid container sx={{ mb: 2 }}>
+                      <Grid item xs={3}>
+                        <Typography sx={{ fontWeight: 'bold' }}>Interest:</Typography>
+                      </Grid>
+                      <Grid item xs={9}>
+                        <TargetType targetType={targetType} isRemovable={false} />
+                      </Grid>
+                    </Grid>
+                    </Box>
                   <Box sx={{ textAlign: "center", mt: 3 }}>
                   {!isPending ? (
                         <Box sx={{ textAlign: "center", mt: 3 }}>
