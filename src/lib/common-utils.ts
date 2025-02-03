@@ -123,6 +123,7 @@ class Utils {
                 case "images":
                 case "video":
                 case "keywords":
+                case "tag_tracker":
                     return (value as unknown as FileList).length !== 0 ? "File uploaded" : "Not Provided";
                 default:
                     return value as string;
