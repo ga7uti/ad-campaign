@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
-import { utils } from '@/lib/common';
+import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
 import { Campaign } from '@/types/campaign';
 import { TableProps } from '@/types/props';

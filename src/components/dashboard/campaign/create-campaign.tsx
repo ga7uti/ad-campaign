@@ -15,32 +15,7 @@ import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
-
-const reviewFields = [
-  { label: "CampaignName", name: "name" },
-  { label: "CampaignType", name: "objective" },
-  { label: "Start Time", name: "start_time" },
-  { label: "End Time", name: "end_time" },
-  { label: "Locations", name: "location" },
-  { label: "AgeRange", name: "age" },
-  { label: "Exchange", name: "exchange" },
-  { label: "Language", name: "language" },
-  { label: "Viewability", name: "viewability" },
-  { label: "BrandSafety", name: "brand_safety" },
-  { label: "Devices", name: "device" },
-  { label: "Environments", name: "environment" },
-  { label: "Carrier", name: "carrier" },
-  { label: "DevicePrice", name: "device_price" },
-  { label: "Interest", name: "target_type" },
-  { label: "TotalBudget", name: "total_budget" },
-  { label: "BuyType", name: "buy_type" },
-  { label: "UnitRate", name: "unit_rate" },
-  { label: "LandingPage", name: "landing_page" },
-  { label: "Tag&Tracker", name: "tag_tracker" },
-  { label: "Image", name: "images" },
-  { label: "Video", name: "video" },
-  { label: "Keywords", name: "keywords" },
-];
+import { utils } from '@/lib/common-utils';
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -78,6 +53,7 @@ export default function CreateCampaign(): React.JSX.Element {
       5: ["total_budget", "buy_type", "unit_rate"], 
       6: campaignType === "Banner" ? ["images"] : ["video"],
     };
+    
     const {
       register,
       setValue,
@@ -155,30 +131,12 @@ export default function CreateCampaign(): React.JSX.Element {
     };
   
     const handleSelectChange = async (event: SelectChangeEvent<unknown>,name: string) => {
-      
       if(name === 'target_type'){
         const selectedValue: number[] = event.target.value as number[];
-        const tempData = selectedValue.map((interest) => { 
-          const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
-          return tempData.category+">"+tempData.subcategory;
-        }).join(", ");
-        setTargetType(tempData);
+        setTargetType(utils.formatTargetIdToSubCategory(selectedValue,dataSources.interest as Interest[]));
       }
       
-      if (name === "interest_category") {
-        const selectedValue: string = event.target.value as string;
-        try {
-            const result = await campaignClient.getInterest(selectedValue);
-            setDataSources((prev: any) => ({
-              ...prev,
-              selectedInterest: result,
-            }));
-        } catch (error) {
-          setError('root', { type: 'server', message: "Error fetching categories. Error: "+ error});
-        }
-      }
-      
-      if(name === "location" || name === "age"){
+      if(["location","age"].includes(name)){
         const selectedValue: string[] = event.target.value as string[];
         const selectedLocs = name==="age"? getValues("location"): Array.from(
           new Set([...selectedValue, ...getValues("location") as Number[]])
@@ -264,41 +222,10 @@ export default function CreateCampaign(): React.JSX.Element {
         }
     };
   
-    const getData = (name: string): string => {
-      const value = getValues(name as keyof CampaignFormData);
-      if(value){
-        if (name === "location") {
-          return (value as number[]).map((loc) => (dataSources.location.find((l) => l.id === loc) as Location)?.city).join(", ");
-        }
-
-        if(name === "target_type"){
-          return (value as number[]).map((interest) => { 
-            const tempData= dataSources.interest.find((i) => i.id === interest) as Interest
-            return tempData.category+">"+tempData.subcategory;
-          }).join(", ");
-        }
-
-        if(name === "start_time" || name === "end_time"){
-          return dayjs(value as number).format("YYYY-MM-DD");
-        }
-
-        if(name === "images" || name === "video" || name === "keywords" || name === "target_type"){
-          return (value as unknown as FileList).length !== 0 ? "File uploaded" : "Not Provided";
-        }
-        return value as string
-      } 
-
-      return "Not provided";
-    };
-    
-    React.useEffect(() => {
-      fetchData();
-      if(!getValues("objective"))
-        setValue('objective', 'Banner');
+    const setFormDataOnEdit = ()=>{
       const storedCampaign = sessionStorage.getItem("campaign");
       if (storedCampaign) {
         const parsedCampaign = JSON.parse(storedCampaign);
-        console.log(parsedCampaign)
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
           if(key === "objective"){
@@ -306,8 +233,20 @@ export default function CreateCampaign(): React.JSX.Element {
           }
           setValue(key as keyof CampaignFormData, parsedCampaign[key]);
         });
+        
       }
-    }, [campaignType,targetPopulation,dataSources.interest]);
+    }
+    
+    React.useEffect(() => {
+      fetchData();
+      setFormDataOnEdit();
+      if(getValues("target_type")){
+        setTargetType(utils.formatTargetIdToSubCategory(getValues("target_type"),dataSources.interest as Interest[]));
+      }
+      if(!getValues("objective")){
+        setValue('objective', 'Banner');
+      }
+    }, [campaignType,targetPopulation,targetType,dataSources]);
   
     return (
       <Box
@@ -736,11 +675,11 @@ export default function CreateCampaign(): React.JSX.Element {
               {activeSection === 7 && (
                 <>
                   <Box sx={{ padding: 2 }}>
-                    {reviewFields.map((field, index) => (
+                    {utils.reviewFields.map((field, index) => (
                       <Box key={index} sx={{ mb: 2, display:"flex", flex: 1 }}>
                           <Typography sx={{ fontWeight: 'bold', flex: 1 }}>{field.label}:</Typography>
                           <TextField
-                            value={getData(field.name)}
+                            value={utils.formatAndGetReviewData(field.name,dataSources,getValues)}
                             variant="outlined"
                             size="small"
                             sx={{ flex: 2 }}
