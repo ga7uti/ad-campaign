@@ -49,12 +49,12 @@ export default function CreateCampaign(): React.JSX.Element {
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: [],
-      2: [], 
-      3: [],
+      1: ["name","start_time","end_time"],
+      2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
+      3: ["device", "environment", "carrier", "device_price"],
       4: ["target_type"],
-      5: [], 
-      6: campaignType === "Banner" ? [] : [],
+      5: ["total_budget", "buy_type", "unit_rate"], 
+      6: campaignType === "Banner" ? ["images","tag_tracker"] : ["video","tag_tracker"],
     };
     
     const {
