@@ -223,9 +223,10 @@ export default function CreateCampaign(): React.JSX.Element {
     };
 
     const prevSection = () => {
-        if (activeSection > 0 && !isEditable) {
-            setActiveSection(activeSection - 1);
-        }
+      const minSection = isEditable?1:0
+      if (activeSection > minSection) {
+          setActiveSection(activeSection - 1);
+      }
     };
   
     const setFormDataOnEdit = ()=>{
