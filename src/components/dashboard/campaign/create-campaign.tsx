@@ -223,7 +223,7 @@ export default function CreateCampaign(): React.JSX.Element {
     };
 
     const prevSection = () => {
-        if (activeSection > 0) {
+        if (activeSection > 0 && !isEditable) {
             setActiveSection(activeSection - 1);
         }
     };
@@ -232,6 +232,7 @@ export default function CreateCampaign(): React.JSX.Element {
       const storedCampaign = sessionStorage.getItem("campaign");
       if (storedCampaign) {
         setIsEditable(true);
+        setActiveSection(1);
         const parsedCampaign = JSON.parse(storedCampaign);
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
