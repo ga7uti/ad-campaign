@@ -125,13 +125,15 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         <InputLabel id={labelId}>{placeholder}</InputLabel>
         <Select
           fullWidth
-          {...register(name, { valueAsNumber })}
           multiple={multiple}
           MenuProps={MenuProps}
           defaultValue={getValues(name) ? getValues(name) : multiple ? [] : ''}
           label={placeholder}
           labelId={labelId}
-          onChange={(e) => onChange && onChange(e, name)}
+          onChange={(e) => {
+            setValue(name,e.target.value)
+            return onChange && onChange(e, name)
+          }}
         >
           {renderMenuItems()}
         </Select>
@@ -149,7 +151,6 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           label={placeholder}
           value={value}
           minDate={minDate}
-          {...register(name, { valueAsNumber })}
           onChange={(date) => setValue && setValue(name, dayjs(date).format('YYYY-MM-DD'))}
         />
       </LocalizationProvider>

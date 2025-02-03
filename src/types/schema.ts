@@ -9,7 +9,6 @@ export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
-    interest_category: z.string({ message: "Interest Category is required" }),
     target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),

@@ -12,9 +12,10 @@ import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { Search } from '@/components/dashboard/layout/search';
 import { usePopover } from '@/hooks/use-popover';
 import { campaignClient } from '@/lib/campaign-client';
-import { Campaign } from '@/types/campaign';
+import { Campaign, CampaignFormData } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
+import { utils } from '@/lib/common';
 
 
 
@@ -24,7 +25,7 @@ export default function Page(): React.JSX.Element {
   const [count, setCount] = React.useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = React.useState(1);
-  const exportPopOver = usePopover<HTMLDivElement>();
+  const campaignPopOver = usePopover<HTMLDivElement>();
   const [searchQuery,setSearchQuery] = React.useState<string>("")
 
   const handleCampaignClick = (id: number,operation:string) => {
@@ -33,16 +34,8 @@ export default function Page(): React.JSX.Element {
       const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
       if (selectedCampaign) {
         setCampaign(selectedCampaign);
-        exportPopOver.handleOpen();
+        campaignPopOver.handleOpen();
       }
-    }
-
-    if(operation === "upload"){
-      console.log("Upload was clicked: ",operation);
-    }
-
-    if(operation === "download"){
-      console.log("Download was clicked: ",operation);
     }
   };
   
@@ -109,7 +102,7 @@ export default function Page(): React.JSX.Element {
         :
         <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
         }
-        <CampaignDetailsPopOver onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
+        <CampaignDetailsPopOver onClose={campaignPopOver.handleClose} open={campaignPopOver.open}  data={campaign}/>
     </Stack>
   );
 }

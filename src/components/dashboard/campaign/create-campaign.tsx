@@ -62,7 +62,7 @@ export default function CreateCampaign({
       1: ["name","start_time","end_time"],
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
       3: ["device", "environment", "carrier", "device_price"],
-      4: ["interest_category", "target_type"],
+      4: ["target_type"],
       5: ["total_budget", "buy_type", "unit_rate"], 
       6: campaignType === "Banner" ? ["images"] : ["video"],
     };
@@ -239,7 +239,16 @@ export default function CreateCampaign({
     React.useEffect(() => {
       if(!getValues("objective"))
         setValue('objective', 'Banner');
-    }, [campaignType,targetPopulation]);
+      const storedCampaign = sessionStorage.getItem("campaign");
+      if (storedCampaign) {
+        const parsedCampaign = JSON.parse(storedCampaign);
+        console.log(parsedCampaign)
+        sessionStorage.clear()
+        Object.keys(parsedCampaign).forEach((key) => {
+          setValue(key as keyof CampaignFormData, parsedCampaign[key]);
+        });
+      }
+    }, [campaignType,targetPopulation,dataSources.interest]);
   
     return (
       <Box
