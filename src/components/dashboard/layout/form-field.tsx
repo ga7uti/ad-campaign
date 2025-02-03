@@ -89,34 +89,24 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   // Handle Select Types
   const renderSelect = () => {
     const renderMenuItems = () => {
-      switch (name) {
-        case 'location':
-          return data?.map((val: Location) => (
-            <MenuItem key={val.id} value={val.id}>
-              {val.city}
-            </MenuItem>
-          ));
-
-        case 'distinct_interest':
-          return data?.map((val: CommonSelectResponse) => (
-            <MenuItem key={val.id} value={val.value}>
-              {val.value}
-            </MenuItem>
-          ));
-
-        case 'target_type':
-          return data?.map((val: Interest) => (
-            <MenuItem key={val.id} value={val.id}>
-              {val.subcategory}
-            </MenuItem>
-          ));
-
-        default:
-          return data?.map((val: CommonSelectResponse) => (
-            <MenuItem key={val.id} value={val.value}>
-              {val.label}
-            </MenuItem>
-          ));
+      if (name === 'location') {
+        return data?.map((val: Location) => (
+          <MenuItem key={val.id} value={val.id}>
+        {val.city}
+          </MenuItem>
+        ));
+      } else if (name.startsWith('target_type')) {
+        return data?.map((val: Interest) => (
+          <MenuItem key={val.id} value={val.id}>
+        {val.subcategory}
+          </MenuItem>
+        )); 
+      } else {
+        return data?.map((val: CommonSelectResponse) => (
+          <MenuItem key={val.id} value={val.value}>
+        {val.label}
+          </MenuItem>
+        ));
       }
     };
 

@@ -44,14 +44,15 @@ export default function CreateCampaign(): React.JSX.Element {
     const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
+    const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: ["name","start_time","end_time"],
-      2: ["location", "age", "exchange", "language", "viewability", "brand_safety"], 
-      3: ["device", "environment", "carrier", "device_price"],
+      1: [],
+      2: [], 
+      3: [],
       4: ["target_type"],
-      5: ["total_budget", "buy_type", "unit_rate"], 
-      6: campaignType === "Banner" ? ["images"] : ["video"],
+      5: [], 
+      6: campaignType === "Banner" ? [] : [],
     };
     
     const {
@@ -130,10 +131,14 @@ export default function CreateCampaign(): React.JSX.Element {
       }
     };
   
-    const handleSelectChange = async (event: SelectChangeEvent<unknown>,name: string) => {
-      if(name === 'target_type'){
+    const handleSelectChange = async (event: SelectChangeEvent<unknown>,name: string) => {  
+      if(name.startsWith('target_type')){
         const selectedValue: number[] = event.target.value as number[];
-        setTargetType(utils.formatTargetIdToSubCategory(selectedValue,dataSources.interest as Interest[]));
+        const selectedTargetType = getValues("target_type")? Array.from(
+          new Set([...selectedValue, ...getValues("target_type") as Number[]])
+        ) as number[]:selectedValue;
+        setValue("target_type",selectedTargetType)
+        setTargetType(utils.formatTargetIdToSubCategory(selectedTargetType,dataSources.interest as Interest[]));
       }
       
       if(["location","age"].includes(name)){
@@ -160,7 +165,6 @@ export default function CreateCampaign(): React.JSX.Element {
         effectivePercentage > 0 ? setTargetPopulation(Math.round((effectivePopulation * effectivePercentage) / 100)) 
           : setTargetPopulation(effectivePopulation);
       }
-
     };
 
     const nextSection = () => {
@@ -225,6 +229,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const setFormDataOnEdit = ()=>{
       const storedCampaign = sessionStorage.getItem("campaign");
       if (storedCampaign) {
+        setIsEditable(true);
         const parsedCampaign = JSON.parse(storedCampaign);
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
@@ -500,7 +505,7 @@ export default function CreateCampaign(): React.JSX.Element {
                           <FormField
                             type="select"
                             placeholder="SubCategory"
-                            name="target_type"
+                            name={`target_type_${interestCategory.id}`}
                             register={register}
                             getValues={getValues}
                             setValue={setValue}
