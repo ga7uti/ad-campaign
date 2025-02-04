@@ -14,7 +14,11 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }
         item 
         xs={12} sm={12} md={6} 
         display="flex" 
-        justifyContent="center"
+        justifyContent={{
+          xs: "center",
+          md: "center",
+          lg: "right",
+        }}
       >
         <Box
           sx={{
@@ -50,7 +54,11 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }
         item 
         xs={12} sm={12} md={6} 
         display="flex" 
-        justifyContent="center"
+        justifyContent={{
+          xs: "center",
+          md: "center",
+          lg: "left",
+        }}
       >
         <Box
           sx={{

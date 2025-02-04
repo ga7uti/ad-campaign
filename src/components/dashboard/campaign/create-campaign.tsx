@@ -486,7 +486,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     {dataSources.interest_category.map((interestCategory)=>{
                       return(
                           <>
-                            <Grid item xs={6} key={interestCategory.id}>
+                            <Grid item xs={12} md={6} key={interestCategory.id}>
                               <TextField
                                 fullWidth
                                 label="Interest Category"
@@ -496,7 +496,7 @@ export default function CreateCampaign(): React.JSX.Element {
                               />
                             </Grid>
                         
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md ={6}>
                               <FormField
                                 type="select"
                                 placeholder="SubCategory"
@@ -540,7 +540,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   <SectionContainer title="Budget & Bidding">
                     <DetailGrid>
                       {/* Total Budget */}
-                      <Grid item xs={6}>
+                      <Grid item xs={12} md = {6}>
                         <FormField
                             type="number"
                             placeholder="Total Budget"
