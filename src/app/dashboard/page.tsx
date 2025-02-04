@@ -88,7 +88,7 @@ export default function Page(): React.JSX.Element {
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
-      <Search placeholder={"Search campaigns by user"} onSearch={onSearchChange} />
+      <Search placeholder={"Search campaigns by campaign"} onSearch={onSearchChange} />
       {loading ? 
           <Box  
             sx={{

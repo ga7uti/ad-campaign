@@ -523,9 +523,9 @@ export default function CreateCampaign(): React.JSX.Element {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 {targetType &&
-                                    <TargetType 
-                                        targetType={targetType} 
-                                        isRemovable={false} 
+                                  <TargetType 
+                                    targetType={targetType} 
+                                    isRemovable={isEditable} 
                                 />
                                 }
                             </Grid>
@@ -698,7 +698,7 @@ export default function CreateCampaign(): React.JSX.Element {
                 </Button>
                 {activeSection < 5 && (
                   <Button variant="contained" color="primary" onClick={nextSection}>
-                    {activeSection === 5 ? "Review" : "Next"}
+                    {activeSection === 4 ? "Review" : "Next"}
                   </Button>
                 )}
               </Box>
