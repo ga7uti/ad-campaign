@@ -14,7 +14,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Eye, Pencil, Upload } from '@phosphor-icons/react';
+import { Eye, Pencil, PencilSlash, Upload } from '@phosphor-icons/react';
 import { Download } from '@phosphor-icons/react/dist/ssr/Download';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -100,7 +100,8 @@ export function CampaignTable({
                   </>
                   :
                   <>
-                    <TableCell sx={tableCellStyles}><Pencil onClick={() => onEditClick(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>
+                    {row.status === "Created" && <TableCell sx={tableCellStyles}><Pencil onClick={() => onEditClick(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                    {row.status !== "Created" && <TableCell sx={tableCellStyles}><PencilSlash color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
                     <TableCell sx={tableCellStyles}><Download onClick={() => handleRowClick(row.id,"download")}fontSize="var(--icon-fontSize-md)" /></TableCell>
                   </>
                 }
