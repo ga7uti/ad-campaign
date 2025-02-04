@@ -2,7 +2,7 @@
 
 import { UpdatePasswordParams, User } from '@/types/auth';
 import axiosInstance from './axios-instance';
-import { utils } from './common';
+import { utils } from './common-utils';
 
 class AccountClient {
 

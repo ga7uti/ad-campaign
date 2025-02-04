@@ -1,8 +1,9 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
+import { utils } from '@/lib/common-utils';
+import { paths } from '@/paths';
 import { Campaign } from '@/types/campaign';
-import { TableProps } from '@/types/form-data';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -12,9 +13,19 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Eye, Upload } from '@phosphor-icons/react';
+import { Eye, Pencil, PencilSlash, Upload } from '@phosphor-icons/react';
 import { Download } from '@phosphor-icons/react/dist/ssr/Download';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
+
+interface TableProps<T> {
+  count?: number;
+  page?: number;
+  rows?: T;
+  rowsPerPage?: number;
+  handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+  onRowClick?: (id: number,operation:string) => void;
+}
 
 const tableCellStyles = {
   maxWidth: '240px',
@@ -32,12 +43,21 @@ export function CampaignTable({
   onRowClick,
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
-
+  const router = useRouter()
+  
   const handleRowClick = (id: number,operation:string) => {
     if (onRowClick) {
       onRowClick(id,operation);
     }
   };
+
+  const onEditClick =(id:number)=>{
+    const selectedCampaign = rows.find((campaign) => campaign.id === id);
+    if(selectedCampaign){
+      sessionStorage.setItem("campaign",JSON.stringify(utils.transformCampaignToFormData(selectedCampaign)));       
+      router.push(paths.dashboard.createCampaign) 
+    }
+  }
   
   return (
     <Card sx={{ borderRadius: 0 }}>
@@ -59,6 +79,7 @@ export function CampaignTable({
               <TableCell sx={tableCellStyles}>VTR</TableCell>
               <TableCell sx={tableCellStyles}>Status</TableCell>
               <TableCell sx={tableCellStyles}>View</TableCell>
+              <TableCell sx={tableCellStyles}>Edit</TableCell>
               {auth?.usertype==='admin'?<TableCell sx={tableCellStyles}>Upload</TableCell>:
                  <TableCell sx={tableCellStyles}>Download</TableCell>}
             </TableRow>
@@ -81,8 +102,17 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.status}</TableCell>
                 <TableCell sx={tableCellStyles}><Eye onClick={() => handleRowClick(row.id,"view")} fontSize="var(--icon-fontSize-md)" /></TableCell>
                 {auth?.usertype==='admin'?
-                  <TableCell sx={tableCellStyles}><Upload onClick={() => handleRowClick(row.id,"upload")}fontSize="var(--icon-fontSize-md)" /></TableCell>:
-                  <TableCell sx={tableCellStyles}><Download onClick={() => handleRowClick(row.id,"download")}fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                  <>  
+                    <TableCell sx={tableCellStyles}><Pencil onClick={() => handleRowClick(row.id,"edit-admin")}fontSize="var(--icon-fontSize-md)" /></TableCell>
+                    <TableCell sx={tableCellStyles}><Upload onClick={() => handleRowClick(row.id,"upload")}fontSize="var(--icon-fontSize-md)" /></TableCell>
+                  </>
+                  :
+                  <>
+                    {row.status === "Created" && <TableCell sx={tableCellStyles}><Pencil onClick={() => onEditClick(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                    {row.status !== "Created" && <TableCell sx={tableCellStyles}><PencilSlash color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                    <TableCell sx={tableCellStyles}><Download onClick={() => handleRowClick(row.id,"download")}fontSize="var(--icon-fontSize-md)" /></TableCell>
+                  </>
+                }
               </TableRow>
             ))}
           </TableBody>

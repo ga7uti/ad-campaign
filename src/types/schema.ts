@@ -1,71 +1,14 @@
-import { SelectChangeEvent } from "@mui/material";
-import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { SignInParams, User } from "./auth";
-import { Campaign, CampaignFormData } from "./campaign";
+import { CampaignFormData } from "./campaign";
 
-  export interface FormFieldProps<T>  {
-    type: string;
-    placeholder: string;
-    name: string;
-    register: UseFormRegister<any>;
-    getValues?: UseFormGetValues<any>;
-    setValue?: UseFormSetValue<any>;
-    error: FieldError | undefined;
-    valueAsNumber?: boolean;
-    data?: T[];
-    disabled?:boolean
-    hidePasswordIcon?:boolean;
-    multiple?:boolean;
-    onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
-  };
-
-  export interface TableProps<T> {
-    count?: number;
-    page?: number;
-    rows?: T;
-    rowsPerPage?: number;
-    handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-    onRowClick?: (id: number,operation:string) => void;
-  }
-
-  export interface SearchProps {
-    placeholder: string;
-    onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
-  }
-  
-  export interface CampaignDetailsPopOverProps {
-    data?:Campaign;
-    onClose: () => void;
-    open: boolean;
-  }
-
-
-  export interface FileUploadProps {
-    name: string;
-    placeholder: string;
-    register: UseFormRegister<any>;
-    getValue: UseFormGetValues<any>;
-    setValue: UseFormSetValue<any>;
-  }
-
-  export interface ImpressionProps{
-    title: string
-    targetPopulation: number;
-    totalPopulation: number;
-}
-
-
-
-
-  export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
+export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     name: z.string().min(4, { message: "Name is required" }),
     objective: z.string({ message: "Objective is required" }),
     age: z.array(z.string(), { message: "Age is required" }),
     environment: z.array(z.string(), { message: "Environment is required" }),
     location: z.array(z.number(), { message: "Location is required" }),
     device: z.array(z.string(), { message: "Device is required" }),
-    interest_category: z.string({ message: "Interest Category is required" }),
     target_type: z.array(z.number(), { message: "Interest is required" }),
     exchange: z.array(z.string(), { message: "Exchange is required" }),
     language: z.array(z.string(), { message: "Language is required" }),

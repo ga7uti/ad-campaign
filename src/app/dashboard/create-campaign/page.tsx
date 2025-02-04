@@ -1,9 +1,9 @@
-import React from 'react';
-
+"use client"
+import CreateCampaign from '@/components/dashboard/campaign/create-campaign';
 import BackBtn from '@/components/dashboard/layout/back-btn';
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import CreateCampaign from '@/components/dashboard/campaign/create-campaign';
+import React from 'react';
 
 
 export default function CreateCampaignPage(): React.JSX.Element {
@@ -12,7 +12,7 @@ export default function CreateCampaignPage(): React.JSX.Element {
     <Box>
       <BackBtn/>
       <Box mb={2}>
-        <Typography mb={5} variant="h4">Create Campaign</Typography>
+      <Typography mb={5} variant="h4">Create Campaign</Typography>
         <CreateCampaign/>
       </Box>
     </Box>

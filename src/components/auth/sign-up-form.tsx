@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { paths } from '@/paths';
 import { User } from '@/types/auth';
-import { signUpSchema } from '@/types/form-data';
+import { signUpSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, CircularProgress, Grid } from '@mui/material';
 import Alert from '@mui/material/Alert';

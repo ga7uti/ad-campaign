@@ -1,7 +1,6 @@
 'use client';
 
 import { Customer } from '@/types/auth';
-import { TableProps } from '@/types/form-data';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -14,6 +13,14 @@ import TableRow from '@mui/material/TableRow';
 import dayjs from 'dayjs';
 import * as React from 'react';
 
+interface TableProps<T> {
+  count?: number;
+  page?: number;
+  rows?: T;
+  rowsPerPage?: number;
+  handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+  onRowClick?: (id: number,operation:string) => void;
+}
 
 export function CustomersTable({
   count = 0,

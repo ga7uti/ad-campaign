@@ -1,5 +1,9 @@
-import { ImpressionProps } from "@/types/form-data";
 import { Box, Divider, Typography } from "@mui/material";
+interface ImpressionProps{
+  title: string
+  targetPopulation: number;
+  totalPopulation: number;
+}
 
 export function ImpressionComponent({
   title,

@@ -61,7 +61,7 @@ export interface Campaign {
     impression:string;
     objective:string;
     landing_page: string;
-    tag_tracker: string;
+    tag_tracker: FileUpload[];
     total_budget: number;
     buy_type: string;
     unit_rate: number;
@@ -72,6 +72,8 @@ export interface Campaign {
     start_time:string;
     end_time:string;
     video: Video[];
+    viewability: number;
+    brand_safety: number;
 }
 
 export interface CampaignFormData  {
@@ -83,14 +85,13 @@ export interface CampaignFormData  {
     location: number[];
     images?: number[];
     keywords?: number[];
-    interest_category: string;
     target_type: number[];
     exchange: string[];
     language: string[];
     carrier: string[];
     device_price: string[];
     landing_page?: string;
-    tag_tracker?: string;
+    tag_tracker?: number[];
     total_budget: number;
     buy_type: string;
     unit_rate: number;  

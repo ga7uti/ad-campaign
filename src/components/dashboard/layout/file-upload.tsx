@@ -1,8 +1,16 @@
 "use client";
 import { campaignClient } from "@/lib/campaign-client";
-import { FileUploadProps } from "@/types/form-data";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
+import { UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+interface FileUploadProps {
+  name: string;
+  placeholder: string;
+  register: UseFormRegister<any>;
+  getValue: UseFormGetValues<any>;
+  setValue: UseFormSetValue<any>;
+}
 
 export default function FileUpload({
   name,
@@ -28,7 +36,10 @@ export default function FileUpload({
     ].includes(selectedFile.type);
     const isVideoType = selectedFile.type.startsWith('video/');
     const isPDFType = selectedFile.type === 'application/pdf';
-  
+    const isExcelType = [
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ].includes(selectedFile.type);
     // Size limits in bytes
     const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
     const MAX_VIDEO_SIZE = 500 * 1024 * 1024; // 500MB
@@ -60,6 +71,13 @@ export default function FileUpload({
       case 'keywords':
         if (!isPDFType) {
           setError("Invalid file type. Only PDF files are allowed.");
+          return false;
+        }
+        break;
+      
+      case 'tag_tracker':
+        if (!isExcelType) {
+          setError("Invalid file type. Only Excel file is allowed.");
           return false;
         }
         break;
@@ -106,7 +124,7 @@ export default function FileUpload({
   });
   return (
     <Box>
-      {!isFileUploaded && !uploadSuccess && !uploading && (
+      {!uploading && (
           <Box
             sx={{
               display: "flex",

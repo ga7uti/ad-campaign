@@ -6,8 +6,8 @@ import Typography from '@mui/material/Typography';
 
 import * as React from 'react';
 
-import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
 import { CampaignDetailsPopOver } from '@/components/dashboard/campaign/campaign-details';
+import { CampaignTable } from '@/components/dashboard/campaign/campaign-table';
 import RedirectBtn from '@/components/dashboard/layout/redirect-btn';
 import { Search } from '@/components/dashboard/layout/search';
 import { usePopover } from '@/hooks/use-popover';
@@ -24,7 +24,7 @@ export default function Page(): React.JSX.Element {
   const [count, setCount] = React.useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = React.useState(1);
-  const exportPopOver = usePopover<HTMLDivElement>();
+  const campaignPopOver = usePopover<HTMLDivElement>();
   const [searchQuery,setSearchQuery] = React.useState<string>("")
 
   const handleCampaignClick = (id: number,operation:string) => {
@@ -33,16 +33,8 @@ export default function Page(): React.JSX.Element {
       const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
       if (selectedCampaign) {
         setCampaign(selectedCampaign);
-        exportPopOver.handleOpen();
+        campaignPopOver.handleOpen();
       }
-    }
-
-    if(operation === "upload"){
-      console.log("Upload was clicked: ",operation);
-    }
-
-    if(operation === "download"){
-      console.log("Download was clicked: ",operation);
     }
   };
   
@@ -96,7 +88,7 @@ export default function Page(): React.JSX.Element {
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
-      <Search placeholder={"Search campaigns by user"} onSearch={onSearchChange} />
+      <Search placeholder={"Search campaigns by campaign"} onSearch={onSearchChange} />
       {loading ? 
           <Box  
             sx={{
@@ -109,7 +101,7 @@ export default function Page(): React.JSX.Element {
         :
         <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
         }
-        <CampaignDetailsPopOver onClose={exportPopOver.handleClose} open={exportPopOver.open}  data={campaign}/>
+        <CampaignDetailsPopOver onClose={campaignPopOver.handleClose} open={campaignPopOver.open}  data={campaign}/>
     </Stack>
   );
 }

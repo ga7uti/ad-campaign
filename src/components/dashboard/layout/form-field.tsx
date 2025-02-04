@@ -1,5 +1,4 @@
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/form-data';
 import {
   Checkbox,
   FormControl,
@@ -10,14 +9,33 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
 } from '@mui/material';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 import React from 'react';
+import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+interface FormFieldProps<T>  {
+  name: string;
+  type: string;
+  placeholder: string;
+  error: FieldError | undefined;
+  valueAsNumber?: boolean;
+  data?: T[];
+  disabled?:boolean
+  hidePasswordIcon?:boolean;
+  multiple?:boolean;
+  register: UseFormRegister<any>;
+  getValues?: UseFormGetValues<any>;
+  setValue?: UseFormSetValue<any>;
+  onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
+};
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -31,16 +49,16 @@ const MenuProps = {
 };
 
 const FormField: React.FC<FormFieldProps<any>> = ({
+  name,
   type,
   placeholder,
-  name,
-  register,
   error,
   valueAsNumber,
   data,
   disabled = false,
   hidePasswordIcon = false,
   multiple = true,
+  register,
   onChange,
   getValues,
   setValue
@@ -54,7 +72,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
       control={<Checkbox {...register(name)} />}
       label={
         <React.Fragment>
-          <a href="/terms">{placeholder}</a>
+          <Link href="/terms">{placeholder}</Link>
         </React.Fragment>
       }
     />
@@ -89,34 +107,24 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   // Handle Select Types
   const renderSelect = () => {
     const renderMenuItems = () => {
-      switch (name) {
-        case 'location':
-          return data?.map((val: Location) => (
-            <MenuItem key={val.id} value={val.id}>
-              {val.city}
-            </MenuItem>
-          ));
-
-        case 'distinct_interest':
-          return data?.map((val: CommonSelectResponse) => (
-            <MenuItem key={val.id} value={val.value}>
-              {val.value}
-            </MenuItem>
-          ));
-
-        case 'target_type':
-          return data?.map((val: Interest) => (
-            <MenuItem key={val.id} value={val.id}>
-              {val.subcategory}
-            </MenuItem>
-          ));
-
-        default:
-          return data?.map((val: CommonSelectResponse) => (
-            <MenuItem key={val.id} value={val.value}>
-              {val.label}
-            </MenuItem>
-          ));
+      if (name === 'location') {
+        return data?.map((val: Location) => (
+          <MenuItem key={val.id} value={val.id}>
+        {val.city}
+          </MenuItem>
+        ));
+      } else if (name.startsWith('target_type')) {
+        return data?.map((val: Interest) => (
+          <MenuItem key={val.id} value={val.id}>
+        {val.subcategory}
+          </MenuItem>
+        )); 
+      } else {
+        return data?.map((val: CommonSelectResponse) => (
+          <MenuItem key={val.id} value={val.value}>
+        {val.label}
+          </MenuItem>
+        ));
       }
     };
 
@@ -125,13 +133,15 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         <InputLabel id={labelId}>{placeholder}</InputLabel>
         <Select
           fullWidth
-          {...register(name, { valueAsNumber })}
           multiple={multiple}
           MenuProps={MenuProps}
           defaultValue={getValues && getValues(name) ? getValues(name) : multiple ? [] : ''}
           label={placeholder}
           labelId={labelId}
-          onChange={(e) => onChange && onChange(e, name)}
+          onChange={(e) => {
+            setValue && setValue(name,e.target.value)
+            return onChange && onChange(e, name)
+          }}
         >
           {renderMenuItems()}
         </Select>
@@ -141,16 +151,21 @@ const FormField: React.FC<FormFieldProps<any>> = ({
 
   // Handle DatePicker Type
   const renderDatePicker = () => {
-    const value = getValues ? getValues(name) : new Date();
     const minDate = new Date();
+    const value = getValues && getValues(name);
+  
     return (
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label={placeholder}
-          value={value}
+          value={value ? new Date(value) : null}
           minDate={minDate}
-          {...register(name, { valueAsNumber })}
-          onChange={(date) => setValue && setValue(name, dayjs(date).format('YYYY-MM-DD'))}
+          onChange={(date) => {
+            if (date && !isNaN(date.getTime())) {
+              const formattedDate = dayjs(date).format('YYYY-MM-DD');
+              setValue && setValue(name, formattedDate);
+            }
+          }}
         />
       </LocalizationProvider>
     );

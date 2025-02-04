@@ -12,14 +12,14 @@ interface AddCampaignProps {
 
 const RedirectBtn: React.FC<AddCampaignProps> = ({ url,redirect }) => {    
 
-            const router = useRouter();
+    const router = useRouter();
 
-            const handleClickOrRedirect = () => {
+    const handleClickOrRedirect = () => {
         if (redirect) {
             router.push(url);
         }
     };
-        return (
+    return (
         <Button onClick={handleClickOrRedirect} startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">Add</Button>
     );
 };
