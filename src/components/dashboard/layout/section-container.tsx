@@ -68,7 +68,7 @@ export const SectionContainer: React.FC<{ title: string; children: React.ReactNo
             {getValueOrNA(value)}
           </Typography>
         </Box>
-        {value && (
+        {value && onCopy && (
           <IconButton 
             size="small" 
             onClick={onCopy}

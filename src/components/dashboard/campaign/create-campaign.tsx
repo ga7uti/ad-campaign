@@ -18,6 +18,7 @@ import { ImpressionComponent } from './impression-panel';
 import { utils } from '@/lib/common-utils';
 import { X, XCircle } from '@phosphor-icons/react';
 import TargetType from '../layout/target-type';
+import { ReviewSection } from '../layout/review-section';
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -666,32 +667,13 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 7 && (
                 <>
-                    <Box sx={{ padding: 2 }}>
-                    {utils.reviewFields.map((field, index) => (
-                      <Grid container key={index} sx={{ mb: 2 }}>
-                        <Grid item xs={3}>
-                          <Typography sx={{ fontWeight: 'bold' }}>{field.label}:</Typography>
-                        </Grid>
-                        <Grid item xs={9}>
-                          <TextField
-                          value={utils.formatAndGetReviewData(field.name, dataSources, getValues)}
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          />
-                        </Grid>
-                      </Grid>
-                    ))}
-                    
-                    <Grid container sx={{ mb: 2 }}>
-                      <Grid item xs={3}>
-                        <Typography sx={{ fontWeight: 'bold' }}>Interest:</Typography>
-                      </Grid>
-                      <Grid item xs={9}>
-                        <TargetType targetType={targetType} isRemovable={false} />
-                      </Grid>
-                    </Grid>
-                    </Box>
+                  <ReviewSection 
+                    title="Campaign Review"
+                    fields={utils.reviewFields}
+                    targetType={targetType}
+                    dataSources={dataSources}
+                    getValues={getValues}
+                  />
                   <Box sx={{ textAlign: "center", mt: 3 }}>
                   {!isPending ? (
                         <Box sx={{ textAlign: "center", mt: 3 }}>
