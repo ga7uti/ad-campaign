@@ -103,6 +103,7 @@ import { DetailGrid, DetailRow, FileDownloadItem, SectionContainer } from '../la
                   Objective: data?.objective,
                   Status: data?.status,
                   'Total Budget': data?.total_budget,
+                  'Buy Type': data?.buy_type,
                   'Unit Rate': data?.unit_rate,
                   'Start Time': data?.start_time,
                   'End Time': data?.end_time,
