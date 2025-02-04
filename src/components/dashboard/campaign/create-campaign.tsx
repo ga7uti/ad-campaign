@@ -232,7 +232,7 @@ export default function CreateCampaign(): React.JSX.Element {
         setValue('objective', 'Banner');
       }
 
-      if(impressionData && dataSources){
+      if((getValues("location")||getValues("age")) && impressionData && dataSources){
         setTargetPopulation(utils.calculateTargetPopulation("ages",dataSources.location as  Location[]
           ,getValues,impressionData,undefined))
       }    
