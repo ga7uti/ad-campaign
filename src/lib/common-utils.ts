@@ -1,4 +1,5 @@
-import { Campaign, CampaignFormData, Interest, Location } from "@/types/campaign";
+import { Campaign, CampaignFormData, ImpressionData, Interest, Location } from "@/types/campaign";
+import { SelectChangeEvent } from "@mui/material";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { UseFormGetValues } from "react-hook-form";
@@ -130,6 +131,34 @@ class Utils {
         }
         return "Not provided";
     };
+
+    calculateTargetPopulation = (name:string,locationList:Location[],
+        getValues:UseFormGetValues<CampaignFormData>,impressionData:ImpressionData,
+        event?: SelectChangeEvent<unknown>):number=>{
+
+        const selectedValue: string[] = event ? event.target.value as string[]:[];
+        
+        const selectedLocs = name==="age"? getValues("location"): Array.from(
+        new Set([...selectedValue, ...getValues("location") as Number[]])
+        ) as string[];
+        
+        const selectedAges = name==="location"? getValues("age"): Array.from(
+        new Set([...selectedValue, ...getValues("age") as string[]])
+        ) as string[];
+        
+        const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
+        const location = locationList.find((loc) => loc.id === locationId);
+        return total + (Number(location?.population) || 0);
+        }, 0):0;
+    
+        const effectivePercentage = selectedAges ? selectedAges.reduce((total, label) => {
+        const ageGroup = impressionData?.age?.find(age => age.label === label);
+        return total + (ageGroup?.percentage || 0);
+        }, 0):0;
+
+        return effectivePercentage > 0 ? Math.round((effectivePopulation * effectivePercentage) / 100)
+        : effectivePopulation;
+    }
 
 }
 

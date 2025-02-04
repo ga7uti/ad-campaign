@@ -140,29 +140,9 @@ export default function CreateCampaign(): React.JSX.Element {
         setTargetType(utils.formatTargetIdToSubCategory(selectedTargetType,dataSources.interest as Interest[]));
       }
       
-      if(["location","age"].includes(name)){
-        const selectedValue: string[] = event.target.value as string[];
-        const selectedLocs = name==="age"? getValues("location"): Array.from(
-          new Set([...selectedValue, ...getValues("location") as Number[]])
-        ) as string[];
-        
-        const selectedAges = name==="location"? getValues("age"): Array.from(
-          new Set([...selectedValue, ...getValues("age") as string[]])
-        ) as string[];
-        
-        // Calculate effective values
-        const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
-          const location = dataSources.location?.find((loc) => loc.id === locationId) as Location;
-          return total + (Number(location?.population) || 0);
-        }, 0):0;
-      
-        const effectivePercentage = selectedAges ? selectedAges.reduce((total, label) => {
-          const ageGroup = impressionData?.age?.find(age => age.label === label);
-          return total + (ageGroup?.percentage || 0);
-        }, 0):0;
-
-        effectivePercentage > 0 ? setTargetPopulation(Math.round((effectivePopulation * effectivePercentage) / 100)) 
-          : setTargetPopulation(effectivePopulation);
+      if(["location","age"].includes(name) && impressionData && dataSources){
+        setTargetPopulation(utils.calculateTargetPopulation(name,dataSources.location as  Location[]
+          ,getValues,impressionData,event))
       }
     };
 
@@ -236,20 +216,27 @@ export default function CreateCampaign(): React.JSX.Element {
             setCampaignType(parsedCampaign[key])
           }
           setValue(key as keyof CampaignFormData, parsedCampaign[key]);
-        });
-        
+        });  
       }
     }
     
     React.useEffect(() => {
       fetchData();
       setFormDataOnEdit();
+      
       if(getValues("target_type")){
         setTargetType(utils.formatTargetIdToSubCategory(getValues("target_type"),dataSources.interest as Interest[]));
       }
+
       if(!getValues("objective")){
         setValue('objective', 'Banner');
       }
+
+      if(impressionData && dataSources){
+        setTargetPopulation(utils.calculateTargetPopulation("ages",dataSources.location as  Location[]
+          ,getValues,impressionData,undefined))
+      }    
+
     }, [campaignType,targetPopulation,targetType,dataSources]);
   
     return (
@@ -538,7 +525,7 @@ export default function CreateCampaign(): React.JSX.Element {
                         </Grid>
                     </SectionContainer>
                   }
-                  </>
+                </>
               )}
 
               {activeSection === 4 && (
