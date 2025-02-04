@@ -135,16 +135,16 @@ class Utils {
     calculateTargetPopulation = (name:string,locationList:Location[],
         getValues:UseFormGetValues<CampaignFormData>,impressionData:ImpressionData,
         event?: SelectChangeEvent<unknown>):number=>{
-
+        
         const selectedValue: string[] = event ? event.target.value as string[]:[];
         
-        const selectedLocs = name==="age"? getValues("location"): Array.from(
-        new Set([...selectedValue, ...getValues("location") as Number[]])
-        ) as string[];
+        const selectedLocs =getValues("location")? name==="age" ? getValues("location"):  Array.from(
+            new Set([...selectedValue, ...getValues("location") as Number[]])
+            ) as string[] : selectedValue;
         
-        const selectedAges = name==="location"? getValues("age"): Array.from(
-        new Set([...selectedValue, ...getValues("age") as string[]])
-        ) as string[];
+        const selectedAges = getValues("age") ? name==="location"? getValues("age"): Array.from(
+            new Set([...selectedValue, ...getValues("age") as string[]])
+            ) as string[] : selectedValue;
         
         const effectivePopulation = selectedLocs ? selectedLocs.reduce((total:number, locationId) => {
         const location = locationList.find((loc) => loc.id === locationId);

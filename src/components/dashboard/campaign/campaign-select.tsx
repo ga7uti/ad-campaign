@@ -23,8 +23,11 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }
             },
             justifyContent: 'center',alignSelf: 'center'
         }}
-        onClick={() => {setCampaignType('Banner');
-          setValue && setValue('objective', 'Banner');}}
+        onClick={() => {
+          setCampaignType('Banner');
+          setValue && setValue('objective', 'Banner');
+          setValue && setValue("buy_type",null);
+          }}
         >
         <Image size={32} /> {/* Icon */}
         <Typography variant="h6">Banner</Typography> {/* Text */}
@@ -49,8 +52,11 @@ export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }
             },
             justifyContent: 'center',alignSelf: 'center'
         }}
-        onClick={() => {setCampaignType('Video');
-          setValue && setValue('objective', 'Video');}}
+        onClick={() => {
+          setCampaignType('Video');
+          setValue && setValue('objective', 'Video');
+          setValue && setValue("buy_type",null);
+        }}
         >
         <Video size={32} />
         <Typography variant="h6">Video</Typography> {/* Text */}

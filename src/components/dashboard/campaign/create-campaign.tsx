@@ -50,9 +50,9 @@ export default function CreateCampaign(): React.JSX.Element {
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: [], 
-      2: [],
-      3: [],
+      1: ["name","start_time","end_time"], 
+      2: ["location", "age", "exchange", "language", "viewability", "brand_safety","device", "environment", "carrier", "device_price"],
+      3: ["target_type"],
       4: campaignType === "Banner" ? ["images","tag_tracker","total_budget", "buy_type", "unit_rate"] : ["video","tag_tracker","total_budget", "buy_type", "unit_rate"],
     };
     
@@ -232,7 +232,7 @@ export default function CreateCampaign(): React.JSX.Element {
         setValue('objective', 'Banner');
       }
 
-      if((getValues("location")||getValues("age")) && impressionData && dataSources){
+      if(impressionData && dataSources){
         setTargetPopulation(utils.calculateTargetPopulation("ages",dataSources.location as  Location[]
           ,getValues,impressionData,undefined))
       }    
@@ -269,7 +269,11 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 0 && (
                  <CardSection title="Campaign Type">
-                    <CampaignTypeSelector campaignType={campaignType} setCampaignType={setCampaignType} setValue={setValue} />
+                    <CampaignTypeSelector 
+                      campaignType={campaignType} 
+                      setCampaignType={setCampaignType} 
+                      setValue={setValue} 
+                      isEditable ={isEditable} />
                   </CardSection>
                )}
 
