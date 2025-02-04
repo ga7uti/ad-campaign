@@ -49,6 +49,10 @@ export default function CreateCampaign(): React.JSX.Element {
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
+      // 1: [],
+      // 2: [],
+      // 3: [],
+      // 4: []
       1: ["name","start_time","end_time"], 
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety","device", "environment", "carrier", "device_price"],
       3: ["target_type"],
@@ -710,8 +714,8 @@ export default function CreateCampaign(): React.JSX.Element {
         {/* Right Section (Chart) */}
         <Box
           sx={{
-            flex: { xs: "1", md: "1", lg:"1" },
-            display: "flex",
+            flex: { md: "1", lg: "1" },
+            display: { xs: "none", sm: "none", md: "flex" },
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
