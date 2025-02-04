@@ -3,7 +3,10 @@ import Card from '@mui/material/Card';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
-import { SearchProps } from '@/types/props';
+interface SearchProps {
+  placeholder: string;
+  onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void; // Correct type
+}
 
 export function Search({
     placeholder,

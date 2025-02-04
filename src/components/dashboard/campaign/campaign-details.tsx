@@ -1,22 +1,26 @@
-import { CampaignDetailsPopOverProps } from '@/types/props';
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogTitle,
-  Divider,
   Grid,
-  IconButton,
-  TextField
+  IconButton
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Copy, Download, X } from '@phosphor-icons/react';
+import { X } from '@phosphor-icons/react';
 import * as React from 'react';
-import TargetType from '../layout/target-type';
 import { DetailGrid, DetailRow, FileDownloadItem, SectionContainer } from '../layout/section-container';
- 
-  export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPopOverProps): React.JSX.Element {
+import TargetType from '../layout/target-type';
+import { Campaign } from '@/types/campaign';
+
+interface CampaignDetailsPopOverProps {
+  data?:Campaign;
+  onClose: () => void;
+  open: boolean;
+}
+
+
+export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPopOverProps): React.JSX.Element {
   
     const copyToClipboard = (text: string) => {
       navigator.clipboard.writeText(text);

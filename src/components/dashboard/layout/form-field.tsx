@@ -1,5 +1,4 @@
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
-import { FormFieldProps } from '@/types/props';
 import {
   Checkbox,
   FormControl,
@@ -10,15 +9,33 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TextField,
 } from '@mui/material';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import React from 'react';
+import { FieldError, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+interface FormFieldProps<T>  {
+  name: string;
+  type: string;
+  placeholder: string;
+  error: FieldError | undefined;
+  valueAsNumber?: boolean;
+  data?: T[];
+  disabled?:boolean
+  hidePasswordIcon?:boolean;
+  multiple?:boolean;
+  register: UseFormRegister<any>;
+  getValues?: UseFormGetValues<any>;
+  setValue?: UseFormSetValue<any>;
+  onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
+};
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

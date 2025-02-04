@@ -1,8 +1,16 @@
 "use client";
 import { campaignClient } from "@/lib/campaign-client";
-import { FileUploadProps } from "@/types/props";
 import { Alert, Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
+import { UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+interface FileUploadProps {
+  name: string;
+  placeholder: string;
+  register: UseFormRegister<any>;
+  getValue: UseFormGetValues<any>;
+  setValue: UseFormSetValue<any>;
+}
 
 export default function FileUpload({
   name,

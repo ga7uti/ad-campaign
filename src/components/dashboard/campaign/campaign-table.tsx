@@ -4,7 +4,6 @@ import { useAuth } from '@/hooks/use-auth';
 import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
 import { Campaign } from '@/types/campaign';
-import { TableProps } from '@/types/props';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
@@ -18,6 +17,15 @@ import { Eye, Pencil, PencilSlash, Upload } from '@phosphor-icons/react';
 import { Download } from '@phosphor-icons/react/dist/ssr/Download';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+
+interface TableProps<T> {
+  count?: number;
+  page?: number;
+  rows?: T;
+  rowsPerPage?: number;
+  handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
+  onRowClick?: (id: number,operation:string) => void;
+}
 
 const tableCellStyles = {
   maxWidth: '240px',
