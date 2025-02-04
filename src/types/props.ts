@@ -15,8 +15,8 @@ export interface FormFieldProps<T>  {
     hidePasswordIcon?:boolean;
     multiple?:boolean;
     register: UseFormRegister<any>;
-    getValues: UseFormGetValues<any>;
-    setValue: UseFormSetValue<any>;
+    getValues?: UseFormGetValues<any>;
+    setValue?: UseFormSetValue<any>;
     onChange?: (event: SelectChangeEvent<unknown>, name: string) => void; // Updated type
   };
 

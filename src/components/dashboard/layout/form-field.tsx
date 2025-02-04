@@ -118,11 +118,11 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           fullWidth
           multiple={multiple}
           MenuProps={MenuProps}
-          defaultValue={getValues(name) ? getValues(name) : multiple ? [] : ''}
+          defaultValue={getValues && getValues(name) ? getValues(name) : multiple ? [] : ''}
           label={placeholder}
           labelId={labelId}
           onChange={(e) => {
-            setValue(name,e.target.value)
+            setValue && setValue(name,e.target.value)
             return onChange && onChange(e, name)
           }}
         >
@@ -135,7 +135,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
   // Handle DatePicker Type
   const renderDatePicker = () => {
     const minDate = new Date();
-    const value = getValues(name);
+    const value = getValues && getValues(name);
   
     return (
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -146,7 +146,7 @@ const FormField: React.FC<FormFieldProps<any>> = ({
           onChange={(date) => {
             if (date && !isNaN(date.getTime())) {
               const formattedDate = dayjs(date).format('YYYY-MM-DD');
-              setValue(name, formattedDate);
+              setValue && setValue(name, formattedDate);
             }
           }}
         />
