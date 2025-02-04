@@ -50,9 +50,9 @@ export default function CreateCampaign(): React.JSX.Element {
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      1: ["name","start_time","end_time"], 
-      2: ["location", "age", "exchange", "language", "viewability", "brand_safety","device", "environment", "carrier", "device_price"],
-      3: ["target_type"],
+      1: [], 
+      2: [],
+      3: [],
       4: campaignType === "Banner" ? ["images","tag_tracker","total_budget", "buy_type", "unit_rate"] : ["video","tag_tracker","total_budget", "buy_type", "unit_rate"],
     };
     
@@ -229,7 +229,6 @@ export default function CreateCampaign(): React.JSX.Element {
       const storedCampaign = sessionStorage.getItem("campaign");
       if (storedCampaign) {
         setIsEditable(true);
-        setActiveSection(1);
         const parsedCampaign = JSON.parse(storedCampaign);
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
@@ -487,6 +486,7 @@ export default function CreateCampaign(): React.JSX.Element {
               )}
 
               {activeSection === 3 && (
+                <>
                 <SectionContainer title="Interest">
                   <DetailGrid>
                     {dataSources.interest_category.map((interestCategory)=>{
@@ -522,17 +522,23 @@ export default function CreateCampaign(): React.JSX.Element {
                           </>
                       )
                     })}
-                    
+                    </DetailGrid>
+                  </SectionContainer>
                   {targetType &&
-                    <TargetType 
-                      targetType={targetType} 
-                      setValue={setValue}
-                      getValues={getValues}
-                      setTargetType={setTargetType}
-                      isRemovable={isEditable} />
+                    <SectionContainer title="Interest Targeting">
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                {targetType &&
+                                    <TargetType 
+                                        targetType={targetType} 
+                                        isRemovable={false} 
+                                />
+                                }
+                            </Grid>
+                        </Grid>
+                    </SectionContainer>
                   }
-                  </DetailGrid>
-                </SectionContainer>
+                  </>
               )}
 
               {activeSection === 4 && (

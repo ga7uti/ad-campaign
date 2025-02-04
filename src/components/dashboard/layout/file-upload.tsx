@@ -116,7 +116,7 @@ export default function FileUpload({
   });
   return (
     <Box>
-      {!isFileUploaded && !uploadSuccess && !uploading && (
+      {!uploading && (
           <Box
             sx={{
               display: "flex",
