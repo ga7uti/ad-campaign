@@ -5,20 +5,19 @@ import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, Divider, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import CardSection from '../layout/card-section';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
+import { DetailGrid, SectionContainer } from '../layout/section-container';
 import TargetType from '../layout/target-type';
+import { CampaignReview } from './campaign-review';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
-import { CampaignReview } from './campaign-review';
-import { DetailGrid, SectionContainer } from '../layout/section-container';
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -268,13 +267,13 @@ export default function CreateCampaign(): React.JSX.Element {
               <ProgressIndicator activeSection={activeSection} totalSections={6} />
 
               {activeSection === 0 && (
-                 <CardSection title="Campaign Type">
+                 <SectionContainer title="Campaign Type">
                     <CampaignTypeSelector 
                       campaignType={campaignType} 
                       setCampaignType={setCampaignType} 
                       setValue={setValue} 
                       isEditable ={isEditable} />
-                  </CardSection>
+                  </SectionContainer>
                )}
 
               {activeSection === 1 && (
