@@ -1,10 +1,11 @@
 "use client"
 import { campaignClient } from '@/lib/campaign-client';
+import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
 import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, Grid, IconButton, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -13,12 +14,10 @@ import CardSection from '../layout/card-section';
 import FileUpload from '../layout/file-upload';
 import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
+import TargetType from '../layout/target-type';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
-import { utils } from '@/lib/common-utils';
-import { X, XCircle } from '@phosphor-icons/react';
-import TargetType from '../layout/target-type';
-import { ReviewSection } from '../layout/review-section';
+import { CampaignReview } from './campaign-review';
 
 export default function CreateCampaign(): React.JSX.Element {
 
@@ -667,7 +666,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 7 && (
                 <>
-                  <ReviewSection 
+                  <CampaignReview 
                     title="Campaign Review"
                     fields={utils.reviewFields}
                     targetType={targetType}

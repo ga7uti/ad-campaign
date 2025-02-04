@@ -1,8 +1,8 @@
 // ReviewSection.tsx
 import { Grid, Typography, TextField, Box } from '@mui/material';
-import TargetType from './target-type';
+import TargetType from '../layout/target-type';
 import { utils } from '@/lib/common-utils';
-import { DetailGrid, DetailRow, SectionContainer } from './section-container';
+import { DetailGrid, DetailRow, SectionContainer } from '../layout/section-container';
 
 interface ReviewSectionProps {
   title: string;
@@ -15,7 +15,7 @@ interface ReviewSectionProps {
   getValues: any;
 }
 
-export const ReviewSection = ({
+export const CampaignReview = ({
   title,
   fields,
   targetType,
