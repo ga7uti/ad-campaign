@@ -15,10 +15,15 @@ import { campaignClient } from '@/lib/campaign-client';
 import { Campaign } from '@/types/campaign';
 import { CircularProgress } from '@mui/material';
 import { useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 
 
 
 export default function Page(): React.JSX.Element {
+  const {auth} = useAuth();
+  const searchPlaceholder = auth?.usertype === "admin" ?
+    "Search Campaigns by Campaign Name & Advertiser Name" :
+    "Search Campaigns by Campaign Name"
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [campaign, setCampaign] = React.useState<Campaign>();
   const [count, setCount] = React.useState<number>();
@@ -27,16 +32,24 @@ export default function Page(): React.JSX.Element {
   const campaignPopOver = usePopover<HTMLDivElement>();
   const [searchQuery,setSearchQuery] = React.useState<string>("")
 
-  const handleCampaignClick = (id: number,operation:string) => {
-
-    if(operation ==="view"){
-      const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
+  const handleViewCampaign = (id: number) => {
+    const selectedCampaign = campaigns.find((campaign) => campaign.id === id);
       if (selectedCampaign) {
-        setCampaign(selectedCampaign);
-        campaignPopOver.handleOpen();
-      }
+      setCampaign(selectedCampaign);
+      campaignPopOver.handleOpen();
     }
   };
+  
+  const handleUpdateStatus = async(campaignId:number,status:string) =>{
+    try {
+      const result = await campaignClient.patchCampaign("status",status,campaignId);
+      if (result) {
+        fetchCampaigns(1,searchQuery);
+      }
+    } catch (error:any) {
+      console.log(error)
+    }
+  }
   
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage+1)
@@ -44,7 +57,6 @@ export default function Page(): React.JSX.Element {
   };
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value)
     setSearchQuery(event.target.value);
   };
 
@@ -88,7 +100,7 @@ export default function Page(): React.JSX.Element {
           <RedirectBtn url={paths.dashboard.createCampaign} redirect={true}/>
         </div>
       </Stack>
-      <Search placeholder={"Search campaigns by campaign"} onSearch={onSearchChange} />
+      <Search placeholder={searchPlaceholder} onSearch={onSearchChange} />
       {loading ? 
           <Box  
             sx={{
@@ -99,7 +111,14 @@ export default function Page(): React.JSX.Element {
             <CircularProgress />
           </Box>
         :
-        <CampaignTable count={count} rows={campaigns} page={page} handlePageChange={handlPageChange} onRowClick={handleCampaignClick}/>
+        <CampaignTable 
+          count={count} 
+          rows={campaigns} 
+          page={page} 
+          handlePageChange={handlPageChange} 
+          handleViewCampaign={handleViewCampaign}
+          handleUpdateStatus = {handleUpdateStatus}
+        />
         }
         <CampaignDetailsPopOver onClose={campaignPopOver.handleClose} open={campaignPopOver.open}  data={campaign}/>
     </Stack>

@@ -95,6 +95,12 @@ class Utils {
         };
     }
 
+    formatProperCase(value:string) :string {
+        if (value === undefined || value === null) {
+            return "";
+        }
+        return value.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase());
+    }
     formatTargetIdToSubCategory(values:number[],targetTypeList:Interest[]){
         return values.map((interest) => { 
                 const temp = targetTypeList.find((i) => i.id === interest);
