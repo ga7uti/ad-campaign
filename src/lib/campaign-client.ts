@@ -31,12 +31,31 @@ class CampaignClient {
       }
     }
 
-    async postCampaign(campaign:CampaignFormData): Promise<boolean> {
+    async createUpdateCampaign(campaign:CampaignFormData,isUpdate:boolean, campaignId:number): Promise<boolean> {
       try {
+        if(isUpdate){
+          await axiosInstance.put(`/api/campaigns/${campaignId}/`, campaign, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }else{
           await axiosInstance.post('/api/campaigns/', campaign, {
             headers: { 'Content-Type': 'application/json' },
           });
-          return true
+        }
+        return true
+      } catch (error: any) {
+        throw new Error(utils.handleErrorMessage(error));
+      }
+    }
+
+    async patchCampaign(fieldName:string,value:any,campaignId:number): Promise<boolean> {
+      const data: { [key: string]: any } = {};
+      data[fieldName] = value;
+      try {
+        await axiosInstance.patch(`/api/campaigns/${campaignId}/`, data,{
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return true
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }

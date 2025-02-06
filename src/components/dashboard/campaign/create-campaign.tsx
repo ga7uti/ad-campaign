@@ -47,6 +47,7 @@ export default function CreateCampaign(): React.JSX.Element {
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
+    const [campaignId,setCampaignId] = React.useState<number>(-1)
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
       // 1: [],
@@ -121,7 +122,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
       setIsPending(true);
       try {
-        const result = await campaignClient.postCampaign(data);
+        const result = await campaignClient.createUpdateCampaign(data,isEditable,campaignId);
         if (result) {
           setIsCampaignCreated(true);
           router.push(paths.dashboard.overview);
@@ -210,8 +211,10 @@ export default function CreateCampaign(): React.JSX.Element {
   
     const setFormDataOnEdit = ()=>{
       const storedCampaign = sessionStorage.getItem("campaign");
-      if (storedCampaign) {
+      const storedCampaignId = sessionStorage.getItem("id") ? Number(sessionStorage.getItem("id")):-1;
+      if (storedCampaign && storedCampaignId !== -1) {
         setIsEditable(true);
+        setCampaignId(storedCampaignId);
         const parsedCampaign = JSON.parse(storedCampaign);
         sessionStorage.clear()
         Object.keys(parsedCampaign).forEach((key) => {
@@ -678,7 +681,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   {!isPending ? (
                         <Box sx={{ textAlign: "center", mt: 3 }}>
                           <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
-                            Create Campaign
+                            {isEditable?"Update Campaign" : "Create Campaign"}
                           </Button>
                         </Box>
                   ):(

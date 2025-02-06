@@ -1,3 +1,5 @@
+import { User } from "./auth";
+
 export interface Location {
     id:number
     country: string;
@@ -74,6 +76,7 @@ export interface Campaign {
     video: Video[];
     viewability: number;
     brand_safety: number;
+    user:User
 }
 
 export interface CampaignFormData  {

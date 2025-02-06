@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
+import { campaignClient } from '@/lib/campaign-client';
 import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
 import { Campaign } from '@/types/campaign';
@@ -25,7 +26,8 @@ interface TableProps<T> {
   rows?: T;
   rowsPerPage?: number;
   handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-  onRowClick?: (id: number,operation:string) => void;
+  handleViewCampaign?: (id: number) => void;
+  handleUpdateStatus?: (id: number,status:string) => Promise<void>;
 }
 
 const tableCellStyles = {
@@ -35,7 +37,7 @@ const tableCellStyles = {
   whiteSpace: 'nowrap',   
 };
 
-const statusOptions = ["Created", "Live","In Progress", "Completed", "Archived"]; 
+const statusOptions = ["Created", "Learning","Live", "Pause Option", "Completed","Other"]; 
 
 export function CampaignTable({
   count = 0,
@@ -43,7 +45,8 @@ export function CampaignTable({
   page = 1,
   rowsPerPage = 10,
   handlePageChange,
-  onRowClick,
+  handleViewCampaign,
+  handleUpdateStatus,
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
   const router = useRouter();
@@ -59,30 +62,35 @@ export function CampaignTable({
       ...prev,
       [rowId]: event.target.value as string
     }));
+
+    if(handleUpdateStatus)
+      handleUpdateStatus(rowId,event.target.value);
   };
 
   const handleRowClick = (id: number,operation:string) => {
-    if (onRowClick) {
-      onRowClick(id,operation);
+    if (operation==="view" && handleViewCampaign) {
+      handleViewCampaign(id);
     }
   };
 
   const handleCampaignEdit =(id:number)=>{
     const selectedCampaign = rows.find((campaign) => campaign.id === id);
     if(selectedCampaign){
+      sessionStorage.setItem("id",String(id));
       sessionStorage.setItem("campaign",JSON.stringify(utils.transformCampaignToFormData(selectedCampaign)));       
       router.push(paths.dashboard.createCampaign) 
     }
   }
-  
+
   return (
     <Card sx={{ borderRadius: 0 }}>
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={tableCellStyles}>Id</TableCell>
-              <TableCell sx={tableCellStyles}>Name</TableCell>
+              <TableCell sx={tableCellStyles}>Campaign Id</TableCell>
+              {auth?.usertype==='admin'?<TableCell sx={tableCellStyles}>Advertiser Name</TableCell>:null}
+              <TableCell sx={tableCellStyles}>Campaign Name</TableCell>
               <TableCell sx={tableCellStyles}>Objective</TableCell>
               <TableCell sx={tableCellStyles}>Buy Type</TableCell>
               <TableCell sx={tableCellStyles}>Unit Rate</TableCell>
@@ -104,6 +112,11 @@ export function CampaignTable({
             {rows.map((row) => (
               <TableRow hover key={row.id}>
                 <TableCell sx={tableCellStyles}>{row.id}</TableCell>
+                {auth?.usertype==='admin'?
+                  <TableCell 
+                    sx={tableCellStyles}>{utils.formatProperCase(row.user.first_name)} { utils.formatProperCase(row.user.last_name)}
+                  </TableCell>:null
+                }
                 <TableCell sx={tableCellStyles}>{row.name}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.objective}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.buy_type}</TableCell>
