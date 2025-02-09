@@ -60,21 +60,28 @@ export function CampaignTable({
   const router = useRouter();
   const [editedStatus, setEditedStatus] = React.useState<Record<number, string>>({});
   const [editingRow, setEditingRow] = React.useState<number | null>(null);
-  const [errorMessage, setErrorMessage] = React.useState<string>();
   const [uploadStatus, setUploadStatus] = React.useState<Record<number, { loading: boolean; error?: string; success?: boolean }>>({});
+  const [updateStatus, setUpdateStatus] = React.useState<Record<number, { loading: boolean; error?: string; success?: boolean }>>({});
 
   const handleStatusEdit = (rowId: number) => {
     setEditingRow(prev => prev === rowId ? null : rowId);
   };
 
-  const handleStatusChange = (rowId: number) => (event: SelectChangeEvent) => {
-    setEditedStatus(prev => ({
-      ...prev,
-      [rowId]: event.target.value as string
-    }));
-
-    if(handleUpdateStatus)
-      handleUpdateStatus(rowId,event.target.value);
+  const handleStatusChange = (rowId: number) => async (event: SelectChangeEvent) => {
+    const newStatus = event.target.value as string;
+    
+    try {
+      setEditedStatus(prev => ({ ...prev, [rowId]: newStatus }));
+      if(handleUpdateStatus) {
+        await handleUpdateStatus(rowId, newStatus);
+      }
+    } catch (e:any) {
+      setEditedStatus(prev => ({ ...prev, [rowId]: rows.find(r => r.id === rowId)?.status || '' }));
+      setUpdateStatus(prev => ({
+        ...prev,
+        [rowId]: { loading: false, error: e.message || 'Update failed', success: false }
+      }));
+    }
   };
 
   const handleViewCampaignClick = (id: number) => {
@@ -134,7 +141,6 @@ export function CampaignTable({
         ...prev,
         [campaignId]: { loading: false, error: e.message || 'Upload failed', success: false }
       }));
-      setErrorMessage(e.message)
     }
   };
 
@@ -186,22 +192,30 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.vtr}</TableCell>
                 <TableCell sx={tableCellStyles}>
                   {editingRow === row.id ? (
-                    <Select
-                      value={editedStatus[row.id] || row.status}
-                      onChange={handleStatusChange(row.id)}
-                      size="small"
-                      sx={{ 
-                        width: 120,
-                        '& .MuiSelect-select': { py: 0.5 }
-                      }}
-                      onBlur={() => setEditingRow(null)}
-                    >
-                      {statusOptions.map((status) => (
-                        <MenuItem key={status} value={status} sx={{ fontSize: '0.875rem' }}>
-                          {status}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    <>
+                      <Select
+                        value={editedStatus[row.id] || row.status}
+                        onChange={handleStatusChange(row.id)}
+                        size="small"
+                        sx={{ 
+                          width: 120,
+                          '& .MuiSelect-select': { py: 0.5 }
+                        }}
+                        onBlur={() => setEditingRow(null)}
+                      >
+                        {statusOptions.map((status) => (
+                          <MenuItem key={status} value={status} sx={{ fontSize: '0.875rem' }}>
+                            {status}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {updateStatus[row.id]?.error && (
+                        <Typography variant="caption" color="error.main" sx={{ ml: 1, fontSize: "0.75rem", wordBreak: "break-word" }}>
+                          {updateStatus[row.id]?.error}
+                        </Typography>
+                      )}
+                    </>
+
                   ) : (
                     <Box sx={{ 
                       display: 'flex',
@@ -256,7 +270,7 @@ export function CampaignTable({
                       
                       {uploadStatus[row.id]?.error && (
                         <Typography variant="caption" color="error.main" sx={{ ml: 1, fontSize: "0.75rem", wordBreak: "break-word" }}>
-                          {errorMessage}
+                          {uploadStatus[row.id]?.error}
                         </Typography>
                       )}
 

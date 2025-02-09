@@ -47,7 +47,7 @@ export default function Page(): React.JSX.Element {
         fetchCampaigns(1,searchQuery);
       }
     } catch (error:any) {
-      console.log(error)
+      throw new Error(error);
     }
   }
   
