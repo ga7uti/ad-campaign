@@ -189,6 +189,7 @@ export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPo
                 {[
                   { label: 'Keywords', files: data?.keywords },
                   { label: 'Tag & Tracker', files: data?.tag_tracker },
+                  { label: 'Campaign Report', files: data?.campaign_files },
                 ].map(({ label, files }) =>
                   files?.map((file, index) => (
                     <FileDownloadItem
