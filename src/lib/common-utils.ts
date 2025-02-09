@@ -3,6 +3,7 @@ import { SelectChangeEvent } from "@mui/material";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { UseFormGetValues } from "react-hook-form";
+import { string } from "zod";
 
 
 class Utils {
@@ -41,31 +42,36 @@ class Utils {
         );
     }
     
-    handleErrorMessage(error:AxiosError): string {
-    if (error.response?.data && this.isErrorResponse(error.response.data)) {
-        const errorResponse = error.response?.data
-        if (errorResponse && errorResponse.message) {
-            if(typeof errorResponse.message === 'string')
-                return errorResponse.message;
+        handleErrorMessage(error:AxiosError): string {
+            if (error.response?.data && this.isErrorResponse(error.response.data)) {
+                const errorResponse = error.response?.data
+                if (errorResponse && errorResponse.message) {
+                    if(typeof errorResponse.message === 'string')
+                        return errorResponse.message;
 
-            const errorMessages = Object.values(errorResponse.message);
-            for (const errors of errorMessages) {
-                if (Array.isArray(errors) && errors.length > 0) {
-                    return errors[0]; 
+                    const errorMessages = Object.values(errorResponse.message);
+                    for (const errors of errorMessages) {
+                        if (Array.isArray(errors) && errors.length > 0) {
+                            return errors[0]; 
+                        }
+                    }
+                }
+                
+            }else if(error.response?.data && typeof error.response?.data === 'object'){
+                const errorMessages = Object.values(error.response?.data);
+                console.log(errorMessages)
+                if(Array.isArray(errorMessages)){
+                    for (const errors of errorMessages) {
+                        if (Array.isArray(errors) && errors.length > 0) {
+                            return errors[0]; 
+                        }else if(typeof errors === 'string'){
+                            return errors;
+                        }
+                    }
                 }
             }
+            return "An unexpected error occurred. Please try again later." ;
         }
-        
-    }else if(error.response?.data && typeof error.response?.data === 'object'){
-        const errorMessages = Object.values(error.response?.data);
-        for (const errors of errorMessages) {
-            if (Array.isArray(errors) && errors.length > 0) {
-                return errors[0]; 
-            }
-        }
-    }
-    return "An unexpected error occurred. Please try again later." ;
-    }
 
     transformCampaignToFormData(campaign: Campaign): CampaignFormData {
         return {

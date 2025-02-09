@@ -62,39 +62,43 @@ class CampaignClient {
     }
 
 
-    async uploadFile(file: File,fileType:string):Promise<number> {
+    async uploadFile(file: File,fileType:string,campaignId:number):Promise<number> {
       const formData = new FormData();
       try {
         let uri='';
         switch(fileType){
           case 'images':
             formData.append('image', file);
-            uri="campaign-images"
+            uri="/api/campaign-images/"
             break;
           case 'video':
             formData.append('video', file);
-            uri="campaign-video"
+            uri="/api/campaign-video/"
             break;
           case 'tag_tracker':
             formData.append('file', file);
-            uri="tag_tacker"
+            uri="/api/tag_tacker/"
             break;
           case 'proximity':
             formData.append('file', file);
-            uri="proximity"
+            uri="/api/proximity/"
             break;
           case 'weather':
             formData.append('file', file);
-            uri="weather"
+            uri="/api/weather/"
             break;
           case 'keywords':
             formData.append('file', file);
-            uri="keywords"
+            uri="/api/keywords/"
+            break;
+          case 'report-upload':
+            formData.append('file', file);
+            uri=`/get-csv/${campaignId}`
             break;
           default:
             throw new Error("Invalid File Type")
         }
-        const response = await axiosInstance.post(`/api/${uri}/`, formData, {
+        const response = await axiosInstance.post(uri, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         return response.data.id;
