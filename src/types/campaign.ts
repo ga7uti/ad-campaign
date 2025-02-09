@@ -76,7 +76,8 @@ export interface Campaign {
     video: Video[];
     viewability: number;
     brand_safety: number;
-    user:User
+    user:User,
+    campaign_files:FileUpload[]
 }
 
 export interface CampaignFormData  {
