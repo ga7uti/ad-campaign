@@ -50,6 +50,15 @@ export default function Page(): React.JSX.Element {
       throw new Error(error);
     }
   }
+
+  const handleUploadReport = async(selectedFile: File, campaignId: number) =>{
+    try {
+      await campaignClient.uploadFile(selectedFile, "report-upload", campaignId);
+      setTimeout(() => {fetchCampaigns(1,searchQuery)}, 5000);
+    } catch (error:any) {
+      throw new Error(error);
+    }
+  }
   
   const handlPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage+1)
@@ -118,6 +127,7 @@ export default function Page(): React.JSX.Element {
           handlePageChange={handlPageChange} 
           handleViewCampaign={handleViewCampaign}
           handleUpdateStatus = {handleUpdateStatus}
+          handleUploadReport ={handleUploadReport}
         />
         }
         <CampaignDetailsPopOver onClose={campaignPopOver.handleClose} open={campaignPopOver.open}  data={campaign}/>
