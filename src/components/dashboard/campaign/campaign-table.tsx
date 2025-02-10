@@ -185,8 +185,8 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.name}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.objective}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.buy_type}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.unit_rate}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.total_budget}</TableCell>
+                <TableCell sx={tableCellStyles}><span className="WebRupee">&#x20B9;</span>{row.unit_rate}</TableCell>
+                <TableCell sx={tableCellStyles}><span className="WebRupee">&#x20B9;</span>{row.total_budget}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.impressions}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.clicks}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.ctr}</TableCell>
