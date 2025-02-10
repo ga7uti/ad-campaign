@@ -287,8 +287,17 @@ export function CampaignTable({
                   <>
                     {row.status === "Created" && <TableCell sx={tableCellStyles}><Pencil onClick={() => handleCampaignEdit(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>}
                     {row.status !== "Created" && <TableCell sx={tableCellStyles}><PencilSlash color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
-                    {row.campaign_files && row.campaign_files.length>0 &&  <TableCell sx={tableCellStyles}><Download onClick={() => handleDownloadClick(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>}
-                    {!row.campaign_files ||  row.campaign_files.length === 0 &&  <TableCell sx={tableCellStyles}><Download color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
+                    {!["Created", "Learning"].includes(row.status) && row.campaign_files?.length > 0 && (
+                    <TableCell sx={tableCellStyles}>
+                      <Download onClick={() => handleDownloadClick(row.id)} fontSize="var(--icon-fontSize-md)" />
+                    </TableCell>
+                  )}
+
+                  {["Created", "Learning"].includes(row.status) || !row.campaign_files?.length ? (
+                    <TableCell sx={tableCellStyles}>
+                      <Download color="#cccccc" fontSize="var(--icon-fontSize-md)" />
+                    </TableCell>
+                  ) : null}
                   </>
                 }
               </TableRow>
