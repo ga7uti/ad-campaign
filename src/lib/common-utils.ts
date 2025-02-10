@@ -137,6 +137,9 @@ class Utils {
                 case "keywords":
                 case "tag_tracker":
                     return (value as unknown as FileList).length !== 0 ? "File uploaded" : "Not Provided";
+                case "total_budget":
+                case "unit_rate":
+                    return `₹${value}`
                 default:
                     return value as string;
             }
