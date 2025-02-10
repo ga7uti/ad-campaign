@@ -28,6 +28,7 @@ interface TableProps<T> {
   handlePageChange: (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
   handleViewCampaign?: (id: number) => void;
   handleUpdateStatus?: (id: number,status:string) => Promise<void>;
+  handleUploadReport?: (selectedFile: File, campaignId: number) => Promise<void>;
 }
 
 const tableCellStyles = {
@@ -55,6 +56,7 @@ export function CampaignTable({
   handlePageChange,
   handleViewCampaign,
   handleUpdateStatus,
+  handleUploadReport,
 }: TableProps<Campaign[]>): React.JSX.Element {
   const {auth} = useAuth();
   const router = useRouter();
@@ -124,19 +126,20 @@ export function CampaignTable({
     }));
 
     try {
-      await campaignClient.uploadFile(selectedFile, "report-upload", campaignId);
-      setUploadStatus(prev => ({
-        ...prev,
-        [campaignId]: { loading: false, success: true, error: undefined }
-      }));
-      
-      setTimeout(() => {
-        setUploadStatus(prev => {
-          const { [campaignId]: _, ...rest } = prev;
-          return rest;
-        });
-      }, 3000);
-
+      if(handleUploadReport){
+        await handleUploadReport(selectedFile,campaignId)
+        setUploadStatus(prev => ({
+          ...prev,
+          [campaignId]: { loading: false, success: true, error: undefined }
+        }));
+        
+        setTimeout(() => {
+          setUploadStatus(prev => {
+            const { [campaignId]: _, ...rest } = prev;
+            return rest;
+          });
+        }, 3000);
+      }
     } catch (e: any) {
       setUploadStatus(prev => ({
         ...prev,
