@@ -114,6 +114,7 @@ export function CampaignTable({
     if (!e.target.files) return;
     const selectedFile = e.target.files[0];
     handleUpload(selectedFile,campaignId)
+    e.target.value = '';
   }
 
   const handleUpload = async (selectedFile: File, campaignId: number) => {
@@ -159,7 +160,6 @@ export function CampaignTable({
               <TableCell sx={tableCellStyles}>Budget</TableCell>
               <TableCell sx={tableCellStyles}>Impression</TableCell>
               <TableCell sx={tableCellStyles}>Click</TableCell>
-              <TableCell sx={tableCellStyles}>PayRate</TableCell>
               <TableCell sx={tableCellStyles}>CTR</TableCell>
               <TableCell sx={tableCellStyles}>Views</TableCell>
               <TableCell sx={tableCellStyles}>VTR</TableCell>
@@ -184,9 +184,8 @@ export function CampaignTable({
                 <TableCell sx={tableCellStyles}>{row.buy_type}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.unit_rate}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.total_budget}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.impression}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.click}</TableCell>
-                <TableCell sx={tableCellStyles}>{row.pay_rate}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.impressions}</TableCell>
+                <TableCell sx={tableCellStyles}>{row.clicks}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.ctr}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.views}</TableCell>
                 <TableCell sx={tableCellStyles}>{row.vtr}</TableCell>
@@ -287,7 +286,6 @@ export function CampaignTable({
                     {row.status !== "Created" && <TableCell sx={tableCellStyles}><PencilSlash color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
                     {row.campaign_files && row.campaign_files.length>0 &&  <TableCell sx={tableCellStyles}><Download onClick={() => handleDownloadClick(row.id)}fontSize="var(--icon-fontSize-md)" /></TableCell>}
                     {!row.campaign_files ||  row.campaign_files.length === 0 &&  <TableCell sx={tableCellStyles}><Download color='#cccccc' fontSize="var(--icon-fontSize-md)" /></TableCell>}
-
                   </>
                 }
               </TableRow>
