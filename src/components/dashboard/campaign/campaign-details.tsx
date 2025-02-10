@@ -111,11 +111,11 @@ export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPo
                   'Unit Rate': data?.unit_rate,
                   'Start Time': data?.start_time,
                   'End Time': data?.end_time,
-                  Clicks: data?.click,
+                  Clicks: data?.clicks,
+                  Impressions: data?.impressions,
                   CTR: data?.ctr,
                   VTR: data?.vtr,
                   Views: data?.views,
-                  'Pay Rate': data?.pay_rate,
                 }).map(([label, value]) => (
                   <DetailRow 
                     key={label}

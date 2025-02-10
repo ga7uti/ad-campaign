@@ -58,9 +58,9 @@ export interface Campaign {
     proximity: FileUpload[];
     weather: FileUpload[]; 
     location: Location[];
-    click:string;
+    clicks:string;
     pay_rate:string;
-    impression:string;
+    impressions:string;
     objective:string;
     landing_page: string;
     tag_tracker: FileUpload[];
