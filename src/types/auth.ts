@@ -26,6 +26,8 @@ export interface User {
     password?:string;
     terms?:boolean
     user_type?: boolean
+    company_name:string;
+    gst?:string
 }
   
 
