@@ -23,7 +23,7 @@ export default function Page(): React.JSX.Element {
   const {auth} = useAuth();
   const searchPlaceholder = auth?.usertype === "admin" ?
     "Search by Campaign Name & Advertiser Name & Status" :
-    "Search by Campaign Name"
+    "Search by Campaign Name & Status"
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [campaign, setCampaign] = React.useState<Campaign>();
   const [count, setCount] = React.useState<number>();
