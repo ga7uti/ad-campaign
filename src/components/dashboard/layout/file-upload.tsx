@@ -69,8 +69,8 @@ export default function FileUpload({
         break;
   
       case 'keywords':
-        if (!isPDFType) {
-          setError("Invalid file type. Only PDF files are allowed.");
+        if (!isExcelType) {
+          setError("Invalid file type. Only Excel file is allowed.");
           return false;
         }
         break;

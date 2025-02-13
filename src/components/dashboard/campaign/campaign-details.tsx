@@ -106,9 +106,9 @@ export function CampaignDetailsPopOver({onClose, open, data }: CampaignDetailsPo
                 {Object.entries({
                   Objective: data?.objective,
                   Status: data?.status,
-                  'Total Budget': data?.total_budget,
+                  'Total Budget': data?.total_budget !== undefined ? `₹${data.total_budget}` : 'N/A',
                   'Buy Type': data?.buy_type,
-                  'Unit Rate': data?.unit_rate,
+                  'Unit Rate': data?.unit_rate !== undefined ? `₹${data.unit_rate}` : 'N/A',
                   'Start Time': data?.start_time,
                   'End Time': data?.end_time,
                   Clicks: data?.clicks,

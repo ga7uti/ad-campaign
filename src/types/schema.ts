@@ -33,7 +33,9 @@ export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     first_name: z.string().min(5, { message: 'First name  is required & must be at least 5 characters long' }),
     last_name: z.string().min(5, { message: 'Last name  is required & must be at least 5 characters long' }),
     phone_no: z.string().regex(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' }),
-    email: z.string().email({ message: 'Email is required' })
+    email: z.string().email({ message: 'Email is required' }),
+    company_name: z.string().min(1, { message: 'Company Name is required' }),
+    gst: z.any()
   });
 
   export const signInSchema: ZodType<SignInParams> = z.object({
@@ -54,6 +56,8 @@ export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
         'Password must include at least one uppercase letter, one number, and one special character'
       ),
     terms: z.boolean().refine((value) => value, 'You must accept the terms and conditions'),
+    company_name: z.string().min(1, { message: 'Company Name is required' }),
+    gst: z.any()
   });
 
 

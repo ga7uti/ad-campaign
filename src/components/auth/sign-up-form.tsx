@@ -118,7 +118,33 @@ export function SignUpForm(): React.JSX.Element {
             </Box>
           </Grid>
           
-          {/* Password */}
+          {/* Company Name */}
+          <Grid item xs={12} md={6} mb={1}>
+            <Box sx={{ minWidth: 120 }}>
+            <FormField
+                type="text"
+                placeholder="Company Name"
+                name="company_name"
+                register={register}
+                error={errors.company_name}
+            />
+            </Box>
+          </Grid>
+
+          {/* GST */}
+          <Grid item xs={12} md={6} mb={1}>
+            <Box sx={{ minWidth: 120 }}>
+            <FormField
+                type="text"
+                placeholder="GST"
+                name="gst"
+                register={register}
+                error={errors.gst}
+            />
+            </Box>
+          </Grid>
+
+          {/** Terms */}
           <Grid item xs={12} md={6} mb={1}>
             <Box sx={{ minWidth: 120 }}>
               <FormField
@@ -130,6 +156,7 @@ export function SignUpForm(): React.JSX.Element {
               />
             </Box>
           </Grid>
+
           {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
           {!isPending && (
             <Box sx={{ textAlign: "center", mt: 3 }}>

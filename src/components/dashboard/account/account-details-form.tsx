@@ -136,6 +136,31 @@ export function AccountDetailsForm(): React.JSX.Element {
                   />
                   </Box>
                 </Grid>
+                {/* Company Name */}
+                <Grid item xs={12} md={6} mb={1}>
+                  <Box sx={{ minWidth: 120 }}>
+                  <FormField
+                      type="text"
+                      placeholder="Company Name"
+                      name="company_name"
+                      register={register}
+                      error={errors.company_name}
+                  />
+                  </Box>
+                </Grid>
+
+                {/* GST */}
+                <Grid item xs={12} md={6} mb={1}>
+                  <Box sx={{ minWidth: 120 }}>
+                  <FormField
+                      type="text"
+                      placeholder="GST"
+                      name="gst"
+                      register={register}
+                      error={errors.gst}
+                  />
+                  </Box>
+                </Grid>
             </Grid>
           </CardContent>
           }
