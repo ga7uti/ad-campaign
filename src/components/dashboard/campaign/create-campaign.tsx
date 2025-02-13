@@ -47,7 +47,8 @@ export default function CreateCampaign(): React.JSX.Element {
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
-    const [campaignId,setCampaignId] = React.useState<number>(-1)
+    const [campaignId,setCampaignId] = React.useState<number>(-1);
+    const [filteredBuyTypeList,setFilteredBuyTypeList] = React.useState<CommonSelectResponse[]>([]);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
       // 1: [],
@@ -243,6 +244,17 @@ export default function CreateCampaign(): React.JSX.Element {
           ,getValues,impressionData,undefined))
       }    
 
+      if (dataSources && dataSources.buy_type.length > 0) {
+        const filteredBuyTypes = (dataSources.buy_type as CommonSelectResponse[]).filter((buyType) => {
+          if (campaignType === 'Banner') {
+            return buyType.value !== 'CPV';
+          } else if (campaignType === 'Video') {
+            return buyType.value !== 'CPC';
+          }
+          return true;
+        });
+        setFilteredBuyTypeList(filteredBuyTypes);
+      }
     }, [campaignType,targetPopulation,targetType,dataSources]);
   
     return (
@@ -578,7 +590,7 @@ export default function CreateCampaign(): React.JSX.Element {
                             getValues={getValues}
                             setValue={setValue}
                             error={errors.buy_type}
-                            data={dataSources.buy_type.length > 0 ? dataSources.buy_type : [{ id: 0, value: 'No data available. Please try again later' }]}
+                            data={filteredBuyTypeList.length > 0 ? filteredBuyTypeList : [{ id: 0, value: 'No data available. Please try again later' }]}
                             multiple={false}
                             />
                       </Grid>
