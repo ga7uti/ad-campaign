@@ -1,23 +1,38 @@
-# Use the official Node.js image as the base image
-FROM node:18-alpine
+# Stage 1: Build and prepare production artifacts
+FROM node:18-alpine AS builder
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files and install all dependencies (including dev)
 COPY package*.json ./
+RUN npm ci --include=dev
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code
+# Copy source code and build the Next.js app
 COPY . .
-
-# Build the Next.js app
 RUN npm run build
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Remove dev dependencies (prune for production)
+RUN npm prune --production
 
-# Start the Next.js app
+# Stage 2: Production image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copy package files, built assets and production dependencies from builder
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Switch to non-root user
+USER node
+
+# Expose port and start the application
+EXPOSE 3000
 CMD ["npm", "start"]
