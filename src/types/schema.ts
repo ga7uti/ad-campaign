@@ -26,6 +26,7 @@ export const CampaignFormSchema: ZodType<CampaignFormData> = z.object({
     keywords: z.any(),
     landing_page: z.any(),
     tag_tracker: z.any(),
+    user: z.any(),
   });
 
 
