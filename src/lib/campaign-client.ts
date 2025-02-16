@@ -3,6 +3,7 @@
 import { Campaign, CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
 import axiosInstance from './axios-instance';
 import { utils } from './common-utils';
+import { User } from '@/types/auth';
 
 
 class CampaignClient {
@@ -262,6 +263,21 @@ class CampaignClient {
       } catch (error: any) {
         throw new Error(utils.handleErrorMessage(error));
       }
+    }
+
+    async getUsers(isAdmin:boolean): Promise<User[]> {
+      if(isAdmin){
+        try {
+          const response = await axiosInstance.get('/api/users', {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          console.log(response)
+          return response.data.results;
+        } catch (error: any) {
+          throw new Error(utils.handleErrorMessage(error));
+        }
+      }
+      return [];
     }
     
 }

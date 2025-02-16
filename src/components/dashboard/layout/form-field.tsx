@@ -1,3 +1,5 @@
+import { utils } from '@/lib/common-utils';
+import { User } from '@/types/auth';
 import { CommonSelectResponse, Interest, Location } from '@/types/campaign';
 import {
   Checkbox,
@@ -117,6 +119,12 @@ const FormField: React.FC<FormFieldProps<any>> = ({
         return data?.map((val: Interest) => (
           <MenuItem key={val.id} value={val.id}>
         {val.subcategory}
+          </MenuItem>
+        )); 
+      } else if (name.startsWith('user')) {
+        return data?.map((val: User) => (
+          <MenuItem key={val.id} value={val.id}>
+            {utils.formatProperCase(val.first_name)} {utils.formatProperCase(val.last_name)}({val.email})
           </MenuItem>
         )); 
       } else {

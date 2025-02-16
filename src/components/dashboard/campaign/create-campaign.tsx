@@ -18,10 +18,13 @@ import TargetType from '../layout/target-type';
 import { CampaignReview } from './campaign-review';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
+import { useAuth } from '@/hooks/use-auth';
+import { User } from '@/types/auth';
 
 export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
+    const {auth} = useAuth();
     const [dataSources, setDataSources] = React.useState({
       ages: [],
       devices: [],
@@ -37,7 +40,8 @@ export default function CreateCampaign(): React.JSX.Element {
       buy_type: [],
       brand_safety: [],
       viewability: [],
-    } as Record<string, CommonSelectResponse[] | Location[] | Interest[]>);
+      users: [],
+    } as Record<string, CommonSelectResponse[] | Location[] | Interest[] |User[]>);
     const [impressionData,setImpressionData] = React.useState<ImpressionData>();
     const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
     const [isPending, setIsPending] = React.useState<boolean>(false);
@@ -75,7 +79,7 @@ export default function CreateCampaign(): React.JSX.Element {
       try {
         const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
           carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
-          viewabilityRes,brandSafetyRes] = await Promise.all([
+          viewabilityRes,brandSafetyRes,userRes] = await Promise.all([
           campaignClient.getAge(),
           campaignClient.getDevice(),
           campaignClient.getEnv(),
@@ -90,6 +94,7 @@ export default function CreateCampaign(): React.JSX.Element {
           campaignClient.getBuyType(),
           campaignClient.getViewability(),
           campaignClient.getBrandSafety(),
+          campaignClient.getUsers(auth?.usertype === 'admin')
         ]);
         setDataSources({
           ages: ageRes,
@@ -106,6 +111,7 @@ export default function CreateCampaign(): React.JSX.Element {
           buy_type:buyTypeRes,
           viewability:viewabilityRes,
           brand_safety:brandSafetyRes,
+          users:userRes
         });
         setImpressionData(impressionRes)
         setTotalPopulation(impressionRes.totalPopulation)
@@ -310,6 +316,23 @@ export default function CreateCampaign(): React.JSX.Element {
                           error={errors.name}
                         />
                       </Grid>
+
+                    {auth?.usertype === 'admin' && (
+                        <Grid item xs={12}>
+                          <FormField
+                            type="select"
+                            placeholder="User"
+                            name='user'
+                            register={register}
+                            getValues={getValues}
+                            setValue={setValue}
+                            multiple = {false}
+                            onChange={handleSelectChange}
+                            error={Array.isArray(errors.user) ? errors.user[0] : errors.user}
+                            data={dataSources.users.length > 0 ? dataSources.users : [{ id: 0, value: 'No data available. Please try again later' }]}
+                          />
+                        </Grid>
+                    )}
                   
                       {/* Date Fields - Split on Desktop */}
                       <Grid item xs={12} md={6}>
@@ -501,7 +524,7 @@ export default function CreateCampaign(): React.JSX.Element {
                     {dataSources.interest_category.map((interestCategory)=>{
                       return(
                           <>
-                            <Grid item xs={12} md={6} key={interestCategory.id}>
+                            <Grid item xs={12} md={6} key={(interestCategory as CommonSelectResponse).id}>
                               <TextField
                                 fullWidth
                                 label="Interest Category"
@@ -515,7 +538,7 @@ export default function CreateCampaign(): React.JSX.Element {
                               <FormField
                                 type="select"
                                 placeholder="SubCategory"
-                                name={`target_type_${interestCategory.id}`}
+                                name={`target_type_${(interestCategory as CommonSelectResponse).id}`}
                                 register={register}
                                 getValues={getValues}
                                 setValue={setValue}

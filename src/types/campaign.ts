@@ -104,6 +104,7 @@ export interface CampaignFormData  {
     video?:number[];
     start_time?: string;
     end_time?: string;
+    user?:string
 };
 
 export interface CommonImpressionDetails{
