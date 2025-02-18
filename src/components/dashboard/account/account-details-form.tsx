@@ -84,7 +84,7 @@ export function AccountDetailsForm(): React.JSX.Element {
           </Box>
         :
           <CardContent>
-            <Stack spacing={2} sx={{ alignItems: 'center' }}>
+            <Stack spacing={2} sx={{ alignItems: 'center', marginBottom:"2rem" }}>
             <div>
               {user?.logo && (
                 <Avatar
@@ -92,7 +92,7 @@ export function AccountDetailsForm(): React.JSX.Element {
                   sx={{
                     height: '150px',
                     width: '150px',
-                    border: '2px solid #000', 
+                    border: '0.5px solid #D3D3D3', 
                     '& img': { objectFit: 'contain' }
                   }}
                 />
