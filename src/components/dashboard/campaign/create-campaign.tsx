@@ -232,30 +232,13 @@ export default function CreateCampaign(): React.JSX.Element {
               )}
 
               {activeSection === 5 && (
-                <>
-                  <CampaignReview 
-                    title="Campaign Review"
-                    fields={utils.reviewFields}
-                    targetType={targetType}
-                    dataSources={dataSources}
-                    getValues={getValues}
-                  />
-                  <Box sx={{ textAlign: "center", mt: 3 }}>
-                  {!isPending ? (
-                        <Box sx={{ textAlign: "center", mt: 3 }}>
-                          <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
-                            {isEditable?"Update Campaign" : "Create Campaign"}
-                          </Button>
-                        </Box>
-                  ):(
-                    <Box sx={{ textAlign: "center", mt: 3 }}>
-                      <Box sx={{ marginLeft: 2 }}>
-                          <CircularProgress />
-                        </Box>
-                      </Box>
-                  )}
-                  </Box>
-                </>
+                <CampaignReview 
+                  title="Campaign Review"
+                  fields={utils.reviewFields}
+                  targetType={targetType}
+                  dataSources={dataSources}
+                  getValues={getValues}
+                />                  
               )}
             
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
@@ -268,12 +251,24 @@ export default function CreateCampaign(): React.JSX.Element {
                   </Button>
                 )}
               </Box>
+              {activeSection === 5 && (
+                <Box sx={{ textAlign: "center", mt: 3 }}>
+                  {!isPending ? (
+                    <Button sx={{borderRadius:0.75}} variant="contained" color="primary" type="submit">
+                      {isEditable ? "Update Campaign" : "Create Campaign"}
+                    </Button>
+                  ) : (
+                    <Box sx={{ marginLeft: 2 }}>
+                      <CircularProgress />
+                    </Box>
+                  )}
+                </Box>
+              )}
+              <Box sx={{ mt: 2 }}>
+                {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+                {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
+              </Box>
             </Box>
-
-            <>
-              {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
-              {isCampaignCreated ? <Alert sx={{margin:2}} color="success">Campaign created successfully!</Alert> : null}
-            </>
           </form>
         </Box>
 
