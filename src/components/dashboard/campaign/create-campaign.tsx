@@ -5,35 +5,36 @@ import { useFormSections } from '@/hooks/useFormSections';
 import { campaignClient } from '@/lib/campaign-client';
 import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
-import { CampaignFormData, CommonSelectResponse, Interest } from '@/types/campaign';
+import { CampaignFormData, CommonSelectResponse } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import FileUpload from '../layout/file-upload';
-import FormField from '../layout/form-field';
 import { ProgressIndicator } from '../layout/progress-indicator';
-import { DetailGrid, SectionContainer } from '../layout/section-container';
-import TargetType from '../layout/target-type';
+import { SectionContainer } from '../layout/section-container';
 import { CampaignReview } from './campaign-review';
-import { CampaignTypeSelector } from './campaign-select';
+import { CampaignType} from './sections/campaign-type';
 import { ImpressionComponent } from './impression-panel';
-
+import { AdDetails } from './sections/ad-details';
+import { BudgetDetails } from './sections/budget-details';
+import { CampaignDetails } from './sections/campaign-details';
+import { DeviceEnvironment } from './sections/device-environment';
+import { TargetingType } from './sections/targeting-type';
+import InterestSection from './sections/interest-type';
 export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
     const {auth} = useAuth();
     const { dataSources, impressionData, totalPopulation, isPending, setIsPending, fetchData } = useDataSources(auth);
-    const { activeSection, nextSection, prevSection } = useFormSections();
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
+    const { activeSection, nextSection, prevSection } = useFormSections();
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const [campaignId,setCampaignId] = React.useState<number>(-1);
-    const [filteredBuyTypeList,setFilteredBuyTypeList] = React.useState<CommonSelectResponse[]>([]);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
       1: ["name","start_time","end_time"], 
@@ -128,20 +129,6 @@ export default function CreateCampaign(): React.JSX.Element {
         setTargetPopulation(utils.calculateTargetPopulation("ages", dataSources.location, getValues, impressionData, undefined));
       }
     }, [impressionData, dataSources?.location]);
-
-    React.useEffect(() => {
-      if (dataSources?.buy_type?.length > 0) {
-        const filteredBuyTypes = dataSources.buy_type.filter((buyType) => {
-          if (campaignType === 'Banner') {
-            return buyType.value !== 'CPV';
-          } else if (campaignType === 'Video') {
-            return buyType.value !== 'CPC';
-          }
-          return true;
-        });
-        setFilteredBuyTypeList(filteredBuyTypes);
-      }
-    }, [campaignType, dataSources?.buy_type]);
   
     return (
       <Box
@@ -173,7 +160,7 @@ export default function CreateCampaign(): React.JSX.Element {
 
               {activeSection === 0 && (
                  <SectionContainer title="Campaign Type">
-                    <CampaignTypeSelector 
+                    <CampaignType
                       campaignType={campaignType} 
                       setCampaignType={setCampaignType} 
                       setValue={setValue} 
@@ -182,404 +169,67 @@ export default function CreateCampaign(): React.JSX.Element {
                )}
 
               {activeSection === 1 && (
-                <SectionContainer title="Campaign Details">
-                    <DetailGrid>
-                      {/* Name Field - Full Width */}
-                      <Grid item xs={12}>
-                        <FormField
-                          type="text"
-                          placeholder="Name"
-                          name="name"
-                          getValues={getValues}
-                          setValue={setValue}
-                          register={register}
-                          error={errors.name}
-                        />
-                      </Grid>
-
-                    {auth?.usertype === 'admin' && (
-                        <Grid item xs={12}>
-                          <FormField
-                            type="select"
-                            placeholder="User"
-                            name='user'
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            multiple = {false}
-                            onChange={handleSelectChange}
-                            error={Array.isArray(errors.user) ? errors.user[0] : errors.user}
-                            data={dataSources.users.length > 0 ? dataSources.users : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          />
-                        </Grid>
-                    )}
-                  
-                      {/* Date Fields - Split on Desktop */}
-                      <Grid item xs={12} md={6}>
-                        <FormField
-                          type="datepicker"
-                          placeholder="Start Date"
-                          name="start_time"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={errors.start_time}
-                        />
-                      </Grid>
-                  
-                      <Grid item xs={12} md={6}>
-                        <FormField
-                          type="datepicker"
-                          placeholder="End Date"
-                          name="end_time"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={errors.end_time}
-                        />
-                      </Grid>
-                    </DetailGrid>
-                </SectionContainer>
+                <CampaignDetails 
+                  register={register}
+                  getValues={getValues}
+                  setValue={setValue}
+                  errors={errors}
+                  dataSources={dataSources}
+                />
               )}
 
               {activeSection === 2 && (
                 <>
-                  <SectionContainer title="Targeting Type">
-                  <DetailGrid>
-                  {/* Location */}
-                  <Grid item xs={12}>
-                      <FormField
-                            type="select"
-                            placeholder="Locations"
-                            name="location"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            onChange={handleSelectChange}
-                            error={Array.isArray(errors.location)?errors.location[0]:errors.location}
-                            data={dataSources.location.length > 0 ? dataSources.location : [{ id: 0, city: 'No data available. Please try again later' }]}
-                        />
-                    </Grid>
-
-                    {/* Age */}
-                    <Grid item xs={12} md={6}>
-                      <FormField
-                            type="select"
-                            placeholder="Age Range"
-                            name="age"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            onChange={handleSelectChange}
-                            error={Array.isArray(errors.age)?errors.age[0]:errors.age}
-                            data={dataSources.ages.length > 0 ? dataSources.ages : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                    </Grid>
-                    
-                    {/* Exchange */}
-                    <Grid item xs={12} md={6}>                      
-                      <FormField
-                            type="select"
-                            placeholder="Exchange"
-                            name="exchange"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.exchange)?errors.exchange[0]:errors.exchange}
-                            data={dataSources.exchange.length > 0 ? dataSources.exchange : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                    </Grid>
-
-                    {/* Langugage */}
-                    <Grid item xs={12} md={4}>
-                        <FormField
-                            type="select"
-                            placeholder="Language"
-                            name="language"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.language)?errors.language[0]:errors.language}
-                            data={dataSources.language.length > 0 ? dataSources.language : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                      </Grid>
-
-                    {/* Viewability*/}
-                    <Grid item xs={12} md={4}>
-                      <FormField
-                          type="select"
-                          placeholder="Viewability"
-                          name="viewability"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.viewability)?errors.viewability[0]:errors.viewability}
-                          data={dataSources.viewability.length > 0 ? dataSources.viewability : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          multiple={false}
-                          />
-                    </Grid>
-
-                    {/* Brandsafety*/}
-                    <Grid item xs={12} md={4}>
-                      <FormField
-                          type="select"
-                          placeholder="Brand Safety"
-                          name="brand_safety"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.brand_safety)?errors.brand_safety[0]:errors.brand_safety}
-                          data={dataSources.brand_safety.length > 0 ? dataSources.brand_safety : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          multiple={false}
-                          />
-                    </Grid>
-                    </DetailGrid>
-                  </SectionContainer>
-                  <SectionContainer title="Device & Environment">
-                    {/* Device */}
-                    <DetailGrid>
-                      <Grid item xs={12} md={6}>
-                        <FormField
-                            type="select"
-                            placeholder="Devices"
-                            name="device"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                            data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          />
-                      </Grid>
-                    
-                    {/* Environment */}
-                    <Grid item xs={12} md={6}>
-                        <FormField
-                            type="select"
-                            placeholder="Environments"
-                            name="environment"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                            data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                    </Grid>
-
-                     {/* Carrier */}
-                     <Grid item xs={12} md={6}>
-                      <FormField
-                          type="select"
-                          placeholder="Carrier"
-                          name="carrier"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Grid>
-
-                    {/* DevicePrice */}
-                    <Grid item xs={12} md={6}>
-                      <FormField
-                          type="select"
-                          placeholder="DevicePrice"
-                          name="device_price"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Grid>
-                    </DetailGrid>
-                  </SectionContainer>
+                  <TargetingType 
+                    register={register}
+                    getValues={getValues}
+                    setValue={setValue}
+                    errors={errors}
+                    dataSources={dataSources}
+                    handleSelectChange={handleSelectChange}
+                  />
+                  <DeviceEnvironment 
+                    register={register}
+                    getValues={getValues}
+                    setValue={setValue}
+                    errors={errors}
+                    dataSources={dataSources}
+                    handleSelectChange={handleSelectChange}
+                  />
                 </>
               )}
 
               {activeSection === 3 && (
-                <>
-                <SectionContainer title="Interest">
-                  <DetailGrid>
-                    {dataSources.interest_category.map((interestCategory)=>{
-                      return(
-                          <>
-                            <Grid item xs={12} md={6} key={(interestCategory as CommonSelectResponse).id}>
-                              <TextField
-                                fullWidth
-                                label="Interest Category"
-                                variant="outlined"
-                                value={(interestCategory as CommonSelectResponse).label}
-                                InputProps={{ readOnly: true }}
-                              />
-                            </Grid>
-                        
-                            <Grid item xs={12} md ={6}>
-                              <FormField
-                                type="select"
-                                placeholder="SubCategory"
-                                name={`target_type_${(interestCategory as CommonSelectResponse).id}`}
-                                register={register}
-                                getValues={getValues}
-                                setValue={setValue}
-                                onChange={handleSelectChange}
-                                error={Array.isArray(errors.target_type) ? errors.target_type[0] : errors.target_type}
-                                data={
-                                  dataSources.interest.length > 0
-                                      ? dataSources.interest.filter((interest) => (interest as Interest).category === (interestCategory as CommonSelectResponse).label)
-                                    : [{ id: 0, category: "No data available. Please select Interest" }]
-                                }
-                              />
-                            </Grid>
-                          </>
-                      )
-                    })}
-                    </DetailGrid>
-                  </SectionContainer>
-                  {targetType &&
-                    <SectionContainer title="Interest Targeting">
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                {targetType &&
-                                  <TargetType 
-                                    targetType={targetType} 
-                                    isRemovable={isEditable} 
-                                />
-                                }
-                            </Grid>
-                        </Grid>
-                    </SectionContainer>
-                  }
-                </>
+                <InterestSection 
+                  register={register}
+                  getValues={getValues}
+                  setValue={setValue}
+                  errors={errors}
+                  dataSources={dataSources}
+                  handleSelectChange={handleSelectChange}
+                  targetType={targetType}
+                  isEditable={isEditable}
+                />
               )}
 
               {activeSection === 4 && (
                 <>
-                  <SectionContainer title="Budget & Bidding">
-                    <DetailGrid>
-                      {/* Total Budget */}
-                      <Grid item xs={12} md = {6}>
-                        <FormField
-                            type="number"
-                            placeholder="Total Budget"
-                            name="total_budget"
-                            valueAsNumber={true}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            error={Array.isArray(errors.total_budget)?errors.total_budget[0]:errors.total_budget}
-                        />
-                      </Grid>
-                      {/* Unit Rate*/}
-                      <Grid item xs={12} md={6}>
-                        <FormField
-                            type="number"
-                            placeholder="Unit Rate"
-                            name="unit_rate"
-                            valueAsNumber={true}
-                            getValues={getValues}
-                            setValue={setValue}
-                            register={register}
-                            error={Array.isArray(errors.unit_rate)?errors.unit_rate[0]:errors.unit_rate}
-                            />
-                      </Grid>
-                      {/* Buy Type*/}
-                      <Grid item xs={12}>
-                        <FormField
-                            type="select"
-                            placeholder="Buy Type"
-                            name="buy_type"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={errors.buy_type}
-                            data={filteredBuyTypeList.length > 0 ? filteredBuyTypeList : [{ id: 0, value: 'No data available. Please try again later' }]}
-                            multiple={false}
-                            />
-                      </Grid>
-                    </DetailGrid>
-                  </SectionContainer>
-                  <SectionContainer title="Ad Details">
-                    <DetailGrid>
-                        {/* Landing Page */}
-                        <Grid item xs={12}>
-                        <FormField
-                            type="text"
-                            placeholder="Landing Page"
-                            name="landing_page"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={errors.landing_page}
-                            data={undefined}
-                        />
-                      </Grid>
-
-                      {/* Tag & Tracker */}
-                      <Grid item xs={12} md={4}>
-                        <FileUpload
-                            name="tag_tracker"
-                            register={register}
-                            setValue={setValue}
-                            getValue={getValues}
-                            placeholder="Upload Tag & Tracker"
-                          />
-                          {errors.tag_tracker && 
-                            <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
-                              {errors.tag_tracker?.message}
-                            </Typography>
-                          }
-                      </Grid>
-                      
-                      {/* Image Upload */}
-                      {campaignType === 'Banner' ? (
-                        <Grid item xs={12} md={4}>
-                          <FileUpload
-                              name="images"
-                              register={register}
-                              setValue={setValue}
-                              getValue={getValues}
-                              placeholder="Upload Campaign Image"
-                            />
-                            {errors.images && 
-                              <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
-                                {errors.images?.message}
-                              </Typography>
-                            }
-                        </Grid>
-                      ):
-                      (
-                        <Grid item xs={12} md={4}>
-                          <FileUpload
-                              name="video"
-                              register={register}
-                              setValue={setValue}
-                              getValue={getValues} 
-                              placeholder="Upload Campaign Video"
-                            />
-                            {errors.video && 
-                              <Typography sx={{ color: 'red', fontSize: '0.75rem' }}>
-                                {errors.video?.message}
-                              </Typography>
-                            }
-                        </Grid>
-                      )}
-                      <Grid item xs={12} md={4}>
-                        <FileUpload
-                          name="keywords"
-                          register={register}
-                          getValue={getValues} 
-                          setValue={setValue}
-                          placeholder="Upload Keywords"
-                        />
-                        {errors.keywords && 
-                          <Typography sx={{ color: 'gray', fontSize: '0.75rem' }}>
-                            {errors.keywords?.message}
-                          </Typography>
-                        }
-                      </Grid>
-                    </DetailGrid>
-                  </SectionContainer>
+                  <BudgetDetails
+                    register={register}
+                    getValues={getValues}
+                    setValue={setValue}
+                    errors={errors}
+                    dataSources={dataSources}
+                    campaignType={campaignType}
+                  />
+                  
+                  <AdDetails
+                    register={register}
+                    getValues={getValues}
+                    setValue={setValue}
+                    errors={errors}
+                    campaignType={campaignType}
+                  />         
                 </>
               )}
 

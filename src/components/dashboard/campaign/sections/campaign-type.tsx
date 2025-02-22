@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { Image, Video } from '@phosphor-icons/react';
 
-export const CampaignTypeSelector = ({ campaignType, setCampaignType, setValue }: any) => {
+export const CampaignType = ({ campaignType, setCampaignType, setValue }: any) => {
   return (
     <Grid 
       container 
