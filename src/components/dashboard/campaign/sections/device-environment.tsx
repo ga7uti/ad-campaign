@@ -23,63 +23,63 @@ export const DeviceEnvironment: React.FC<DeviceEnvironmentProps> = ({
 }) => {
   return (
     <SectionContainer title="Device & Environment">
-                    {/* Device */}
-                    <DetailGrid>
-                      <Grid item xs={12} md={6}>
-                        <FormField
-                            type="select"
-                            placeholder="Devices"
-                            name="device"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.device)?errors.device[0]:errors.device}
-                            data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
-                          />
-                      </Grid>
-                    
-                    {/* Environment */}
-                    <Grid item xs={12} md={6}>
-                        <FormField
-                            type="select"
-                            placeholder="Environments"
-                            name="environment"
-                            register={register}
-                            getValues={getValues}
-                            setValue={setValue}
-                            error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
-                            data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
-                        />
-                    </Grid>
+      {/* Device */}
+      <DetailGrid>
+        <Grid item xs={12} md={6}>
+          <FormField
+              type="select"
+              placeholder="Devices"
+              name="device"
+              register={register}
+              getValues={getValues}
+              setValue={setValue}
+              error={Array.isArray(errors.device)?errors.device[0]:errors.device}
+              data={dataSources.devices.length > 0 ? dataSources.devices : [{ id: 0, value: 'No data available. Please try again later' }]}
+            />
+        </Grid>
+      
+      {/* Environment */}
+      <Grid item xs={12} md={6}>
+          <FormField
+              type="select"
+              placeholder="Environments"
+              name="environment"
+              register={register}
+              getValues={getValues}
+              setValue={setValue}
+              error={Array.isArray(errors.environment)?errors.environment[0]:errors.environment}
+              data={dataSources.environment.length > 0 ? dataSources.environment : [{ id: 0, value: 'No data available. Please try again later' }]}
+          />
+      </Grid>
 
-                     {/* Carrier */}
-                     <Grid item xs={12} md={6}>
-                      <FormField
-                          type="select"
-                          placeholder="Carrier"
-                          name="carrier"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
-                          data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Grid>
+        {/* Carrier */}
+        <Grid item xs={12} md={6}>
+        <FormField
+            type="select"
+            placeholder="Carrier"
+            name="carrier"
+            register={register}
+            getValues={getValues}
+            setValue={setValue}
+            error={Array.isArray(errors.carrier)?errors.carrier[0]:errors.carrier}
+            data={dataSources.carrier.length > 0 ? dataSources.carrier : [{ id: 0, value: 'No data available. Please try again later' }]}
+        />
+      </Grid>
 
-                    {/* DevicePrice */}
-                    <Grid item xs={12} md={6}>
-                      <FormField
-                          type="select"
-                          placeholder="DevicePrice"
-                          name="device_price"
-                          register={register}
-                          getValues={getValues}
-                          setValue={setValue}
-                          error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
-                          data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
-                      />
-                    </Grid>
-                    </DetailGrid>
-                  </SectionContainer>
+      {/* DevicePrice */}
+      <Grid item xs={12} md={6}>
+        <FormField
+            type="select"
+            placeholder="DevicePrice"
+            name="device_price"
+            register={register}
+            getValues={getValues}
+            setValue={setValue}
+            error={Array.isArray(errors.device_price)?errors.device_price[0]:errors.device_price}
+            data={dataSources.device_price.length > 0 ? dataSources.device_price : [{ id: 0, value: 'No data available. Please try again later' }]}
+        />
+      </Grid>
+      </DetailGrid>
+    </SectionContainer>
   );
 };
