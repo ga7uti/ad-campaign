@@ -159,13 +159,11 @@ export default function CreateCampaign(): React.JSX.Element {
               <ProgressIndicator activeSection={activeSection} totalSections={6} />
 
               {activeSection === 0 && (
-                 <SectionContainer title="Campaign Type">
-                    <CampaignType
-                      campaignType={campaignType} 
-                      setCampaignType={setCampaignType} 
-                      setValue={setValue} 
-                      isEditable ={isEditable} />
-                  </SectionContainer>
+                  <CampaignType
+                    campaignType={campaignType} 
+                    setCampaignType={setCampaignType} 
+                    setValue={setValue} 
+                    isEditable ={isEditable} />
                )}
 
               {activeSection === 1 && (

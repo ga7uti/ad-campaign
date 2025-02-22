@@ -36,16 +36,15 @@ export const CampaignReview = ({
       </DetailGrid>
     </SectionContainer>
     <SectionContainer title="Interest Targeting">
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                {targetType &&
-                    <TargetType 
-                        targetType={targetType} 
-                        isRemovable={false} 
-                />
-                }
-            </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          {targetType &&
+            <TargetType 
+              targetType={targetType} 
+              isRemovable={false} 
+          />}
         </Grid>
+      </Grid>
     </SectionContainer>
   </>
   );
