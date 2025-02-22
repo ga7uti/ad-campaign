@@ -27,14 +27,15 @@ export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
     const {auth} = useAuth();
-    const { dataSources, impressionData, totalPopulation, isPending, setIsPending, fetchData } = useDataSources(auth);
+    const { dataSources, impressionData, totalPopulation, fetchData } = useDataSources(auth);
+    const { activeSection, nextSection, prevSection } = useFormSections();
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
-    const { activeSection, nextSection, prevSection } = useFormSections();
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
     const [campaignId,setCampaignId] = React.useState<number>(-1);
+    const [isPending, setIsPending] = React.useState<boolean>(false);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
       1: ["name","start_time","end_time"], 

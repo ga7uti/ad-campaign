@@ -23,7 +23,6 @@ export const useDataSources = (auth: Auth | null) => {
       });
       const [impressionData, setImpressionData] = useState<any>(null);
       const [totalPopulation, setTotalPopulation] = useState<number>(0);
-      const [isPending, setIsPending] = useState<boolean>(true);
     
     const fetchData = async () => {
         try {
@@ -65,7 +64,6 @@ export const useDataSources = (auth: Auth | null) => {
             });
             setImpressionData(impressionRes);
             setTotalPopulation(impressionRes.totalPopulation);
-            setIsPending(false);
         } catch (error) {
             console.error('Error fetching data sources:', error);
         }
@@ -77,5 +75,5 @@ export const useDataSources = (auth: Auth | null) => {
         }
     }, [auth?.token]);
 
-    return { dataSources, impressionData, totalPopulation,isPending , setIsPending, fetchData };
+    return { dataSources, impressionData, totalPopulation,fetchData };
 }; 
