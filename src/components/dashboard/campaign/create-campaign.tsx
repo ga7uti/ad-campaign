@@ -1,12 +1,14 @@
 "use client"
+import { useAuth } from '@/hooks/use-auth';
+import { useDataSources } from '@/hooks/useDataSources';
+import { useFormSections } from '@/hooks/useFormSections';
 import { campaignClient } from '@/lib/campaign-client';
 import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
-import { CampaignFormData, CommonSelectResponse, ImpressionData, Interest, Location } from '@/types/campaign';
+import { CampaignFormData, CommonSelectResponse, Interest } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -18,36 +20,15 @@ import TargetType from '../layout/target-type';
 import { CampaignReview } from './campaign-review';
 import { CampaignTypeSelector } from './campaign-select';
 import { ImpressionComponent } from './impression-panel';
-import { useAuth } from '@/hooks/use-auth';
-import { User } from '@/types/auth';
 
 export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
     const {auth} = useAuth();
-    const [dataSources, setDataSources] = React.useState({
-      ages: [],
-      devices: [],
-      environment: [],
-      location: [],
-      exchange: [],
-      language: [],
-      carrier: [],
-      device_price: [],
-      interest_category: [],
-      interest: [],
-      selectedInterest: [],
-      buy_type: [],
-      brand_safety: [],
-      viewability: [],
-      users: [],
-    } as Record<string, CommonSelectResponse[] | Location[] | Interest[] |User[]>);
-    const [impressionData,setImpressionData] = React.useState<ImpressionData>();
-    const [totalPopulation,setTotalPopulation] = React.useState<number>(0);
-    const [isPending, setIsPending] = React.useState<boolean>(false);
+    const { dataSources, impressionData, totalPopulation, isPending, setIsPending, fetchData } = useDataSources(auth);
+    const { activeSection, nextSection, prevSection } = useFormSections();
     const [isCampaignCreated,setIsCampaignCreated] = React.useState<boolean>(false);
     const [targetPopulation, setTargetPopulation] = React.useState<number>(0);
-    const [activeSection, setActiveSection] = React.useState<number>(0); 
     const [campaignType, setCampaignType] = React.useState<'Banner' | 'Video'>('Banner');
     const [targetType, setTargetType] = React.useState<string>('');
     const [isEditable,setIsEditable] = React.useState<boolean>(false);
@@ -55,10 +36,6 @@ export default function CreateCampaign(): React.JSX.Element {
     const [filteredBuyTypeList,setFilteredBuyTypeList] = React.useState<CommonSelectResponse[]>([]);
     const mandatoryFieldsBySection: Record<number, string[]> = {
       0: ["objective"], 
-      // 1: [],
-      // 2: [],
-      // 3: [],
-      // 4: []
       1: ["name","start_time","end_time"], 
       2: ["location", "age", "exchange", "language", "viewability", "brand_safety","device", "environment", "carrier", "device_price"],
       3: ["target_type"],
@@ -75,53 +52,6 @@ export default function CreateCampaign(): React.JSX.Element {
       formState: { errors },
     } = useForm<CampaignFormData>({ resolver: zodResolver(CampaignFormSchema) });
   
-    const fetchData = async () => {
-      try {
-        const [ageRes, deviceRes, envRes, locRes,exchangeRes,langRes,
-          carrierRes,devicePriceRes, categoryInterestRes,interestRes, impressionRes,buyTypeRes,
-          viewabilityRes,brandSafetyRes,userRes] = await Promise.all([
-          campaignClient.getAge(),
-          campaignClient.getDevice(),
-          campaignClient.getEnv(),
-          campaignClient.getLocations(),
-          campaignClient.getExchange(),
-          campaignClient.getLanguage(),
-          campaignClient.getCarrier(),
-          campaignClient.getDevicePrice(),
-          campaignClient.getDistinctInterest(),
-          campaignClient.getInterest(""),
-          campaignClient.getImpressionData(),
-          campaignClient.getBuyType(),
-          campaignClient.getViewability(),
-          campaignClient.getBrandSafety(),
-          campaignClient.getUsers(auth?.usertype === 'admin')
-        ]);
-        setDataSources({
-          ages: ageRes,
-          devices: deviceRes,
-          environment: envRes,
-          location: locRes,
-          exchange: exchangeRes,
-          language: langRes,
-          carrier: carrierRes,
-          device_price: devicePriceRes,
-          interest_category: categoryInterestRes,
-          interest: interestRes,
-          selectedInterest: [],
-          buy_type:buyTypeRes,
-          viewability:viewabilityRes,
-          brand_safety:brandSafetyRes,
-          users:userRes
-        });
-        setImpressionData(impressionRes)
-        setTotalPopulation(impressionRes.totalPopulation)
-      } catch (error) {
-        setError('root', { type: 'server', message: "Failed to load campaign data. Error: " + error });
-      }finally{
-        setIsPending(false)
-      }
-    };
-
     const onSubmit = async (data: CampaignFormData) => {
       clearErrors();
       if(!data) 
@@ -148,74 +78,19 @@ export default function CreateCampaign(): React.JSX.Element {
           new Set([...selectedValue, ...getValues("target_type") as Number[]])
         ) as number[]:selectedValue;
         setValue("target_type",selectedTargetType)
-        setTargetType(utils.formatTargetIdToSubCategory(selectedTargetType,dataSources.interest as Interest[]));
+        setTargetType(utils.formatTargetIdToSubCategory(selectedTargetType,dataSources.interest));
       }
       
       if(["location","age"].includes(name) && impressionData && dataSources){
-        setTargetPopulation(utils.calculateTargetPopulation(name,dataSources.location as  Location[]
-          ,getValues,impressionData,event))
+        setTargetPopulation(utils.calculateTargetPopulation(name,dataSources.location,getValues,impressionData,event))
       }
     };
 
-    const nextSection = () => {
+    const handleNextSection = () => {
       const mandatoryFields = mandatoryFieldsBySection[activeSection];
-    
-      const isSectionValid = mandatoryFields.every((field) => {
-        const value = getValues(field as  keyof CampaignFormData);
-        const isValidField = value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);;
-        if(field === "total_budget" || field === "unit_rate") {
-          return isValidField && !isNaN(Number(value)) && Number(value) > 0;
-        }
-        
-        if(field === "images" || field === "video" || field === "tag_tracker") {
-          return isValidField &&  (value as unknown as FileList).length > 0;
-        }
-        
-        if(field === "end_time"){
-          const startDate = getValues("start_time") as unknown as number;
-          return isValidField && dayjs(value as number).isAfter(dayjs(startDate));
-        }
-        return isValidField;
-      });
-          
-      if (!isSectionValid) {
-        mandatoryFields.find((field) => {
-          const value = getValues(field as  keyof CampaignFormData);
-          let isFieldMissing =  value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0) 
-          let startDateError = false;
-          if(field === "total_budget" || field === "unit_rate"){
-             isFieldMissing = isFieldMissing || isNaN(Number(value)) || Number(value) <= 0;
-          }else if(field === "images" || field === "video" || field === "tag_tracker"){
-            isFieldMissing= isFieldMissing || (value as unknown as FileList).length === 0;
-          }else if(field === "end_time"){
-            const startDate = getValues("start_time") as unknown as number;
-            startDateError = isFieldMissing || !dayjs(value as number).isAfter(dayjs(startDate));
-          }
-          
-          if (isFieldMissing) {
-            const capitalizeFirstLetter = field.charAt(0).toUpperCase() + field.slice(1);
-            setError(field as  keyof CampaignFormData, {type: "required",message: `${capitalizeFirstLetter.replace("_"," ")} field is required`});
-          }
-
-          if(startDateError){
-            setError(field as  keyof CampaignFormData, {type: "invalid",message: "End date should be after start date"});
-          }
-        });
-        return;
-      } 
-
-      clearErrors();
-      if (activeSection < 7) {
-        setActiveSection(activeSection + 1);
-      }
+      nextSection(getValues, setError, clearErrors, mandatoryFields);
     };
 
-    const prevSection = () => {
-      if (activeSection > 0) {
-          setActiveSection(activeSection - 1);
-      }
-    };
-  
     const setFormDataOnEdit = ()=>{
       const storedCampaign = sessionStorage.getItem("campaign");
       const storedCampaignId = sessionStorage.getItem("id") ? Number(sessionStorage.getItem("id")):-1;
@@ -236,22 +111,27 @@ export default function CreateCampaign(): React.JSX.Element {
     React.useEffect(() => {
       fetchData();
       setFormDataOnEdit();
-      
-      if(getValues("target_type")){
-        setTargetType(utils.formatTargetIdToSubCategory(getValues("target_type"),dataSources.interest as Interest[]));
+    }, []);
+
+    React.useEffect(() => {
+      if (dataSources?.interest && getValues("target_type")) {
+        setTargetType(utils.formatTargetIdToSubCategory(getValues("target_type"), dataSources.interest));
       }
 
-      if(!getValues("objective")){
+      if (!getValues("objective")) {
         setValue('objective', 'Banner');
       }
+    }, [dataSources?.interest]);
 
-      if(impressionData && dataSources){
-        setTargetPopulation(utils.calculateTargetPopulation("ages",dataSources.location as  Location[]
-          ,getValues,impressionData,undefined))
-      }    
+    React.useEffect(() => {
+      if (impressionData && dataSources?.location) {
+        setTargetPopulation(utils.calculateTargetPopulation("ages", dataSources.location, getValues, impressionData, undefined));
+      }
+    }, [impressionData, dataSources?.location]);
 
-      if (dataSources && dataSources.buy_type.length > 0) {
-        const filteredBuyTypes = (dataSources.buy_type as CommonSelectResponse[]).filter((buyType) => {
+    React.useEffect(() => {
+      if (dataSources?.buy_type?.length > 0) {
+        const filteredBuyTypes = dataSources.buy_type.filter((buyType) => {
           if (campaignType === 'Banner') {
             return buyType.value !== 'CPV';
           } else if (campaignType === 'Video') {
@@ -261,7 +141,7 @@ export default function CreateCampaign(): React.JSX.Element {
         });
         setFilteredBuyTypeList(filteredBuyTypes);
       }
-    }, [campaignType,targetPopulation,targetType,dataSources]);
+    }, [campaignType, dataSources?.buy_type]);
   
     return (
       <Box
@@ -735,7 +615,7 @@ export default function CreateCampaign(): React.JSX.Element {
                   Previous
                 </Button>
                 {activeSection < 5 && (
-                  <Button variant="contained" color="primary" onClick={nextSection}>
+                  <Button variant="contained" color="primary" onClick={handleNextSection}>
                     {activeSection === 4 ? "Review" : "Next"}
                   </Button>
                 )}
