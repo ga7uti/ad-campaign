@@ -5,7 +5,7 @@ import { useFormSections } from '@/hooks/useFormSections';
 import { campaignClient } from '@/lib/campaign-client';
 import { utils } from '@/lib/common-utils';
 import { paths } from '@/paths';
-import { CampaignFormData, CommonSelectResponse } from '@/types/campaign';
+import { CampaignFormData } from '@/types/campaign';
 import { CampaignFormSchema } from '@/types/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Box, Button, CircularProgress, SelectChangeEvent } from '@mui/material';
@@ -13,16 +13,16 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { ProgressIndicator } from '../layout/progress-indicator';
-import { SectionContainer } from '../layout/section-container';
-import { CampaignReview } from './campaign-review';
-import { CampaignType} from './sections/campaign-type';
 import { ImpressionComponent } from './impression-panel';
 import { AdDetails } from './sections/ad-details';
 import { BudgetDetails } from './sections/budget-details';
 import { CampaignDetails } from './sections/campaign-details';
+import { CampaignReview } from './sections/campaign-review';
+import { CampaignType } from './sections/campaign-type';
 import { DeviceEnvironment } from './sections/device-environment';
-import { TargetingType } from './sections/targeting-type';
 import InterestSection from './sections/interest-type';
+import { TargetingType } from './sections/targeting-type';
+
 export default function CreateCampaign(): React.JSX.Element {
 
     const router = useRouter();
